@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.formatter",
+    "title": "JSON Formatter",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": ["setAttachment"],
+  "detectors": [
+    {
+      "id": "json-detector",
+      "title": "JSON 识别",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.formatter.json"]
+    }
+  ],
+  "attachmentRenderers": [
+    {
+      "id": "json-renderer",
+      "title": "JSON 格式化",
+      "attachmentType": "plugin.formatter.json",
+      "height": { "min": 160, "max": 480 },
+      "uiEntry": "renderers/json-renderer/index.html"
+    }
+  ],
+  "actions": [
+    {
+      "id": "json-copy",
+      "title": "复制格式化 JSON",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["json", "format", "格式化", "美化", "pretty"]
+    }
+  ]
+}

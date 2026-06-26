@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.decoder",
+    "title": "Base64 Decoder",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": ["setAttachment"],
+  "detectors": [
+    {
+      "id": "base64-detector",
+      "title": "Base64 识别",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.decoder.base64"]
+    }
+  ],
+  "attachmentRenderers": [
+    {
+      "id": "base64-renderer",
+      "title": "Base64 解码",
+      "attachmentType": "plugin.decoder.base64",
+      "height": { "min": 120, "max": 320 },
+      "uiEntry": "renderers/base64-renderer/index.html"
+    }
+  ],
+  "actions": [
+    {
+      "id": "base64-copy",
+      "title": "复制 Base64 解码结果",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["base64", "decode", "解码", "copy"]
+    }
+  ]
+}
