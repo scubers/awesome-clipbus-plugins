@@ -323,6 +323,7 @@ export default definePlugin({
 - **只用主题 token**：`var(--clipbus-text-primary, #0f172a)`、`--clipbus-surface`、`--clipbus-surface-elevated`、`--clipbus-border`、`--clipbus-accent`、`--clipbus-text-secondary/tertiary` 等，**裸 hex 仅作 `var()` 回退**。自动适配明暗。
 - 版式：留白舒展、层级清晰（eyebrow/title/facts）、长文本省略号、空态有友好提示。
 - 实用为先但别将就：卡片要"能看"，与系统观感一致。
+- **根容器不要再加 padding**：宿主 native 卡片已自带内距。renderer 根元素（`.shell` / `<main>`）若再设 `padding` 会形成**双层内距**、显得过满。根容器一律 `padding: 0`，让内容贴合 native 卡片内距；只有**内部块**（facts / code-block / stat-tile 等内嵌盒子）才用各自的 `padding`。`base.css` 已对 `html/body/#app` 设 `margin:0` 无 padding，故根容器是唯一的内距来源。
 
 ## 12. 冒烟测试
 
