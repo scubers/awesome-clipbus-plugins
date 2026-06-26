@@ -1,0 +1,206 @@
+<script setup lang="ts">
+import { computed, onMounted, onUnmounted } from "vue";
+import { clipbus } from "@clipbus/plugin-sdk/ui";
+import { useTopicRef } from "../../shared/composables/useTopicRef";
+import { decodeUrlPayload } from "./payload";
+
+const attachmentPayload = useTopicRef(clipbus.item.attachment);
+const payload = computed(() =>
+  decodeUrlPayload(attachmentPayload.value?.attachment?.payloadJson)
+);
+
+const queryJson = computed(() => {
+  if (!payload.value || payload.value.query.length === 0) return null;
+  const obj = Object.fromEntries(
+    payload.value.query.map((q) => [q.key, q.value])
+  );
+  return JSON.stringify(obj, null, 2);
+});
+
+let unsub: (() => void) | null = null;
+
+onMounted(async () => {
+  try {
+    await clipbus.attachmentRenderer.setButtons({
+      buttons: [{ id: "copy", title: "复制查询参数 JSON" }],
+    });
+  } catch {
+    /* not in attachment renderer context */
+  }
+
+  unsub = clipbus.attachmentRenderer.onHostInvoke.on(async (d) => {
+    if (d?.buttonID === "copy" && payload.value) {
+      const text =
+        queryJson.value ??
+        payload.value.href;
+      await clipbus.clipboard.copyText({ text });
+    }
+  });
+});
+
+onUnmounted(() => {
+  unsub?.();
+});
+</script>
+
+<template>
+  <main class="shell">
+    <section v-if="payload" class="content">
+      <!-- Facts grid: Scheme / Host / Port / Path / Hash -->
+      <div class="facts-grid">
+        <template v-for="fact in payload.display.facts" :key="fact.label">
+          <span class="fact-label">{{ fact.label }}</span>
+          <span class="fact-value">{{ fact.value }}</span>
+        </template>
+      </div>
+
+      <!-- Query params table -->
+      <div class="query-section">
+        <div class="section-label">查询参数</div>
+        <table v-if="payload.query.length > 0" class="query-table">
+          <thead>
+            <tr>
+              <th class="col-key">Key</th>
+              <th class="col-value">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(q, i) in payload.query"
+              :key="i"
+              :class="i % 2 === 0 ? 'row-even' : 'row-odd'"
+            >
+              <td class="cell cell-key">{{ q.key }}</td>
+              <td class="cell cell-value">{{ q.value }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div v-else class="no-query">无查询参数</div>
+      </div>
+    </section>
+    <div v-else class="empty">等待 URL 内容</div>
+  </main>
+</template>
+
+<style scoped>
+.shell {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--clipbus-text-primary, #0f172a);
+  font-size: 13px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.facts-grid {
+  background: var(--clipbus-surface-elevated, #f8fafc);
+  border: 1px solid var(--clipbus-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  row-gap: 4px;
+  column-gap: 8px;
+  align-items: baseline;
+}
+
+.fact-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--clipbus-text-secondary, #64748b);
+}
+
+.fact-value {
+  font-family: "SF Mono", "Menlo", "Monaco", "Cascadia Code", monospace;
+  font-size: 12px;
+  color: var(--clipbus-text-primary, #0f172a);
+  word-break: break-all;
+}
+
+.query-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--clipbus-text-secondary, #64748b);
+}
+
+.query-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--clipbus-border, #e2e8f0);
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 12px;
+}
+
+.query-table th {
+  background: var(--clipbus-surface-elevated, #f8fafc);
+  color: var(--clipbus-text-secondary, #64748b);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 5px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--clipbus-border, #e2e8f0);
+}
+
+.col-key {
+  width: 40%;
+}
+
+.col-value {
+  width: 60%;
+}
+
+.row-even {
+  background: var(--clipbus-surface, #ffffff);
+}
+
+.row-odd {
+  background: var(--clipbus-surface-elevated, #f8fafc);
+}
+
+.cell {
+  padding: 5px 10px;
+  font-family: "SF Mono", "Menlo", "Monaco", "Cascadia Code", monospace;
+  color: var(--clipbus-text-primary, #0f172a);
+  word-break: break-all;
+}
+
+.cell-key {
+  color: var(--clipbus-accent, #2563eb);
+  font-weight: 500;
+}
+
+.no-query {
+  padding: 10px 12px;
+  background: var(--clipbus-surface-elevated, #f8fafc);
+  border: 1px solid var(--clipbus-border, #e2e8f0);
+  border-radius: 6px;
+  color: var(--clipbus-text-tertiary, #94a3b8);
+  font-size: 12px;
+}
+
+.empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--clipbus-text-tertiary, #94a3b8);
+  font-size: 13px;
+}
+</style>

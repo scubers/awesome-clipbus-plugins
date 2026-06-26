@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.csv",
+    "title": "CSV Table",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": ["setAttachment"],
+  "detectors": [
+    {
+      "id": "csv-detector",
+      "title": "CSV Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.csv.table"]
+    }
+  ],
+  "attachmentRenderers": [
+    {
+      "id": "csv-table",
+      "title": "CSV Table",
+      "attachmentType": "plugin.csv.table",
+      "height": "auto",
+      "uiEntry": "renderers/csv-table/index.html"
+    }
+  ],
+  "actions": [
+    {
+      "id": "csv-copy",
+      "title": "Copy as Markdown Table",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["csv", "table", "表格", "markdown"]
+    }
+  ]
+}

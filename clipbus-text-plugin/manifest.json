@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.text",
+    "title": "Text Tools",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": [],
+  "detectors": [],
+  "attachmentRenderers": [],
+  "actions": [
+    {
+      "id": "text-sort",
+      "title": "Sort Lines",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["sort", "排序", "lines"]
+    },
+    {
+      "id": "text-dedup",
+      "title": "Remove Duplicate Lines",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["dedup", "去重", "unique"]
+    },
+    {
+      "id": "text-trim",
+      "title": "Tidy Whitespace",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["trim", "空白", "whitespace"]
+    }
+  ]
+}
