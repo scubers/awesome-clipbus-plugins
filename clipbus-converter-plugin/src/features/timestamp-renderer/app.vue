@@ -84,7 +84,8 @@ onUnmounted(() => {
 
 <style scoped>
 .shell {
-  padding: 12px 16px;
+  /* 复用 native 卡片自身 padding，根容器不再叠加内距，避免双层内距 */
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
