@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.converter",
+    "title": "Timestamp Converter",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": ["setAttachment"],
+  "detectors": [
+    {
+      "id": "timestamp-detector",
+      "title": "Unix 时间戳识别",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.converter.timestamp"]
+    }
+  ],
+  "attachmentRenderers": [
+    {
+      "id": "timestamp-renderer",
+      "title": "Unix 时间戳转换",
+      "attachmentType": "plugin.converter.timestamp",
+      "height": { "min": 140, "max": 300 },
+      "uiEntry": "renderers/timestamp-renderer/index.html"
+    }
+  ],
+  "actions": [
+    {
+      "id": "timestamp-copy",
+      "title": "复制 ISO 8601 时间",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["timestamp", "unix", "time", "时间戳"]
+    }
+  ]
+}

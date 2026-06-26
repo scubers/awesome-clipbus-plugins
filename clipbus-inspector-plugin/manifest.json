@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.inspector",
+    "title": "Text Stats & Hash",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": ["setAttachment"],
+  "detectors": [
+    {
+      "id": "text-stats-detector",
+      "title": "文本统计识别",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.inspector.text-stats"]
+    }
+  ],
+  "attachmentRenderers": [
+    {
+      "id": "text-stats-renderer",
+      "title": "文本统计",
+      "attachmentType": "plugin.inspector.text-stats",
+      "height": { "min": 160, "max": 360 },
+      "uiEntry": "renderers/text-stats-renderer/index.html"
+    }
+  ],
+  "actions": []
+}

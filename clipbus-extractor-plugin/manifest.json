@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.extractor",
+    "title": "Link & Contact Extractor",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": ["setAttachment"],
+  "detectors": [
+    {
+      "id": "entities-detector",
+      "title": "链接/邮箱/IP 识别",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.extractor.entities"]
+    }
+  ],
+  "attachmentRenderers": [
+    {
+      "id": "entities-renderer",
+      "title": "提取结果",
+      "attachmentType": "plugin.extractor.entities",
+      "height": { "min": 140, "max": 420 },
+      "uiEntry": "renderers/entities-renderer/index.html"
+    }
+  ],
+  "actions": [
+    {
+      "id": "entities-copy",
+      "title": "提取并复制链接/邮箱/IP",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["extract", "url", "email", "ip", "提取"]
+    }
+  ]
+}
