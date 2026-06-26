@@ -37,6 +37,7 @@
 - `scripts/build-ui.mjs`：扫 `src/features/*`，目录名即 id，**读 manifest** 判断它属 renderers 还是 actions，输出到 `dist/ui/<kind>/<id>/`。无前缀、无 overrides。
 - `scripts/verify-build.mjs`：**读 manifest** 推导期望产物——`dist/plugin.cjs` 含每个能力 id 字符串；每个 UI 能力的 `dist/ui/<kind>/<id>/{index.html,js,css}` 齐全且 HTML 引用页内相对资源。
 - detector / auto-run action **无 UI**：纯运行时代码，可与相关 renderer 同目录或单放，不需要 main.ts/index.html。
+- **`payload.ts` 必须 UI 安全**：它被 `app.vue`（浏览器）与 runtime 同时 import，**不能 `import … from "node:*"`**（`node:crypto`/`fs` 等）——Vite 打 UI 包时 Rollup 解析不了会 `MISSING_EXPORT`，`build:ui` 直接失败。需 Node API 算 payload 时，拆出 runtime-only 的 `builder.ts` 承载（`create*Payload`/`build*Artifact` + Node import），`payload.ts` 只留类型 + `decode*Payload`。详见 authoring-guide 第 2 节。
 
 ## 接线不变量
 

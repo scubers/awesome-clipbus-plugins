@@ -110,6 +110,30 @@ export function buildXArtifact(input: unknown): PluginDetectorArtifact | null {
 
 复用 `src/shared/display.ts` 的 `mapContentKind / buildContentDisplay / buildItemDisplay / buildSearchText` 处理三种 kind 的展示，别重造。
 
+### 2.1 payload 含 Node-only API：必须拆「UI 安全层 + runtime-only builder」
+
+`payload.ts` 会被**两侧** import：runtime 的 `detector.ts`/`renderer.ts`，**以及浏览器 UI 的 `app.vue`**。所以 **`payload.ts` 里严禁出现 `import … from "node:*"`**（`node:crypto`、`fs`、`node:path`…）——Vite 打 UI 包时 Rollup 解析不到这些模块，`build:ui` 直接 `MISSING_EXPORT` 失败。
+
+需要 Node API 算 payload（哈希、读文件等）时，拆成两个文件：
+
+- **`payload.ts` —— UI 安全**：只放 payload 接口 + `decode*Payload()`（纯 JSON 解析，零 Node import）。`app.vue` 与 `renderer.ts` 都从这里 import。
+- **`builder.ts` —— runtime 专用**：`create*Payload()` + `build*Artifact()`，把 `node:crypto` 等 import 隔离在此。只被 `detector.ts` / `action.ts` 与冒烟测试 import，**绝不被 `app.vue` import**。
+
+```ts
+// builder.ts（runtime-only；node:* import 只出现在这里）
+import { createHash } from "node:crypto";
+import type { PluginDetectorArtifact } from "@clipbus/plugin-sdk/runtime";
+import type { XPayload } from "./payload.ts";          // 只借类型，UI 安全
+export function createXPayload(input: unknown): XPayload | null { /* …用 createHash 算… */ }
+export function buildXArtifact(input: unknown): PluginDetectorArtifact | null { /* …复用上面… */ }
+```
+
+```ts
+// detector.ts / 测试 / plugin.ts 链路：从 builder.ts 取 create/build；renderer.ts / app.vue：从 payload.ts 取 decode
+```
+
+> **判别标准是「有没有 `import … from "node:*"` 语句」，不是「有没有用到 Node 全局」**。纯 `Buffer`（全局，无 import，如 `clipbus-decoder` 的 `Buffer.from(s, "base64")` 留在 `payload.ts` 内联）不触发 Rollup 解析、UI 也不调用到那条分支，所以无需拆；真正会炸 UI 构建的是 `node:*` 模块的 **import 语句**。完整实例见 `clipbus-inspector-plugin`（文本统计 + MD5/SHA-1/SHA-256，`payload.ts` UI 安全 / `builder.ts` 持有 `node:crypto`）。
+
 ## 3. detector
 
 ```ts
@@ -331,4 +355,4 @@ draft/auto-run：断言 `runAutoAction`/`resolveSession` 返回预期 `resultKin
 
 ## 13. 验证闭环
 
-插件目录内：`npm install` → 读 `node_modules/@clipbus/plugin-sdk/API.md` 校准签名 → `npm run verify`，**修到全绿**。报错就按 systematic-debugging 找根因：常见是三处 id 没对齐、manifest height 与 autoFit 不一致、UI 裸 hex 被测试拦、payload decode 没容错、相对 `.ts` import 漏写 `.ts` 扩展名（Node require 时 `ERR_MODULE_NOT_FOUND`）。
+插件目录内：`npm install` → 读 `node_modules/@clipbus/plugin-sdk/API.md` 校准签名 → `npm run verify`，**修到全绿**。报错就按 systematic-debugging 找根因：常见是三处 id 没对齐、manifest height 与 autoFit 不一致、UI 裸 hex 被测试拦、payload decode 没容错、相对 `.ts` import 漏写 `.ts` 扩展名（Node require 时 `ERR_MODULE_NOT_FOUND`）、`payload.ts` 里 `import … from "node:*"` 污染 UI 构建（`build:ui` 阶段 Rollup `MISSING_EXPORT`，须按第 2.1 节拆 `builder.ts`）。

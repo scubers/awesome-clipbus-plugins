@@ -91,6 +91,7 @@ description: >-
 - **能力签名以 API.md 为准**；不改 `node_modules/@clipbus/plugin-sdk/` 内 SDK 源码。
 - UI 禁裸 hex，一律 `var(--clipbus-*, 回退)`。
 - **`.ts` 扩展名**：运行时 `.ts` 文件间相对 import 带 `.ts`（冒烟测试用 Node 直接 require，不会自动补扩展名）；`.vue` 文件内可不带。
+- **`payload.ts` 必须 UI 安全**：它被 `app.vue` 与 runtime 两侧 import，**严禁出现 `import … from "node:*"`**（`node:crypto`/`fs` 等）——否则 `build:ui` 时 Rollup 报 `MISSING_EXPORT`。需 Node API 算 payload（哈希等）就拆出 runtime-only 的 `builder.ts` 承载，`payload.ts` 只留类型 + `decode*Payload`。详见 authoring-guide 第 2 节。
 
 ## 两种模式速记
 
