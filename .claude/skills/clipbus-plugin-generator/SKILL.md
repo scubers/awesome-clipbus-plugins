@@ -1,0 +1,109 @@
+---
+name: clipbus-plugin-generator
+description: >-
+  在本剪贴板插件合集仓库里生成一个真实可用的新 Clipbus 插件（参考 template-plugin
+  与已有插件、避开重复、同类合并/新类另起、目录名 clipbus-{topic}-plugin、跑到
+  npm run verify 全绿）。只要用户想新建/生成/扩展/再来一个剪贴板插件——哪怕只是
+  模糊地说"做个解码插件""再来一个插件""generate a clipbus plugin""扩展一下功能"，
+  或点名某个 clipbus-*-plugin——就用这个 skill。涉及在本合集新增能力时优先用它。
+---
+
+# Clipbus 插件生成器
+
+在这个**剪贴板插件合集**仓库里，参考样板 `template-plugin/` 与已有插件，生成一个**功能实用、开箱即用**的新插件，并修到 `npm run verify` 全绿。选题优先级：**功能实用 > 视觉呈现 > 整活/情绪价值**——目标是实用，不是演示。
+
+完整设计见同目录 `DESIGN.md`。本文件是执行手册。
+
+## 何时用 / 何时不用
+
+- **用**：用户想在本仓库新建/生成/扩展剪贴板插件，或给了选题让你实现，或说"自动来一个"。
+- **不用**：用户只是想读懂/调试某个已有插件的代码（那是普通编码任务）；或当前不在这个合集仓库里。
+
+## 前置：确认环境
+
+1. 确认在合集仓库根：存在 `template-plugin/` 目录。不在则停下并说明。
+2. 本 skill 的脚本路径（相对本 skill 目录）：`scripts/survey.mjs`、`scripts/scaffold.mjs`。深入资料在 `references/`。
+
+## 工作流（七阶段）
+
+把下面每个阶段建成一个 todo，按序推进。
+
+### 0 · 解析意图
+
+判断两件事：
+- **模式**：用户是否要求"全自主"（出现"自动选题/直接生成/全自主/随便来一个"等）。否则走**默认模式**（提选题等确认）。
+- **选题**：用户是否已给定选题/功能。给定就直接用，跳过阶段 2 的提案部分、只做归属判断。
+
+### 1 · 勘察现状
+
+运行 `node <skill>/scripts/survey.mjs <repoRoot>`，解析它输出的 JSON，掌握：已有 `clipbus-*-plugin`、各自**类别**与功能点、**已占用的 plugin.id / attachmentType / 目录名**。这是避重与命名防撞的依据。必要时再读相关插件的 `README.md` 看它已覆盖什么。
+
+### 2 · 选题与归属
+
+先**归类**：新选题属于哪个功能类别（参考 `references/topic-ideas.md` 的类别词表）。再定**归属**：
+- 命中已有 `clipbus-{类别}-plugin` → **加 feature 进去**（扩展）。
+- 属于新类别 → **新建** `clipbus-{topic}-plugin`。
+
+然后：
+- **默认模式**：提 2-4 个候选选题，每个给「一句卖点 / 定位（实用·视觉·整活）/ 归属（新建 X 或加进 Y）/ 计划实现的扩展点」。用 AskUserQuestion 让用户选定，再继续。
+- **全自主模式**：按 实用>视觉>整活 自己挑一个**未被占用**的选题 + 归属，直接继续，不停顿。先输出一行「已占用：<现有类别>；选定：<topic>，理由：<一句>」，便于回溯选题依据。
+
+避重铁律：不要重复已有插件已覆盖的功能；plugin.id / attachmentType / 目录名都不能和勘察结果撞。
+
+### 3 · 落地基线
+
+- **新建**：`node <skill>/scripts/scaffold.mjs <topic> --title "<人类标题>" --repo <repoRoot>`。它从 template 派生一个**干净通用基线**（去掉演示代码，`build-ui.mjs`/`verify-build.mjs` 已改为读 manifest 自动适配）。产物是"能 build 的空骨架"。
+- **扩展已有**：进入目标插件目录，准备在 `src/features/` 下新增 feature；不要跑 scaffold。
+
+### 4 · 实现能力（实用优先）
+
+读 `references/authoring-guide.md` 跟着写。要点：
+- 按选题**只实现需要的扩展点**；**detector 必配 renderer**（纯检测不展示无意义）；action 类按需；draft 表单仅当需要用户输入。
+- 关键约定 **feature 目录名 === manifest 能力 id**（UI 承载能力即 renderer / draft action 各自一个同名目录，含 `main.ts`+`index.html`）。
+- 每个 feature：`payload.ts`（单一真相源）→ detector/renderer/action 运行时 → `app.vue`（renderer/draft 才有）→ 一个 preview scenario。
+- 同步三处：`manifest.json` 能力条目、`src/plugin.ts` 的 `setup()` 注册、目录名。
+- 视觉只用 `var(--clipbus-*, 回退)` 主题 token，适配明暗，版式干净（详见 authoring-guide 的视觉规范）。
+- 写**精简冒烟测试**（范式见 authoring-guide）。
+
+### 5 · 验证闭环
+
+在目标插件目录：
+1. `npm install`（拉 `@clipbus/plugin-sdk`）。
+2. **先读 `node_modules/@clipbus/plugin-sdk/API.md`** 校准能力签名——它是 capability 真相源，本仓库示例可能滞后；冲突以 API.md 为准。也可读 `node_modules/@clipbus/plugin-sdk/docs/README.md` 文档地图。
+3. `npm run verify`，**修到全绿**（typecheck/lint/build/verify-build/冒烟测试）。扩展场景是整插件重验。
+
+遇到失败别绕过：用 systematic-debugging 的思路定位根因再改。
+
+### 6 · 更新目录索引
+
+- 更新目标插件 `README.md`：写清它**覆盖了哪些功能**（feature 清单）。
+- 更新根 `PLUGINS.md`：按插件维度加/改一条（简述 + 链接到该插件 README）。不存在则创建。
+
+### 7 · 汇报
+
+给出：插件目录、新增/变更的能力、验证结果（命令 + 结论）、索引更新情况。
+
+## 铁律（接线不变量，违反必出错）
+
+- **三处 id 对齐**：manifest 能力 `id` === `src/plugin.ts` 注册 key === `src/features/<dir>` 目录名（也即 UI 产物目录）。
+- **detector ⇒ renderer**：声明 detector 必有 renderer 展示其 artifact。
+- **输入仅三种 kind**：`text` / `image` / `path_reference`（snake_case）；content envelope 扁平。
+- **能力签名以 API.md 为准**；不改 `node_modules/@clipbus/plugin-sdk/` 内 SDK 源码。
+- UI 禁裸 hex，一律 `var(--clipbus-*, 回退)`。
+- **`.ts` 扩展名**：运行时 `.ts` 文件间相对 import 带 `.ts`（冒烟测试用 Node 直接 require，不会自动补扩展名）；`.vue` 文件内可不带。
+
+## 两种模式速记
+
+| | 默认模式 | 全自主模式 |
+|---|---|---|
+| 选题 | 提案 → 用户选 | 自动挑未占用选题 |
+| 停顿 | 选题处等确认 | 全程不停 |
+| 适用 | 想参与决策 | "再来一个"批量产出 |
+
+两种模式的**实现/验证/索引**阶段完全一致，只在阶段 2 是否停顿不同。
+
+## 参考文件
+
+- `references/architecture.md` — 两侧架构、四扩展点、接线不变量、通用约定速查（动手前先读）。
+- `references/authoring-guide.md` — 怎么写真实 detector/renderer/action、payload 范式、视觉规范、冒烟测试范式（阶段 4 跟着做）。
+- `references/topic-ideas.md` — 实用选题点子库 + 类别词表（阶段 2 用）。
