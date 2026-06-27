@@ -24,3 +24,4 @@
 | [clipbus-sql-plugin](./clipbus-sql-plugin/README.md) | 识别 SQL 语句，关键字大写并按子句换行重排，monospace 卡片展示并一键复制（仅做可读性重排）|
 | [clipbus-xml-plugin](./clipbus-xml-plugin/README.md) | 识别 XML / HTML 片段，按层缩进美化并统计元素 / 属性 / 最大深度，一键复制格式化结果 |
 | [clipbus-case-plugin](./clipbus-case-plugin/README.md) | 命名风格转换 draft 工具：把剪贴板文本实时转为 camel / Pascal / snake / CONSTANT / kebab / Title / Sentence / dot 共 8 种，逐条复制 |
+| [clipbus-regex-plugin](./clipbus-regex-plugin/README.md) | 正则测试 draft 工具：输入 pattern + flags + 测试文本，实时显示匹配数、匹配项与捕获组，一键复制匹配 |

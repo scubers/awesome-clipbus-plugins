@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.regex",
+    "title": "Regex Tester",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": [],
+  "detectors": [],
+  "attachmentRenderers": [],
+  "actions": [
+    {
+      "id": "regex-tool",
+      "title": "Regex Tester",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "draft",
+      "uiEntry": "actions/regex-tool/index.html",
+      "keywords": ["regex", "regexp", "正则", "匹配", "pattern"]
+    }
+  ]
+}

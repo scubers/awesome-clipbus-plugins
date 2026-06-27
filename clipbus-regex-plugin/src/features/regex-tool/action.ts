@@ -1,0 +1,34 @@
+// action.ts — runtime-only draft action handler for regex-tool.
+// This file is never imported by app.vue (UI side).
+
+import { actionResult } from "@clipbus/plugin-sdk/runtime";
+import type {
+  PluginAutoRunActionHandler,
+  PluginActionOperationResult,
+  PluginAutoRunActionInput,
+} from "@clipbus/plugin-sdk/runtime";
+import { INITIAL_DRAFT } from "./payload.ts";
+
+export function createRegexAction(): PluginAutoRunActionHandler {
+  return {
+    async resolveSession(input, _ctx) {
+      // Pre-fill test text from clipboard content when available
+      const content = input?.content;
+      const text = content?.kind === "text" ? content.text : "";
+      return {
+        displayName: "Regex Tester",
+        buttons: [{ id: "submit", title: "复制匹配", isEnabled: true }],
+        defaultButtonID: "submit",
+        initialDraft: {
+          ...INITIAL_DRAFT,
+          text,
+        } as unknown as Record<string, unknown>,
+      };
+    },
+    // Draft-lifecycle actions are driven by the UI; runAutoAction is a guarded stub
+    // that satisfies the PluginAutoRunActionHandler interface.
+    async runAutoAction(_input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
+      return actionResult.none({ userMessage: "draft 由 UI 驱动" });
+    },
+  };
+}
