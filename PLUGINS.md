@@ -6,7 +6,7 @@
 
 | 插件 | 描述 |
 |------|------|
-| [clipbus-decoder-plugin](./clipbus-decoder-plugin/README.md) | 识别 Base64 等编码字符串，展示解码结果，支持一键复制 |
+| [clipbus-decoder-plugin](./clipbus-decoder-plugin/README.md) | 编解码工具：Base64 识别解码、JWT 解析（header/payload + 过期状态）、多编解码 draft（URL / HTML / Base64 / Unicode / JSON 双向）|
 | [clipbus-formatter-plugin](./clipbus-formatter-plugin/README.md) | 识别 JSON 对象/数组，展示格式化（美化缩进）预览，支持一键复制格式化结果 |
 | [clipbus-converter-plugin](./clipbus-converter-plugin/README.md) | 识别剪贴板中的 Unix 时间戳（10 位秒 / 13 位毫秒），展示本地时间、ISO 8601、UTC、星期与相对时间，一键复制 ISO 8601 |
 | [clipbus-extractor-plugin](./clipbus-extractor-plugin/README.md) | 从大段文本中提取并去重所有 URL / Email / IPv4，分组展示并一键复制全部（命中 ≥ 2 个才触发）|
@@ -16,7 +16,6 @@
 | [clipbus-csv-plugin](./clipbus-csv-plugin/README.md) | 识别 CSV/TSV（逗号/制表符/分号分隔，支持引号转义），渲染为表格预览，一键复制为 Markdown 表格 |
 | [clipbus-text-plugin](./clipbus-text-plugin/README.md) | 文本行处理工具——排序行 / 去重行 / 整理空白，三个一键 auto-run 动作 |
 | [clipbus-generator-plugin](./clipbus-generator-plugin/README.md) | 生成 UUID v4 或强随机密码（可配置长度 / 大小写 / 数字 / 符号 / 数量），draft 表单实时预览并复制（Web Crypto） |
-| [clipbus-jwt-plugin](./clipbus-jwt-plugin/README.md) | 识别 JWT，解码 header / payload，展示 alg/typ、标准 claims 与过期状态，一键复制 payload（仅本地解码、不校验签名）|
 | [clipbus-markdown-plugin](./clipbus-markdown-plugin/README.md) | 识别 Markdown 文本（≥2 种语法信号才触发），本地安全渲染为格式化 HTML 预览卡片（HTML 转义 + 链接协议白名单，不执行脚本）|
 | [clipbus-diff-plugin](./clipbus-diff-plugin/README.md) | 识别 unified diff，渲染带 `+N −M · K files` 统计条与逐行增删着色的 Diff 查看器 |
 | [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | 识别 5 段 cron 表达式，逐字段中文释义表 + 一句执行概述（带护栏避免误判普通数字行）|
@@ -25,4 +24,3 @@
 | [clipbus-xml-plugin](./clipbus-xml-plugin/README.md) | 识别 XML / HTML 片段，按层缩进美化并统计元素 / 属性 / 最大深度，一键复制格式化结果 |
 | [clipbus-case-plugin](./clipbus-case-plugin/README.md) | 命名风格转换 draft 工具：把剪贴板文本实时转为 camel / Pascal / snake / CONSTANT / kebab / Title / Sentence / dot 共 8 种，逐条复制 |
 | [clipbus-regex-plugin](./clipbus-regex-plugin/README.md) | 正则测试 draft 工具：输入 pattern + flags + 测试文本，实时显示匹配数、匹配项与捕获组，一键复制匹配 |
-| [clipbus-escape-plugin](./clipbus-escape-plugin/README.md) | 编解码 draft 工具：URL / HTML 实体 / Base64（UTF-8 安全）/ Unicode / JSON 字符串 五种，实时双向、逐项复制 |

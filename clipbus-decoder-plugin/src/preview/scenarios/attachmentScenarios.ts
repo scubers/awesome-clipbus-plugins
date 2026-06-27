@@ -54,4 +54,31 @@ export const attachmentScenarios: AttachmentScenario[] = [
       },
     },
   },
+  {
+    id: "jwt-renderer-canonical",
+    label: "JWT: HS256 canonical token",
+    rendererComponent: "compact",
+    searchTerms: ["jwt", "token"],
+    accentHex: "#7C3AED",
+    bootstrap: {
+      attachment: {
+        payloadJson: JSON.stringify({
+          kind: "jwt_preview",
+          version: 1,
+          alg: "HS256",
+          typ: "JWT",
+          headerPretty: '{\n  "alg": "HS256",\n  "typ": "JWT"\n}',
+          payloadPretty: '{\n  "sub": "1234567890",\n  "name": "John Doe",\n  "iat": 1516239022\n}',
+          claimFacts: [
+            { label: "sub", value: "1234567890" },
+            { label: "name", value: "John Doe" },
+          ],
+          expIso: null,
+          isExpired: null,
+          relativeLabel: null,
+          signaturePresent: true,
+        }),
+      },
+    },
+  },
 ];

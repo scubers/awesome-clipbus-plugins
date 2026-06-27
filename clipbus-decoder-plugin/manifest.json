@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "plugin": {
     "id": "plugin.decoder",
-    "title": "Base64 Decoder",
+    "title": "Decode & Encode",
     "version": "0.1.0"
   },
   "install": {
@@ -20,6 +20,12 @@
       "title": "Base64 识别",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.decoder.base64"]
+    },
+    {
+      "id": "jwt-detector",
+      "title": "JWT 识别",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.jwt.token"]
     }
   ],
   "attachmentRenderers": [
@@ -29,6 +35,13 @@
       "attachmentType": "plugin.decoder.base64",
       "height": { "min": 120, "max": 320 },
       "uiEntry": "renderers/base64-renderer/index.html"
+    },
+    {
+      "id": "jwt-renderer",
+      "title": "JWT 解析",
+      "attachmentType": "plugin.jwt.token",
+      "height": { "min": 140, "max": 440 },
+      "uiEntry": "renderers/jwt-renderer/index.html"
     }
   ],
   "actions": [
@@ -38,6 +51,21 @@
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
       "keywords": ["base64", "decode", "解码", "copy"]
+    },
+    {
+      "id": "jwt-copy",
+      "title": "复制 JWT Payload",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["jwt", "token", "payload", "解码", "copy"]
+    },
+    {
+      "id": "escape-tool",
+      "title": "Escape & Encode",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "draft",
+      "uiEntry": "actions/escape-tool/index.html",
+      "keywords": ["escape", "encode", "decode", "url", "html", "base64", "unicode", "json", "转义"]
     }
   ]
 }

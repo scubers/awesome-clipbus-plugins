@@ -1,10 +1,10 @@
-# clipbus-decoder-plugin
+# 编解码工具
 
-识别剪贴板里的编码字符串，展示解码结果，支持一键复制。
+识别并解码剪贴板里的编码字符串；同时提供多格式转义 draft 工具。
 
 ## 功能
 
-### Base64 解码
+### Base64 识别解码（base64-*）
 
 | 能力 | id | 描述 |
 |---|---|---|
@@ -12,33 +12,19 @@
 | renderer | `base64-renderer` | 卡片展示：编码类型徽章、字符数对比（原 → 解码）、解码文本，"复制解码结果"按钮 |
 | action | `base64-copy` | 一键将解码结果写入剪贴板（auto-run） |
 
-识别启发式：含 `+`/`/`/`=` 或 `-`/`_` 等 Base64 特征字符，或纯字母数字且长度 ≥ 24 整除 4；解码后内容须非空。
+### JWT 解析（jwt-*，仅本地解码不验签）
 
-## 项目结构
+| 能力 | id | 描述 |
+|---|---|---|
+| detector | `jwt-detector` | 识别三段式 `header.payload.signature` JWT 字符串 |
+| renderer | `jwt-renderer` | 卡片展示：算法类型、header/payload 格式化 JSON、标准 claim 摘要、过期状态 |
+| action | `jwt-copy` | 一键将 JWT payload 写入剪贴板（auto-run） |
 
-```
-clipbus-decoder-plugin/
-├── manifest.json
-├── src/
-│   ├── features/base64-renderer/
-│   │   ├── payload.ts      # 数据形状、create/decode/buildArtifact
-│   │   ├── detector.ts     # 检测逻辑
-│   │   ├── renderer.ts     # 运行时元信息
-│   │   ├── action.ts       # 一键复制 action
-│   │   ├── app.vue         # 解码卡片 UI
-│   │   ├── main.ts         # Vite 入口
-│   │   └── index.html      # 生产外壳
-│   ├── shared/             # 共享工具
-│   └── plugin.ts           # definePlugin 入口
-└── tests/runtime/base64.test.cjs
-```
+### 多编解码 draft 工具（escape-tool）
 
-## 未来可加
-
-- URL 百分号解码（`%xx`）
-- JWT 解析（header + payload 展开）
-- Hex ↔ 文本互转
-- Unicode `\u` 转义还原
+| 能力 | id | 描述 |
+|---|---|---|
+| action | `escape-tool` | Draft 表单：支持 URL、HTML、Base64、Unicode、JSON 五种模式互转（draft lifecycle） |
 
 ## 开发
 

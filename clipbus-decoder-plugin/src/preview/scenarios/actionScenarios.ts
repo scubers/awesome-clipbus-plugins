@@ -8,4 +8,12 @@ export interface ActionScenario {
   bootstrap: Record<string, unknown>;
 }
 
-export const actionScenarios: ActionScenario[] = [];
+export const actionScenarios: ActionScenario[] = [
+  {
+    id: "escape-tool-url",
+    label: "Escape Tool: URL encode",
+    bootstrap: {
+      initialDraft: { mode: "url", input: "hello world & more" },
+    },
+  },
+];
