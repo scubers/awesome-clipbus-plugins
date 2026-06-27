@@ -23,7 +23,7 @@
 | **auto-run action** | `runAutoAction(input,ctx)` 返回 `actionResult.text/image/none` | 无 | 一键处理（如复制转换结果）。 |
 | **draft action** | `resolveSession(input,ctx)` 给初始 draft + buttons | `app.vue` 表单，提交走 `clipbus.action.complete()` | 需要用户输入/选择后再产出。 |
 
-> 纯 detector（不配 renderer）没意义——识别了却不展示。auto-run / draft 按选题是否需要"动作"来加。
+> **扩展点按需，别凑三件套。** 触发成本递增：detector 复制时**自动**挂附件（零操作）；renderer 选中时**自动**展示，可内置**一键**复制按钮；auto-run action 要用户 **cmd+k 打开面板→选中**才运行（比一键复制多好几步）。推论：① 纯 detector（不配 renderer）没意义——识别了却不展示；② **renderer 已展示某值且有一键复制按钮时，禁止再加返回同一值的 auto-run copy-action**（纯冗余，用户永远用更快的 renderer 按钮）。auto-run action 只在能提供 renderer 给不了的东西时才加：要么无 detector/renderer（action 是唯一入口，如纯文本 sort/dedup/trim），要么产出 renderer 未覆盖的结果。draft 仅当需要用户输入/选择。
 
 ## 输入：仅三种 kind
 

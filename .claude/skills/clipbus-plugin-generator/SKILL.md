@@ -60,7 +60,7 @@ description: >-
 ### 4 · 实现能力（实用优先）
 
 读 `references/authoring-guide.md` 跟着写。要点：
-- 按选题**只实现需要的扩展点**；**detector 必配 renderer**（纯检测不展示无意义）；action 类按需；draft 表单仅当需要用户输入。
+- 按选题**只实现需要的扩展点,别凑三件套**；**detector 必配 renderer**（纯检测不展示无意义）；**auto-run action 仅当能提供 renderer 给不了的东西时才加**——renderer 已展示某值且有一键复制按钮时，**禁止**再加返回同一值的 copy-action（纯冗余，详见铁律）；draft 表单仅当需要用户输入。
 - 关键约定 **feature 目录名 === manifest 能力 id**（UI 承载能力即 renderer / draft action 各自一个同名目录，含 `main.ts`+`index.html`）。
 - 每个 feature：`payload.ts`（单一真相源）→ detector/renderer/action 运行时 → `app.vue`（renderer/draft 才有）→ 一个 preview scenario。
 - 同步三处：`manifest.json` 能力条目、`src/plugin.ts` 的 `setup()` 注册、目录名。
@@ -90,6 +90,7 @@ description: >-
 
 - **三处 id 对齐**：manifest 能力 `id` === `src/plugin.ts` 注册 key === `src/features/<dir>` 目录名（也即 UI 产物目录）。
 - **detector ⇒ renderer**：声明 detector 必有 renderer 展示其 artifact。
+- **扩展点按需，禁止冗余 copy-action**：三扩展点触发成本不同——detector 复制时**自动**挂附件；renderer 选中时**自动**展示、可内置**一键**复制按钮；auto-run action 要用户 **cmd+k 打开面板再选中**才运行（比一键复制多好几步）。故**当 detector+renderer 已展示某值并提供一键复制时，严禁再加一个 `runAutoAction` 返回同一个值的 auto-run action**——用户永远走更快的 renderer 按钮，该 action 是纯冗余。auto-run action **只在能提供 renderer 给不了的东西时**才合理：要么插件无 detector/renderer（如纯文本变换 `clipbus-text-plugin` 的 sort/dedup/trim，action 是唯一入口），要么产出 renderer 未覆盖的另一种结果。展示型 feature（格式化/解码/转换/解析）通常**只需 detector + renderer**，复制做成 renderer 按钮即可。
 - **attachmentType 必须在插件命名空间内**：每个 detector/renderer 的 `attachmentType` 必须以 `plugin.id + "."` 为前缀（即 `plugin.<本插件>.<feat>`）。**宿主在加载期强制校验**，越界直接拒载并报 `Detector attachment type is outside plugin namespace: <detector> -> <type>`——而 `npm run verify` **不校验此项**（本地构建/测试全绿，仍可能在 Clipbus 里加载失败，是隐蔽坑）。**合并/扩展插件时最易踩**：把某 feature 并入 `clipbus-<宿主>-plugin` 时，必须把它的 attachmentType 从旧的 `plugin.<原topic>.*` 改成宿主命名空间 `plugin.<宿主>.*`，且 manifest 的 detector `attachmentTypes[]` 与 renderer `attachmentType`、`payload.ts` 的 `ATTACHMENT_TYPE` 常量、测试与 scenario 里的全部引用（含测试 mock 的 `owner`）**同步改**。
 - **输入仅三种 kind**：`text` / `image` / `path_reference`（snake_case）；content envelope 扁平。
 - **能力签名以 API.md 为准**；不改 `node_modules/@clipbus/plugin-sdk/` 内 SDK 源码。

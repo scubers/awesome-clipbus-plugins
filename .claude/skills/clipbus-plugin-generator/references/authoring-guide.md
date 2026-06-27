@@ -217,6 +217,8 @@ onUnmounted(() => { unsub?.(); });
 
 ## 6. auto-run action
 
+> **先判断要不要加（按需！）**：auto-run action 要用户 **cmd+k 打开 action 面板再选中**才运行，比 renderer 的一键复制按钮多好几步。所以**当 detector+renderer 已展示某值并提供一键复制按钮时，不要再加一个 `runAutoAction` 返回同一个值的 copy-action——纯冗余**（用户永远走更快的 renderer 按钮）。auto-run action 只在能提供 renderer 给不了的东西时才合理：① 插件**无 detector/renderer**，action 是唯一入口（如 `clipbus-text-plugin` 的 sort/dedup/trim 纯文本变换）；② 产出 renderer **未覆盖**的另一种结果。展示型 feature（格式化/解码/转换/解析）通常**只配 detector + renderer，把复制做成 renderer 按钮**即可。
+
 无 UI，处理后返回结果上下文。`resolveSession` 是 R13 后接口要求的桩。
 
 ```ts

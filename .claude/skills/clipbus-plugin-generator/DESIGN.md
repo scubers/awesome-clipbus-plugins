@@ -16,7 +16,7 @@
 | 1 | 自主度 | **双模式带开关**：默认"先提选题再生成"（含归属决策，等用户确认）；一句话切"全自主一条龙"。用户给了选题则直接用。 |
 | 2 | 完成度 | **完整实现 + 必须构建通过**。产出真实逻辑，修到验证全绿才算完成。 |
 | 3 | 避重/归属 | **按功能类别**。每个插件 README 记录自身功能；根目录 `README.md`（英文）+ `README_zh.md`（中文）做索引。skill 开跑先读、收尾**中英双写**更新。 |
-| 4 | 能力组合 | **按需覆盖**，不强行铺满。**detector 必配 renderer**（纯检测不展示无意义）；action 按选题需要才加；draft 仅当需要用户输入。 |
+| 4 | 能力组合 | **按需覆盖**，不强行铺满。**detector 必配 renderer**（纯检测不展示无意义）；**auto-run action 仅当能提供 renderer 给不了的东西时才加**（renderer 已展示+一键复制某值时，禁止再加返回同值的冗余 copy-action）；draft 仅当需要用户输入。 |
 | 5 | 验证门槛 | **`npm run verify` 全绿**（typecheck+lint+build+verify-build + 精简冒烟测试）。模板里写死 id 的机关与测试改写成匹配新插件。 |
 | 6 | skill 结构 | **工作流 + 精简脚本 + 通用脚手架**（方案 A）。 |
 | 7 | 落地位置 | 项目内 `.claude/skills/clipbus-plugin-generator/`，随仓库版本化。 |
