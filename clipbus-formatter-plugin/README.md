@@ -24,6 +24,11 @@ Clipbus plugin that detects JSON, XML, SQL, and CSV data on the clipboard, auto-
 - **CSV Detector** (`csv-detector`): Identifies comma-separated values with consistent column counts and attaches `plugin.formatter.csv`.
 - **CSV Table** (`csv-table`): Renders the CSV data as a styled table with header row highlighting. Height adapts automatically to fit the content.
 
+### Query String (`query-*`)
+
+- **Query String Detector** (`query-detector`): Identifies bare URL query strings / form-encoded pairs (requires `>=2` `key=value` pairs, no `://`) and attaches `plugin.formatter.query`.
+- **Query String** (`query-table`): Renders decoded key/value pairs as a two-column table with a "Copy as JSON" button. Flags duplicate keys inline.
+
 ## Development
 
 ```sh

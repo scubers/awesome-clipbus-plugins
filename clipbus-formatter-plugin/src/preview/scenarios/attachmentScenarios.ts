@@ -63,6 +63,23 @@ const csvTablePayload = JSON.stringify({
   },
 });
 
+const queryTablePayload = JSON.stringify({
+  kind: "query_table",
+  version: 1,
+  pairs: [
+    { key: "utm_source", value: "newsletter" },
+    { key: "utm_medium", value: "email" },
+    { key: "utm_campaign", value: "spring sale" },
+  ],
+  count: 3,
+  hasDuplicateKeys: false,
+  jsonObject: JSON.stringify({
+    utm_source: "newsletter",
+    utm_medium: "email",
+    utm_campaign: "spring sale",
+  }),
+});
+
 export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "json-renderer-object",
@@ -109,6 +126,22 @@ export const attachmentScenarios: AttachmentScenario[] = [
         attachmentType: "plugin.formatter.csv",
         attachmentKey: "primary",
         payloadJson: csvTablePayload,
+      },
+    },
+  },
+  {
+    id: "query-table-basic",
+    label: "Query String",
+    rendererComponent: "expanded",
+    searchTerms: ["query", "url", "params"],
+    accentHex: "#0F766E",
+    bootstrap: {
+      attachment: {
+        historyID: "preview-query",
+        owner: "plugin.formatter",
+        attachmentType: "plugin.formatter.query",
+        attachmentKey: "primary",
+        payloadJson: queryTablePayload,
       },
     },
   },

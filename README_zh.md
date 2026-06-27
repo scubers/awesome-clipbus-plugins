@@ -12,7 +12,7 @@
 | 插件 | 描述 |
 |------|------|
 | [clipbus-decoder-plugin](./clipbus-decoder-plugin/README.md) | 编解码工具：Base64 识别解码、JWT 解析（header/payload + 过期状态）、`data:` URI 检视（媒体类型 / 编码 / 解码大小 + 文本预览）、多编解码 draft（URL / HTML / Base64 / Unicode / JSON 双向）|
-| [clipbus-formatter-plugin](./clipbus-formatter-plugin/README.md) | 格式美化：识别 JSON / XML / SQL 缩进或关键字大写，并将 CSV/TSV 渲染为表格——格式化预览一键复制 |
+| [clipbus-formatter-plugin](./clipbus-formatter-plugin/README.md) | 格式美化：识别 JSON / XML / SQL 缩进或关键字大写，将 CSV/TSV 渲染为表格，并把 URL 查询串解析为键值表——格式化预览一键复制 |
 | [clipbus-converter-plugin](./clipbus-converter-plugin/README.md) | 转换工具：Unix 时间戳↔日期（本地 / ISO / UTC / 相对）、整数进制对照（dec/hex/oct/bin + ASCII）、ISO 8601 时长拆解（人类可读分量 + 总秒数）、命名风格转换 draft（camel/snake/kebab… 共 8 种）|
 | [clipbus-extractor-plugin](./clipbus-extractor-plugin/README.md) | 提取与解析：从文本提取去重 URL / Email / IPv4，拆解单个 URL 的 scheme / host / path / query、单个 IP / CIDR 的版本 / 范围 / 网络段，经纬度坐标的 DMS 度分秒 + 地图链接，或 MAC 地址的 OUI/NIC 拆分 + 单播/多播·全局/本地位、UUID 的版本 / variant / 内嵌时间，并含正则测试 draft |
 | [clipbus-inspector-plugin](./clipbus-inspector-plugin/README.md) | 检视工具：文本字符/词/行/字节统计 + MD5/SHA-1/SHA-256 哈希；unified diff 查看（统计条 + 逐行着色）；图片详情（格式 / 尺寸 / 宽高比 / 像素数 / 大小）；以及单个字符/emoji 的 Unicode 检视（码位 / UTF-8 / UTF-16 / HTML 实体 / 类别）|
