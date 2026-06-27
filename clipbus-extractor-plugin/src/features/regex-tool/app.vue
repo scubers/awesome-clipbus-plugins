@@ -120,10 +120,10 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0;
+  /* 透明底色 + 零外距：复用 host action 容器自带的底色与内距，避免与宿主割裂 */
   padding: 0;
   height: 100%;
   min-height: 0;
-  background: var(--clipbus-surface, #ffffff);
   color: var(--clipbus-text-primary, #0f172a);
   font-size: 12px;
   overflow-y: auto;
