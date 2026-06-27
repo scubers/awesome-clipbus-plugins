@@ -19,3 +19,4 @@
 | [clipbus-jwt-plugin](./clipbus-jwt-plugin/README.md) | 识别 JWT，解码 header / payload，展示 alg/typ、标准 claims 与过期状态，一键复制 payload（仅本地解码、不校验签名）|
 | [clipbus-markdown-plugin](./clipbus-markdown-plugin/README.md) | 识别 Markdown 文本（≥2 种语法信号才触发），本地安全渲染为格式化 HTML 预览卡片（HTML 转义 + 链接协议白名单，不执行脚本）|
 | [clipbus-diff-plugin](./clipbus-diff-plugin/README.md) | 识别 unified diff，渲染带 `+N −M · K files` 统计条与逐行增删着色的 Diff 查看器 |
+| [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | 识别 5 段 cron 表达式，逐字段中文释义表 + 一句执行概述（带护栏避免误判普通数字行）|

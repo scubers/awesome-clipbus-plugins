@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.cron",
+    "title": "Cron Explainer",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": ["setAttachment"],
+  "detectors": [
+    {
+      "id": "cron-detector",
+      "title": "Cron 表达式识别",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.cron.schedule"]
+    }
+  ],
+  "attachmentRenderers": [
+    {
+      "id": "cron-renderer",
+      "title": "Cron 表达式解析",
+      "attachmentType": "plugin.cron.schedule",
+      "height": { "min": 120, "max": 380 },
+      "tintHex": "#B45309",
+      "uiEntry": "renderers/cron-renderer/index.html"
+    }
+  ],
+  "actions": []
+}
