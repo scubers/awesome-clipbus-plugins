@@ -18,6 +18,13 @@ Clipbus plugin that detects and decodes encoded strings on the clipboard. Suppor
 | detector | `jwt-detector` | Recognises three-part `header.payload.signature` JWT strings |
 | renderer | `jwt-renderer` | Card view: algorithm badge, formatted header/payload JSON, standard claim summary, and expiry status |
 
+### Data URI (`data-uri-*`)
+
+| Capability | id | Description |
+|---|---|---|
+| detector | `data-uri-detector` | Recognises RFC 2397 data URIs (`data:[mediatype][;base64],<data>`), anchored — rejects bare base64, URLs, and prose |
+| renderer | `data-uri` | Card view: media type, encoding label, decoded byte size, decoded text preview with "Copy decoded" button for text types, or an image-data note for binary types |
+
 ### Escape & Encode draft tool (`escape-tool`)
 
 | Capability | id | Description |

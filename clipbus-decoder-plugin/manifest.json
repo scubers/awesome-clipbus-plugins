@@ -26,6 +26,12 @@
       "title": "JWT Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.decoder.jwt"]
+    },
+    {
+      "id": "data-uri-detector",
+      "title": "Data URI Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.decoder.datauri"]
     }
   ],
   "attachmentRenderers": [
@@ -42,6 +48,13 @@
       "attachmentType": "plugin.decoder.jwt",
       "height": { "min": 140, "max": 440 },
       "uiEntry": "renderers/jwt-renderer/index.html"
+    },
+    {
+      "id": "data-uri",
+      "title": "Data URI",
+      "attachmentType": "plugin.decoder.datauri",
+      "height": { "min": 120, "max": 320 },
+      "uiEntry": "renderers/data-uri/index.html"
     }
   ],
   "actions": [
