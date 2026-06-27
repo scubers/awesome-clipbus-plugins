@@ -21,3 +21,4 @@
 | [clipbus-diff-plugin](./clipbus-diff-plugin/README.md) | 识别 unified diff，渲染带 `+N −M · K files` 统计条与逐行增删着色的 Diff 查看器 |
 | [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | 识别 5 段 cron 表达式，逐字段中文释义表 + 一句执行概述（带护栏避免误判普通数字行）|
 | [clipbus-radix-plugin](./clipbus-radix-plugin/README.md) | 识别整数（十进制 / 0x 十六 / 0b 二 / 0o 八），BigInt 任意精度对照四种进制 + 位数 + ASCII，逐行复制 |
+| [clipbus-sql-plugin](./clipbus-sql-plugin/README.md) | 识别 SQL 语句，关键字大写并按子句换行重排，monospace 卡片展示并一键复制（仅做可读性重排）|
