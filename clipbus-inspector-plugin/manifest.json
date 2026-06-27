@@ -26,6 +26,12 @@
       "title": "Unified Diff Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.inspector.diff"]
+    },
+    {
+      "id": "image-info-detector",
+      "title": "Image Detector",
+      "supportedInputKinds": ["image"],
+      "attachmentTypes": ["plugin.inspector.image-info"]
     }
   ],
   "attachmentRenderers": [
@@ -42,6 +48,13 @@
       "attachmentType": "plugin.inspector.diff",
       "height": { "min": 140, "max": 480 },
       "uiEntry": "renderers/diff-renderer/index.html"
+    },
+    {
+      "id": "image-info-renderer",
+      "title": "Image Details",
+      "attachmentType": "plugin.inspector.image-info",
+      "height": { "min": 160, "max": 360 },
+      "uiEntry": "renderers/image-info-renderer/index.html"
     }
   ],
   "actions": []

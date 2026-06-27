@@ -15,7 +15,7 @@
 | [clipbus-formatter-plugin](./clipbus-formatter-plugin/README.md) | 格式美化：识别 JSON / XML / SQL 缩进或关键字大写，并将 CSV/TSV 渲染为表格——格式化预览一键复制 |
 | [clipbus-converter-plugin](./clipbus-converter-plugin/README.md) | 转换工具：Unix 时间戳↔日期（本地 / ISO / UTC / 相对）、整数进制对照（dec/hex/oct/bin + ASCII）、命名风格转换 draft（camel/snake/kebab… 共 8 种）|
 | [clipbus-extractor-plugin](./clipbus-extractor-plugin/README.md) | 提取与解析：从文本提取去重 URL / Email / IPv4，拆解单个 URL 的 scheme / host / path / query 或单个 IP / CIDR 的版本 / 范围 / 网络段，并含正则测试 draft |
-| [clipbus-inspector-plugin](./clipbus-inspector-plugin/README.md) | 检视工具：文本字符/词/行/字节统计 + MD5/SHA-1/SHA-256 哈希；unified diff 查看（统计条 + 逐行着色）|
+| [clipbus-inspector-plugin](./clipbus-inspector-plugin/README.md) | 检视工具：文本字符/词/行/字节统计 + MD5/SHA-1/SHA-256 哈希；unified diff 查看（统计条 + 逐行着色）；图片详情（格式 / 尺寸 / 宽高比 / 像素数 / 大小）|
 | [clipbus-preview-plugin](./clipbus-preview-plugin/README.md) | 可视化预览：识别颜色值（HEX / RGB / HSL + CSS 名）展示色块与 WCAG 对比，并将 Markdown 安全渲染为 HTML 预览卡片 |
 | [clipbus-text-plugin](./clipbus-text-plugin/README.md) | 文本行处理工具——排序行 / 去重行 / 整理空白，三个一键 auto-run 动作 |
 | [clipbus-generator-plugin](./clipbus-generator-plugin/README.md) | 生成 UUID v4 或强随机密码（可配置长度 / 大小写 / 数字 / 符号 / 数量），draft 表单实时预览并复制（Web Crypto）|

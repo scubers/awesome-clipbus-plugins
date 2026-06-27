@@ -37,6 +37,31 @@ export const attachmentScenarios: AttachmentScenario[] = [
     },
   },
   {
+    id: "image-info-renderer-sample",
+    label: "Image Details: 1920×1080 PNG",
+    rendererComponent: "compact",
+    searchTerms: ["image", "png", "dimensions"],
+    accentHex: "#0369a1",
+    bootstrap: {
+      attachment: {
+        payloadJson: JSON.stringify({
+          kind: "image_info",
+          version: 1,
+          format: "PNG",
+          width: 1920,
+          height: 1080,
+          orientation: "Landscape",
+          aspectRatioReduced: "16:9",
+          aspectRatioDecimal: "1.78:1",
+          megapixels: 2.07,
+          fileSizeHuman: "1 MB",
+          fileSizeBytes: 1048576,
+          commonLabel: "Full HD 1080p",
+        }),
+      },
+    },
+  },
+  {
     id: "diff-sample",
     label: "Unified Diff Sample",
     rendererComponent: "expanded",
