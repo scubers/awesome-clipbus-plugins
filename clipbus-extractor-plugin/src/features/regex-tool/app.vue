@@ -134,7 +134,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 12px 14px 10px;
+  padding: 12px 0 10px;
   border-bottom: 1px solid var(--clipbus-border, rgba(226, 232, 240, 0.9));
 }
 
@@ -199,7 +199,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 6px 0;
   font-size: 11px;
   background: var(--clipbus-surface-elevated, rgba(248, 250, 252, 0.78));
   border-bottom: 1px solid var(--clipbus-border, rgba(226, 232, 240, 0.9));
@@ -227,7 +227,7 @@ onUnmounted(() => {
 .rx-shell__matches {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 14px;
+  padding: 8px 0;
 }
 
 .rx-shell__match-list {
@@ -279,7 +279,7 @@ onUnmounted(() => {
 }
 
 .rx-shell__empty {
-  padding: 12px 14px;
+  padding: 12px 0;
   font-size: 11px;
   color: var(--clipbus-text-tertiary, #64748b);
   text-align: center;

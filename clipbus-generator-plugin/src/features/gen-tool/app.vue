@@ -178,7 +178,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 12px 14px 10px;
+  padding: 12px 0 10px;
   border-bottom: 1px solid var(--clipbus-border, rgba(226, 232, 240, 0.9));
 }
 
@@ -273,7 +273,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 10px 14px 12px;
+  padding: 10px 0 12px;
   flex: 1;
   min-height: 0;
 }
