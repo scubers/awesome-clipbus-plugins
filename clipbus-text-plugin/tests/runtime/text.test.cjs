@@ -9,12 +9,13 @@ const manifest = JSON.parse(fs.readFileSync(path.resolve(root, 'manifest.json'),
 
 // ── manifest ─────────────────────────────────────────────────────────────────
 
-test('manifest declares the 3 action ids', () => {
+test('manifest declares the 4 action ids', () => {
   const ids = manifest.actions.map((a) => a.id);
   assert.ok(ids.includes('text-sort'), 'missing text-sort');
   assert.ok(ids.includes('text-dedup'), 'missing text-dedup');
   assert.ok(ids.includes('text-trim'), 'missing text-trim');
-  assert.equal(ids.length, 3);
+  assert.ok(ids.includes('text-strip-ansi'), 'missing text-strip-ansi');
+  assert.equal(ids.length, 4);
 });
 
 test('all actions are lifecycle auto-run', () => {

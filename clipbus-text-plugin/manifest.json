@@ -37,6 +37,13 @@
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
       "keywords": ["trim", "whitespace", "spaces"]
+    },
+    {
+      "id": "text-strip-ansi",
+      "title": "Strip ANSI Codes",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["ansi", "escape", "terminal", "color", "strip"]
     }
   ]
 }

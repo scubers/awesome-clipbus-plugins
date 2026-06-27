@@ -26,6 +26,21 @@ export function dedupLines(text: string): string {
 }
 
 /**
+ * Strip ANSI escape sequences from a string.
+ * Covers CSI (SGR colors, cursor moves, etc.), OSC, and other single-char escapes.
+ */
+export function stripAnsi(text: string): string {
+  const ESC = "\x1b";
+  // OSC: ESC ] ... terminated by BEL or ST (ESC \) — match first (longest)
+  const oscRe = new RegExp(`${ESC}\\][^]*?(?:\\x07|${ESC}\\\\)`, "g");
+  // CSI: ESC [ <param bytes> <intermediate bytes> <final byte>
+  const csiRe = new RegExp(`${ESC}\\[[0-9;?]*[ -/]*[@-~]`, "g");
+  // Other single-char escapes: ESC followed by one char in range @-Z or \-_
+  const otherRe = new RegExp(`${ESC}[@-Z\\\\-_]`, "g");
+  return text.replace(oscRe, "").replace(csiRe, "").replace(otherRe, "");
+}
+
+/**
  * Tidy whitespace:
  *  - trim trailing spaces on each line
  *  - trim leading/trailing blank lines overall
