@@ -1,12 +1,13 @@
 # Generator
 
-A Clipbus plugin that generates UUIDs (v4) and strong passwords via a draft action form.
+A Clipbus plugin that generates UUIDs (v4), strong passwords, and Lorem Ipsum placeholder text via draft action forms.
 
 ## Capability
 
 | ID | Type | Lifecycle |
 |---|---|---|
 | `gen-tool` | action | `draft` |
+| `lorem-tool` | action | `draft` |
 
 ## What it does
 
@@ -19,6 +20,8 @@ Opens a form UI inside Clipbus where you can:
 - Click **Generate & Copy** (host button) to complete the action and copy the result to the clipboard
 
 UUID generation uses the browser's `crypto.getRandomValues` via the pure `uuidFromBytes` helper (version nibble 4, variant `10xx`). Password generation draws from a configurable charset: lowercase is always included; uppercase, digits, and symbols are additive.
+
+**Lorem Ipsum** (`lorem-tool`): opens a form to generate classic lorem ipsum placeholder text — choose Paragraphs, Sentences, or Words mode, set a count (1–50), toggle the canonical "Lorem ipsum dolor sit amet…" opening, and copy or insert the result.
 
 ## Dev
 

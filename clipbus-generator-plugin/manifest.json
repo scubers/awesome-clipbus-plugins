@@ -24,6 +24,14 @@
       "lifecycle": "draft",
       "uiEntry": "actions/gen-tool/index.html",
       "keywords": ["uuid", "password", "generate", "random", "strong"]
+    },
+    {
+      "id": "lorem-tool",
+      "title": "Lorem Ipsum",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "draft",
+      "uiEntry": "actions/lorem-tool/index.html",
+      "keywords": ["lorem", "ipsum", "placeholder", "text", "dummy", "filler"]
     }
   ]
 }

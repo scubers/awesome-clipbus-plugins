@@ -18,7 +18,7 @@ A collection of clipboard (**Clipbus**) plugins — **one plugin per top-level d
 | [clipbus-inspector-plugin](./clipbus-inspector-plugin/README.md) | Inspection toolkit: character / word / line / byte stats + MD5 / SHA-1 / SHA-256 hashes; unified-diff viewer (stats bar + per-line coloring); and image details (format / dimensions / aspect ratio / megapixels / size) for copied images. |
 | [clipbus-preview-plugin](./clipbus-preview-plugin/README.md) | Visual preview: detect color values (HEX / RGB / HSL + CSS names) into a swatch with WCAG contrast, and render Markdown into a safe HTML preview card. |
 | [clipbus-text-plugin](./clipbus-text-plugin/README.md) | Line-processing toolkit: sort lines / dedupe lines / tidy whitespace — three one-click auto-run actions. |
-| [clipbus-generator-plugin](./clipbus-generator-plugin/README.md) | Generate a UUID v4 or a strong random password (configurable length / case / digits / symbols / count); live-preview and copy from a draft form (Web Crypto). |
+| [clipbus-generator-plugin](./clipbus-generator-plugin/README.md) | Generate a UUID v4 or a strong random password (configurable length / case / digits / symbols / count) via Web Crypto, plus Lorem Ipsum placeholder text (paragraphs / sentences / words); live-preview and copy from a draft form. |
 | [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | Detect 5-field cron expressions: a per-field explanation table + a one-sentence summary, guarded to avoid misfiring on ordinary number rows. |
 
 ## Development

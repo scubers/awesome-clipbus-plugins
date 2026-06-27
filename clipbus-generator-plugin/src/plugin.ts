@@ -1,5 +1,6 @@
 import { definePlugin } from "@clipbus/plugin-sdk/runtime";
 import { createGenAction } from "./features/gen-tool/action.ts";
+import { createLoremAction } from "./features/lorem-tool/action.ts";
 
 export default definePlugin({
   setup() {
@@ -8,6 +9,7 @@ export default definePlugin({
       detectors: {},
       actions: {
         "gen-tool": createGenAction(),
+        "lorem-tool": createLoremAction(),
       },
       messageHandlers: {},
     };
