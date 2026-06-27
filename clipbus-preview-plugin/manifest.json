@@ -26,6 +26,12 @@
       "title": "Markdown Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.preview.markdown"]
+    },
+    {
+      "id": "gradient-detector",
+      "title": "Gradient Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.preview.gradient"]
     }
   ],
   "attachmentRenderers": [
@@ -42,6 +48,13 @@
       "attachmentType": "plugin.preview.markdown",
       "height": { "min": 120, "max": 480 },
       "uiEntry": "renderers/markdown-renderer/index.html"
+    },
+    {
+      "id": "gradient-swatch",
+      "title": "Gradient",
+      "attachmentType": "plugin.preview.gradient",
+      "height": 260,
+      "uiEntry": "renderers/gradient-swatch/index.html"
     }
   ],
   "actions": []

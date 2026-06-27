@@ -34,6 +34,16 @@ const colorSwatchBootstrapPayload = JSON.stringify({
   },
 });
 
+const gradientSwatchBootstrapPayload = JSON.stringify({
+  kind: "gradient_swatch",
+  version: 1,
+  gradient: "linear-gradient(to right, #3b82f6, #8b5cf6)",
+  gradientType: "linear",
+  repeating: false,
+  stops: ["#3b82f6", "#8b5cf6"],
+  angleOrShape: "to right",
+});
+
 const markdownPreviewPayload = JSON.stringify({
   kind: "markdown_preview",
   version: 1,
@@ -59,6 +69,16 @@ export const attachmentScenarios: AttachmentScenario[] = [
     accentHex: "#3366FF",
     bootstrap: {
       attachment: { payloadJson: colorSwatchBootstrapPayload },
+    },
+  },
+  {
+    id: "gradient-swatch-linear",
+    label: "Gradient: Blue→Purple",
+    rendererComponent: "compact",
+    searchTerms: ["gradient", "linear"],
+    accentHex: "#8b5cf6",
+    bootstrap: {
+      attachment: { payloadJson: gradientSwatchBootstrapPayload },
     },
   },
   {

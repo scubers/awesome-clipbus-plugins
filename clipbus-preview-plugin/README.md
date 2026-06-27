@@ -19,6 +19,17 @@ Detects a single CSS color value in clipboard text and renders a rich preview ca
   - Contrast ratios vs. white and black with WCAG level badges (AA if >= 4.5:1, AAA if >= 7:1)
   - "Copy All Formats" host button that copies all three format strings to the clipboard
 
+### Gradient Swatch (`gradient-*`)
+
+Detects a single CSS gradient function on the clipboard and renders it as a live swatch.
+
+- **Detector** (`gradient-detector`): attachment type `plugin.preview.gradient`. Fires when the entire clipboard text is exactly one of: `linear-gradient`, `radial-gradient`, `conic-gradient`, `repeating-linear-gradient`, `repeating-radial-gradient`, or `repeating-conic-gradient`. Requires balanced parentheses and non-empty inner content; rejects plain colors, CSS declarations with a property prefix, and unterminated strings.
+- **Renderer** (`gradient-swatch`): Fixed height of 260px. Displays:
+  - A 120px swatch block rendered with the gradient as its background
+  - The gradient type (with "repeating-" prefix if applicable) and leading angle or shape (e.g. "to right", "circle", "from 45deg")
+  - The extracted stop colors as labeled chips, each with a color preview
+  - "Copy Gradient" host button that copies the full gradient string to the clipboard
+
 ### Markdown Preview (`markdown-*`)
 
 Detects Markdown text on the clipboard and renders it as a sanitised HTML card.
