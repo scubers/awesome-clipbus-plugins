@@ -27,7 +27,7 @@
       "id": "cron-renderer",
       "title": "Cron Expression Renderer",
       "attachmentType": "plugin.cron.schedule",
-      "height": { "min": 120, "max": 380 },
+      "height": { "min": 120, "max": 560 },
       "tintHex": "#B45309",
       "uiEntry": "renderers/cron-renderer/index.html"
     }

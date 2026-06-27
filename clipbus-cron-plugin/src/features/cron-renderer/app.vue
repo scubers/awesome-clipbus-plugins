@@ -1,24 +1,47 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { clipbus } from "@clipbus/plugin-sdk/ui";
 import { autoFit } from "@clipbus/plugin-sdk/dom";
 import { useTopicRef } from "../../shared/composables/useTopicRef";
-import { decodeCronPayload } from "./payload";
+import { decodeCronPayload, computeNextRuns } from "./payload";
 
 const attachmentPayload = useTopicRef(clipbus.item.attachment);
 const payload = computed(() =>
   decodeCronPayload(attachmentPayload.value?.attachment?.payloadJson)
 );
 
+// Refreshed every 30 s so "Next runs" stays accurate without a full reload.
+const now = ref(Date.now());
+let refreshTimer: ReturnType<typeof setInterval> | null = null;
 let stopAutoFit: (() => void) | null = null;
 
 onMounted(() => {
-  stopAutoFit = autoFit({ min: 120, max: 380 });
+  stopAutoFit = autoFit({ min: 120, max: 560 });
+  refreshTimer = setInterval(() => { now.value = Date.now(); }, 30_000);
 });
 
 onUnmounted(() => {
   stopAutoFit?.();
+  if (refreshTimer !== null) clearInterval(refreshTimer);
 });
+
+const nextRuns = computed(() => {
+  if (!payload.value) return [];
+  return computeNextRuns(payload.value.fields, now.value, 5);
+});
+
+const WEEKDAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function formatRunTime(ms: number): string {
+  const d = new Date(ms);
+  const wd = WEEKDAY_SHORT[d.getDay()] ?? "";
+  const yr = d.getFullYear();
+  const mo = String(d.getMonth() + 1).padStart(2, "0");
+  const dy = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  return `${wd}, ${yr}-${mo}-${dy} ${hh}:${mm}`;
+}
 </script>
 
 <template>
@@ -44,6 +67,16 @@ onUnmounted(() => {
       </table>
 
       <div class="summary">{{ payload.summary }}</div>
+
+      <section class="next-runs">
+        <div class="next-runs-label">Next runs</div>
+        <ul v-if="nextRuns.length" class="runs-list">
+          <li v-for="(ms, i) in nextRuns" :key="i" class="run-item">
+            {{ formatRunTime(ms) }}
+          </li>
+        </ul>
+        <div v-else class="runs-empty">No upcoming runs in the next few years.</div>
+      </section>
     </section>
     <div v-else class="empty">Waiting for cron expression</div>
   </main>
@@ -145,5 +178,42 @@ onUnmounted(() => {
   text-align: center;
   color: var(--clipbus-text-tertiary, #94a3b8);
   font-size: 13px;
+}
+
+.next-runs {
+  background: var(--clipbus-surface-elevated, #f8fafc);
+  border: 1px solid var(--clipbus-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 7px 10px;
+}
+
+.next-runs-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--clipbus-text-tertiary, #94a3b8);
+  margin-bottom: 5px;
+}
+
+.runs-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.run-item {
+  font-family: "SF Mono", "Menlo", "Monaco", "Cascadia Code", monospace;
+  font-size: 12px;
+  color: var(--clipbus-text-primary, #0f172a);
+}
+
+.runs-empty {
+  font-size: 12px;
+  color: var(--clipbus-text-tertiary, #94a3b8);
+  font-style: italic;
 }
 </style>

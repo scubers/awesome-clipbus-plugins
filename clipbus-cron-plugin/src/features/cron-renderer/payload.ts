@@ -210,6 +210,190 @@ export function decodeCronPayload(payloadJson: string | null | undefined): CronP
   }
 }
 
+// ── Next-run computation ─────────────────────────────────────────────────────
+// Pure JS / UI-safe: no node:* imports. Both functions are used by app.vue.
+
+/**
+ * Expand a single cron field token into the sorted unique list of matching
+ * integer values within [min, max].
+ *
+ * Handles: * | a,b,c | a-b | *\/n | a-b/n | a/n (a..max step n) | name tokens.
+ * For the Weekday field (max === 7) the value 7 is normalised to 0 so the
+ * returned set always uses 0..6 (Sunday = 0).
+ */
+export function expandField(
+  raw: string,
+  min: number,
+  max: number,
+  names?: string[],
+): number[] {
+  /** Resolve a single token to its integer, honouring name arrays. */
+  function resolveVal(token: string): number | null {
+    if (names) {
+      const idx = names.indexOf(token.toUpperCase());
+      if (idx >= 0) return min + idx; // month: min=1 → JAN=1; weekday: min=0 → SUN=0
+    }
+    if (/^\d+$/.test(token)) return parseInt(token, 10);
+    return null;
+  }
+
+  function inBounds(n: number): boolean {
+    return n >= min && n <= max;
+  }
+
+  let values: number[];
+
+  if (raw.includes(",")) {
+    // List: a,b,c — recurse for each part and union the sets
+    const set = new Set<number>();
+    for (const part of raw.split(",")) {
+      for (const n of expandField(part, min, max, names)) set.add(n);
+    }
+    values = [...set].sort((a, b) => a - b);
+  } else {
+    const slashIdx = raw.indexOf("/");
+    if (slashIdx >= 0) {
+      // Step: */n | value/n | range/n
+      const base = raw.slice(0, slashIdx);
+      const step = parseInt(raw.slice(slashIdx + 1), 10);
+      let rangeStart = min;
+      let rangeEnd = max;
+      if (base !== "*") {
+        const dashIdx = base.indexOf("-");
+        if (dashIdx > 0) {
+          const a = resolveVal(base.slice(0, dashIdx));
+          const b = resolveVal(base.slice(dashIdx + 1));
+          if (a !== null) rangeStart = a;
+          if (b !== null) rangeEnd = b;
+        } else {
+          const v = resolveVal(base);
+          if (v !== null) rangeStart = v; // a/n → a..max step n
+        }
+      }
+      values = [];
+      for (let v = rangeStart; v <= rangeEnd; v += step) {
+        if (inBounds(v)) values.push(v);
+      }
+    } else {
+      const dashIdx = raw.indexOf("-");
+      if (dashIdx > 0) {
+        // Range: a-b
+        const a = resolveVal(raw.slice(0, dashIdx));
+        const b = resolveVal(raw.slice(dashIdx + 1));
+        if (a === null || b === null) return [];
+        values = [];
+        for (let v = a; v <= b; v++) {
+          if (inBounds(v)) values.push(v);
+        }
+      } else if (raw === "*") {
+        // Wildcard
+        values = [];
+        for (let v = min; v <= max; v++) values.push(v);
+      } else {
+        // Single value
+        const n = resolveVal(raw);
+        values = n !== null && inBounds(n) ? [n] : [];
+      }
+    }
+  }
+
+  // Weekday field only: normalise 7 → 0 (both represent Sunday), deduplicate.
+  if (max === 7) {
+    const set = new Set<number>();
+    for (const v of values) set.add(v === 7 ? 0 : v);
+    return [...set].sort((a, b) => a - b);
+  }
+
+  return values;
+}
+
+/**
+ * Return the next `count` fire-time timestamps (ms) strictly after `fromMs`,
+ * computed in LOCAL time using the 5-field cron spec in `fields`.
+ *
+ * DOM/DOW OR rule: when both Day and Weekday are restricted (neither is "*"),
+ * a candidate matches if EITHER condition is satisfied.
+ *
+ * Returns fewer than `count` entries — possibly [] — when the expression never
+ * fires within ~3 years (e.g. "0 0 30 2 *").
+ */
+export function computeNextRuns(
+  fields: CronField[],
+  fromMs: number,
+  count: number,
+): number[] {
+  const defByName = new Map(FIELD_DEFS.map((d) => [d.name, d]));
+
+  function getSet(name: string): Set<number> {
+    const field = fields.find((f) => f.name === name);
+    const def = defByName.get(name);
+    if (!field || !def) return new Set();
+    return new Set(expandField(field.raw, def.min, def.max, def.names));
+  }
+
+  function getRaw(name: string): string {
+    return fields.find((f) => f.name === name)?.raw ?? "*";
+  }
+
+  const minuteSet = getSet("Minute");
+  const hourSet = getSet("Hour");
+  const daySet = getSet("Day");
+  const monthSet = getSet("Month");
+  const weekdaySet = getSet("Weekday"); // already normalised: 0..6
+
+  const domRestricted = getRaw("Day") !== "*";
+  const dowRestricted = getRaw("Weekday") !== "*";
+
+  // Start strictly after fromMs: zero seconds/ms, then advance one full minute.
+  const current = new Date(fromMs);
+  current.setSeconds(0, 0);
+  current.setTime(current.getTime() + 60_000);
+
+  // Hard cap: ~1,600,000 minutes ≈ 3 years expressed as a timestamp limit.
+  const limitTs = fromMs + 1_600_000 * 60_000;
+
+  const results: number[] = [];
+
+  while (current.getTime() <= limitTs && results.length < count) {
+    const month = current.getMonth() + 1; // 1-based to match cron convention
+
+    // Month-skip optimisation: when the current month is not in monthSet, jump
+    // directly to the first minute of the next calendar month instead of
+    // iterating minute by minute through it.
+    if (!monthSet.has(month)) {
+      current.setDate(1);
+      current.setHours(0, 0, 0, 0);
+      current.setMonth(current.getMonth() + 1); // JS Date handles Dec→Jan wrap
+      continue;
+    }
+
+    const minute = current.getMinutes();
+    const hour = current.getHours();
+    const date = current.getDate();
+    const weekday = current.getDay(); // 0 = Sunday, matches normalised weekdaySet
+
+    // DOM/DOW OR rule (POSIX cron): both restricted → either condition suffices.
+    let dayOK: boolean;
+    if (domRestricted && dowRestricted) {
+      dayOK = daySet.has(date) || weekdaySet.has(weekday);
+    } else if (domRestricted) {
+      dayOK = daySet.has(date);
+    } else if (dowRestricted) {
+      dayOK = weekdaySet.has(weekday);
+    } else {
+      dayOK = true;
+    }
+
+    if (minuteSet.has(minute) && hourSet.has(hour) && dayOK) {
+      results.push(current.getTime());
+    }
+
+    current.setTime(current.getTime() + 60_000);
+  }
+
+  return results;
+}
+
 export function buildCronArtifact(input: unknown): PluginDetectorArtifact | null {
   const payload = createCronPayload(input);
   if (!payload) return null;

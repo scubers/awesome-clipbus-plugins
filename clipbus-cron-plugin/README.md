@@ -8,6 +8,7 @@ Clipbus plugin that automatically detects cron expressions on the clipboard and 
 - **Field breakdown**: Displays each field's raw value alongside a human-readable description in a table
 - **Plain-English summary**: A concise sentence at the bottom describing the schedule's cadence
 - **Domain validation**: Minute 0–59, Hour 0–23, Day 1–31, Month 1–12 (supports JAN–DEC), Weekday 0–7 (supports SUN–SAT)
+- **Next run times**: Displays the next 5 upcoming fire times computed live from the current local time, refreshed every 30 seconds
 - **False-positive guard**: Pure five-number strings like `1 2 3 4 5` are ignored — at least one cron special character (`* / , -`) must be present
 
 ## Supported Syntax

@@ -19,7 +19,7 @@
 | [clipbus-preview-plugin](./clipbus-preview-plugin/README.md) | 可视化预览：识别颜色值（HEX / RGB / HSL + CSS 名）展示色块与 WCAG 对比，并将 Markdown 安全渲染为 HTML 预览卡片 |
 | [clipbus-text-plugin](./clipbus-text-plugin/README.md) | 文本行处理工具——排序行 / 去重行 / 整理空白，三个一键 auto-run 动作 |
 | [clipbus-generator-plugin](./clipbus-generator-plugin/README.md) | 生成 UUID v4 或强随机密码（可配置长度 / 大小写 / 数字 / 符号 / 数量，Web Crypto），以及 Lorem Ipsum 占位文本（段落 / 句子 / 单词）；draft 表单实时预览并复制 |
-| [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | 识别 5 段 cron 表达式，逐字段中文释义表 + 一句执行概述（带护栏避免误判普通数字行）|
+| [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | 识别 5 段 cron 表达式，逐字段中文释义表、一句执行概述,以及接下来 5 次触发时刻（实时本地时间）（带护栏避免误判普通数字行）|
 
 ## 开发
 
