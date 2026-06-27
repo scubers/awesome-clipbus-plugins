@@ -32,6 +32,13 @@ Detects when the clipboard contains a single latitude/longitude pair (decimal, w
 - **Detector** (`geo-detector`): input kind `text`, attachment type `plugin.extractor.geo`
 - **Renderer** (`geo-coordinates`): displays decimal pair, latitude and longitude in DMS notation, hemisphere summary, and copyable OpenStreetMap and Google Maps URLs
 
+### MAC Address Inspector (`mac-*`)
+
+Detects when the clipboard contains a single MAC-48 / EUI-48 address in colon (`00:1A:2B:3C:4D:5E`), hyphen (`00-1A-2B-3C-4D-5E`), or Cisco-dot (`001A.2B3C.4D5E`) notation and renders a structured breakdown.
+
+- **Detector** (`mac-detector`): input kind `text`, attachment type `plugin.extractor.mac`; requires an explicit separator — bare 12-hex strings and prose are rejected
+- **Renderer** (`mac-address`): displays all five normalized forms (colon-lower, colon-upper, hyphen, Cisco-dot, bare) with copy buttons; shows OUI / NIC split, cast (Unicast / Multicast), administration (Universal / Locally administered), and a special note for broadcast (`FF:FF:FF:FF:FF:FF`) and null-address (`00:00:00:00:00:00`) inputs
+
 ### Regex Tester (`regex-tool`)
 
 A draft action providing an interactive regex debugger inside Clipbus.

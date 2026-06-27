@@ -83,6 +83,23 @@ const ipDetailsPayloadV6 = JSON.stringify({
   scope: "Global Unicast",
 });
 
+const macAddressPayload = JSON.stringify({
+  kind: "mac_address",
+  version: 1,
+  input: "00:1A:2B:3C:4D:5E",
+  octets: [0, 26, 43, 60, 77, 94],
+  colonLower: "00:1a:2b:3c:4d:5e",
+  colonUpper: "00:1A:2B:3C:4D:5E",
+  hyphen: "00-1A-2B-3C-4D-5E",
+  ciscoDot: "001A.2B3C.4D5E",
+  bare: "001a2b3c4d5e",
+  oui: "00:1A:2B",
+  nic: "3C:4D:5E",
+  cast: "Unicast (individual)",
+  administration: "Universal (OUI/vendor-assigned)",
+  special: null,
+});
+
 const geoCoordinatesPayload = JSON.stringify({
   kind: "geo_coordinates",
   version: 1,
@@ -178,6 +195,22 @@ export const attachmentScenarios: AttachmentScenario[] = [
         attachmentType: "plugin.extractor.ip",
         attachmentKey: "primary",
         payloadJson: ipDetailsPayloadV6,
+      },
+    },
+  },
+  {
+    id: "mac-address-unicast",
+    label: "MAC Address: unicast universal",
+    rendererComponent: "compact",
+    searchTerms: ["mac", "address", "ethernet", "oui"],
+    accentHex: "#7C3AED",
+    bootstrap: {
+      attachment: {
+        historyID: "preview-mac",
+        owner: "plugin.extractor",
+        attachmentType: "plugin.extractor.mac",
+        attachmentKey: "primary",
+        payloadJson: macAddressPayload,
       },
     },
   },

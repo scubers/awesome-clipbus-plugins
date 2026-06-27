@@ -38,6 +38,12 @@
       "title": "Coordinates Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.extractor.geo"]
+    },
+    {
+      "id": "mac-detector",
+      "title": "MAC Address Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.extractor.mac"]
     }
   ],
   "attachmentRenderers": [
@@ -68,6 +74,13 @@
       "attachmentType": "plugin.extractor.geo",
       "height": "auto",
       "uiEntry": "renderers/geo-coordinates/index.html"
+    },
+    {
+      "id": "mac-address",
+      "title": "MAC Address",
+      "attachmentType": "plugin.extractor.mac",
+      "height": "auto",
+      "uiEntry": "renderers/mac-address/index.html"
     }
   ],
   "actions": [
