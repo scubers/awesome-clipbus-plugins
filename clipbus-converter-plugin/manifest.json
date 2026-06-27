@@ -32,6 +32,12 @@
       "title": "Duration Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.converter.duration"]
+    },
+    {
+      "id": "temperature-detector",
+      "title": "Temperature Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.converter.temperature"]
     }
   ],
   "attachmentRenderers": [
@@ -55,6 +61,13 @@
       "attachmentType": "plugin.converter.duration",
       "height": { "min": 140, "max": 300 },
       "uiEntry": "renderers/duration/index.html"
+    },
+    {
+      "id": "temperature",
+      "title": "Temperature",
+      "attachmentType": "plugin.converter.temperature",
+      "height": { "min": 140, "max": 300 },
+      "uiEntry": "renderers/temperature/index.html"
     }
   ],
   "actions": [

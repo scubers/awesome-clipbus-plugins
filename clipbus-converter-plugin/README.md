@@ -10,6 +10,8 @@ Clipbus plugin that integrates three conversion capabilities: Unix timestamp dis
 - **Radix Converter** (`radix-renderer`): Shows the detected integer in all four bases (DEC / HEX / OCT / BIN) with per-row copy buttons. Also displays bit count, ASCII character (printable range 32–126), and a "Negative" badge for signed values. Includes a "Copy all radix" button.
 - **Duration Detector** (`duration-detector`): Recognises ISO 8601 duration strings (e.g. `PT4M13S`, `P1Y2M10DT2H30M`, `P3W`). Rejects bare `P`/`PT`, unknown components, and strings with trailing text.
 - **Duration Renderer** (`duration`): Displays the detected duration as a human breakdown (e.g. "1 year, 2 months, 10 days, 2 hours, 30 minutes"), total seconds (marked "≈" when years or months are present, "=" otherwise), and the original input. Includes a "Copy Seconds" button.
+- **Temperature Detector** (`temperature-detector`): Recognises single temperature values such as `37°C`, `98.6°F`, `300 K`, `37 Celsius`. Requires an explicit scale marker — bare values like `37C` or `300K` (no degree sign or separating space) are rejected to avoid false positives.
+- **Temperature Renderer** (`temperature`): Converts the detected temperature to all three scales (Celsius, Fahrenheit, Kelvin) and displays them in a facts grid with per-row copy buttons. The source scale is highlighted. Shows a warning note when the value is below absolute zero.
 - **Case Converter** (`case-tool`): Draft action that converts clipboard text into eight naming conventions — camelCase, snake_case, kebab-case, PascalCase, CONSTANT_CASE, Title Case, Sentence case, dot.case — and lets you copy any variant or submit the camelCase result.
 
 ## Development

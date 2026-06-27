@@ -6,6 +6,8 @@ import { createRadixRenderer } from "./features/radix-renderer/renderer.ts";
 import { createCaseAction } from "./features/case-tool/action.ts";
 import { createDurationDetector } from "./features/duration/detector.ts";
 import { createDurationRenderer } from "./features/duration/renderer.ts";
+import { createTemperatureDetector } from "./features/temperature/detector.ts";
+import { createTemperatureRenderer } from "./features/temperature/renderer.ts";
 
 export default definePlugin({
   setup() {
@@ -14,11 +16,13 @@ export default definePlugin({
         "timestamp-renderer": createTimestampRenderer(),
         "radix-renderer": createRadixRenderer(),
         "duration": createDurationRenderer(),
+        "temperature": createTemperatureRenderer(),
       },
       detectors: {
         "timestamp-detector": createTimestampDetector(),
         "radix-detector": createRadixDetector(),
         "duration-detector": createDurationDetector(),
+        "temperature-detector": createTemperatureDetector(),
       },
       actions: {
         "case-tool": createCaseAction(),

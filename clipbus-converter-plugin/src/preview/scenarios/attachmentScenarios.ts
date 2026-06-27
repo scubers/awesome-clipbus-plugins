@@ -54,4 +54,25 @@ export const attachmentScenarios: AttachmentScenario[] = [
       },
     },
   },
+  {
+    id: "temperature-sample",
+    label: "Temperature: 37°C (body temperature)",
+    rendererComponent: "compact",
+    searchTerms: ["temperature", "celsius", "37°C"],
+    accentHex: "#EF4444",
+    bootstrap: {
+      attachment: {
+        payloadJson: JSON.stringify({
+          kind: "temperature_preview",
+          version: 1,
+          sourceScale: "C",
+          sourceValue: 37,
+          celsius: 37,
+          fahrenheit: 98.6,
+          kelvin: 310.15,
+          belowAbsoluteZero: false,
+        }),
+      },
+    },
+  },
 ];
