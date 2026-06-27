@@ -9,7 +9,7 @@
  * Usage: node scripts/build-ui.mjs  (run from plugin root)
  */
 import { build } from "vite";
-import { cp, rm, readdir, readFile, stat } from "node:fs/promises";
+import { cp, mkdir, rm, readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import vue from "@vitejs/plugin-vue";
@@ -115,6 +115,10 @@ const idKindMap = await buildIdKindMap();
 const pages = await discoverPages(idKindMap);
 
 await rm(uiOutputRoot, { recursive: true, force: true });
+// Ensure the declared runtime.uiRoot exists even for UI-less plugins (only
+// auto-run actions / detectors): with no pages Vite never creates dist/ui, and
+// the host's manifest validator (clipbus-validate-manifest --runtime) requires it.
+await mkdir(uiOutputRoot, { recursive: true });
 
 for (const page of pages) {
   const outDir = path.resolve(uiOutputRoot, page.kind, page.id);
