@@ -16,7 +16,7 @@
 | 1 | 自主度 | **双模式带开关**：默认"先提选题再生成"（含归属决策，等用户确认）；一句话切"全自主一条龙"。用户给了选题则直接用。 |
 | 2 | 完成度 | **完整实现 + 必须构建通过**。产出真实逻辑，修到验证全绿才算完成。 |
 | 3 | 避重/归属 | **按功能类别**。每个插件 README 记录自身功能；根目录 `README.md`（英文）+ `README_zh.md`（中文）做索引。skill 开跑先读、收尾**中英双写**更新。 |
-| 4 | 能力组合 | **按需覆盖**，不强行铺满。**detector 必配 renderer**（纯检测不展示无意义）；**auto-run action 仅当能提供 renderer 给不了的东西时才加**（renderer 已展示+一键复制某值时，禁止再加返回同值的冗余 copy-action）；draft 仅当需要用户输入。 |
+| 4 | 能力组合 | **按需覆盖**，不强行铺满。**要展示的附件必配 renderer**（detector 只做 `searchProjection` 搜索投影、不展示卡片时无需 renderer）；**auto-run action 仅当能提供 renderer 给不了的东西时才加**（renderer 已展示+一键复制某值时，禁止再加返回同值的冗余 copy-action）；draft 仅当需要用户输入。 |
 | 5 | 验证门槛 | **`npm run verify` 全绿**（typecheck+lint+build+verify-build + 精简冒烟测试）。模板里写死 id 的机关与测试改写成匹配新插件。 |
 | 6 | skill 结构 | **工作流 + 精简脚本 + 通用脚手架**（方案 A）。 |
 | 7 | 落地位置 | 项目内 `.claude/skills/clipbus-plugin-generator/`，随仓库版本化。 |
@@ -56,7 +56,7 @@
 - **扩展已有**：进入目标插件目录，准备新增 feature（不跑 scaffold）。
 
 ### 阶段 4 · 实现能力（实用优先）
-- 按选题需要选扩展点；**detector 必配 renderer**。
+- 按选题需要选扩展点；**要展示的附件必配 renderer**（只做搜索投影的 detector 除外）。
 - 每个 feature：`payload.ts`（单一真相源 create/decode/buildArtifact + version）→ `detector.ts` / `renderer.ts` / `action.ts` → `app.vue` + `main.ts` + `index.html`（renderer/draft 才有 UI）→ 一个 preview scenario。
 - **目录名 === manifest 能力 id**（见通用约定）；同步 `manifest.json` 与 `src/plugin.ts` 注册。
 - 视觉：只用 `var(--clipbus-*, 回退)` 主题 token，适配明暗，版式干净。
@@ -89,7 +89,7 @@
 ## 接线不变量（实现必须遵守）
 
 - **三处 id 对齐**：`manifest` 能力 `id` === `src/plugin.ts` `setup()` 注册 key === `src/features/<dir>` 目录名（也即 UI 产物目录）。
-- **detector ⇒ renderer**：声明 detector 必有对应 renderer 展示其 artifact。
+- **要展示的附件 ⇒ 必配 renderer**：detector 的 artifact 有附件（`attachmentType`+`payloadJson`，要展示成卡片必配同型 renderer）与可选搜索投影（`searchProjection`，喂搜索索引、不展示、无需 renderer）两面；只做搜索投影的 detector 不需要 renderer。
 - **输入仅三种 kind**：`text` / `image` / `path_reference`（snake_case）。content envelope 扁平。
 - **UI 主题 token**：`var(--clipbus-*, 回退)`，禁裸 hex。
 - **API.md 为准**：能力签名以已安装 SDK 的 `node_modules/@clipbus/plugin-sdk/API.md` 为准；不改 node_modules 内 SDK。

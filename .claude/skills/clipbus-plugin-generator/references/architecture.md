@@ -18,12 +18,12 @@
 
 | 扩展点 | Runtime 侧 | UI 侧 | 何时用 |
 |---|---|---|---|
-| **detector** | `detect(input)` 返回 artifacts | 无 | 想识别某类剪贴板内容并挂附件。**必须配 renderer**。 |
+| **detector** | `detect(input)` 返回 artifacts | 无 | 识别内容产出 artifact。两面：**附件**（要展示成卡片就**必配 renderer**）+ **可选 `searchProjection`**（喂宿主搜索索引、如 OCR 文本，不展示、无需 renderer）。 |
 | **attachment renderer** | `resolveAttachment(input)` | `app.vue` 卡片 | 展示识别结果。高度三形态：定值数字 / `"auto"` / `{min,max}`（配 `clipbus.window.autoFit()`）。 |
 | **auto-run action** | `runAutoAction(input,ctx)` 返回 `actionResult.text/image/none` | 无 | 一键处理（如复制转换结果）。 |
 | **draft action** | `resolveSession(input,ctx)` 给初始 draft + buttons | `app.vue` 表单，提交走 `clipbus.action.complete()` | 需要用户输入/选择后再产出。 |
 
-> **扩展点按需，别凑三件套。** 触发成本递增：detector 复制时**自动**挂附件（零操作）；renderer 选中时**自动**展示，可内置**一键**复制按钮；auto-run action 要用户 **cmd+k 打开面板→选中**才运行（比一键复制多好几步）。推论：① 纯 detector（不配 renderer）没意义——识别了却不展示；② **renderer 已展示某值且有一键复制按钮时，禁止再加返回同一值的 auto-run copy-action**（纯冗余，用户永远用更快的 renderer 按钮）。auto-run action 只在能提供 renderer 给不了的东西时才加：要么无 detector/renderer（action 是唯一入口，如纯文本 sort/dedup/trim），要么产出 renderer 未覆盖的结果。draft 仅当需要用户输入/选择。
+> **扩展点按需，别凑三件套。** 触发成本递增：detector 复制时**自动**挂附件（零操作）；renderer 选中时**自动**展示，可内置**一键**复制按钮；auto-run action 要用户 **cmd+k 打开面板→选中**才运行（比一键复制多好几步）。推论：① detector 的 artifact 两面——**要展示的附件必配 renderer**（否则附件无法显示），但**只做 `searchProjection` 搜索投影的 detector 无需 renderer**（喂搜索索引、如 OCR 文本可被搜到）；② **renderer 已展示某值且有一键复制按钮时，禁止再加返回同一值的 auto-run copy-action**（纯冗余，用户永远用更快的 renderer 按钮）。auto-run action 只在能提供 renderer 给不了的东西时才加：要么无 detector/renderer（action 是唯一入口，如纯文本 sort/dedup/trim），要么产出 renderer 未覆盖的结果。draft 仅当需要用户输入/选择。
 
 ## 输入：仅三种 kind
 
@@ -43,7 +43,7 @@
 
 1. **三处 id 对齐**：manifest `id` === `plugin.ts` 注册 key === `src/features/<dir>` 目录名。
 2. **manifest `uiEntry`** = `renderers/<id>/index.html` 或 `actions/<id>/index.html`。
-3. detector ⇒ 必有对应 renderer。
+3. **要展示的附件 ⇒ 必配对应 renderer**；只做 `searchProjection` 搜索投影、不展示卡片的 detector 无需 renderer。
 4. UI CSS 只用 `var(--clipbus-*, 回退)` 主题 token。
 5. 不改 node_modules 内 SDK；签名以 API.md 为准。
 6. **相对 `.ts` import 带 `.ts` 扩展名**：`.ts` 运行时文件间的相对 import 用 `.ts`（冒烟测试用 Node 直接 require）；`.vue` 文件内可不带。

@@ -152,6 +152,8 @@ export function createXDetector(): PluginDetectorHandler {
 
 只在内容**真的匹配**时返回 artifact（如 decoder 检测到合法 base64 才挂）——不匹配返回 `[]`，别污染所有剪贴板项。
 
+> **附件 vs 搜索投影（两面，互相独立）**：artifact 的 `attachmentType`+`payloadJson` 是**附件**——要展示成卡片就得配同 `attachmentType` 的 renderer。可选的 `searchProjection: { scope, searchText, label? }` 是**搜索投影**——把内容喂进宿主搜索索引让记录可被搜到（如 OCR 文本、解码结果），**不展示、不需要 renderer**。所以「detector 必配 renderer」不准确：detector 若**只为搜索**（不展示卡片），就只填 `searchProjection`、不建 renderer。搜索扩展写入受 `setSearchExtension` 权限门控（imperative 写法是 runtime verb `host.item.setSearchExtension`）。
+
 ## 4. renderer（运行时）
 
 `resolveAttachment` 给宿主一点元信息（名字、色调、是否展示）；真正的渲染在 app.vue。
