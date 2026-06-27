@@ -1,44 +1,45 @@
-# clipbus-inspector-plugin
+# 检视工具
 
-Clipbus plugin that computes character/word/line/byte statistics and MD5, SHA-1, SHA-256 hashes for clipboard text, displaying them as a read-only info card.
+一个 Clipbus 插件，集成文本统计与 Unified Diff 查看两大功能。
 
-## Features
+## 文本统计 + MD5/SHA 哈希（text-stats-*）
 
-- **字符统计**: total Unicode code-point count and non-whitespace count
-- **词统计**: whitespace-delimited word count
-- **行统计**: line count (handles `\n`, `\r\n`, `\r`)
-- **字节统计**: UTF-8 byte length
-- **哈希**: MD5, SHA-1, SHA-256 in monospace
-- **复制哈希按钮**: host buttons copy SHA-256 or MD5 to clipboard directly from the renderer card
+识别剪贴板中的任意文本，自动计算并展示：
 
-## Detection rule
+- 字符数、去空格字符数、单词数、行数、字节数
+- MD5、SHA-1、SHA-256 哈希值
+- 文本预览摘要
 
-Triggers only when the clipboard item is `text` kind **and** `text.trim().length >= 20`. Short snippets under 20 trimmed characters are ignored to avoid attaching a card to every small copy.
+触发条件：文本 `trim().length >= 20`。
 
-## Capabilities
-
-| Kind | ID |
+| 扩展点 | ID |
 |---|---|
 | Detector | `text-stats-detector` |
 | Attachment Renderer | `text-stats-renderer` |
 | Attachment Type | `plugin.inspector.text-stats` |
 
-No action capability — this plugin is purely read-only (detector + renderer).
+## Unified Diff 查看（diff-*）
 
-## Usage
+识别标准 unified diff 格式（支持 `diff --git` 头及纯 hunk 格式），展示：
 
-1. Copy any text longer than 20 characters to the clipboard.
-2. Open Clipbus — the **文本统计** card appears automatically beneath the item.
-3. The card shows a stats grid (字符, 词, 行, 字节) and the three hashes.
-4. Use the **复制 SHA-256** or **复制 MD5** host button to copy a hash.
+- 统计条：修改文件数、新增行数（+）、删除行数（−）
+- 逐行着色：新增行绿色高亮、删除行红色高亮、上下文行保持原色
 
-## Development
+触发条件：包含 `---`/`+++` 头及至少两行变更行（`+`/`-`）。
+
+| 扩展点 | ID |
+|---|---|
+| Detector | `diff-detector` |
+| Attachment Renderer | `diff-renderer` |
+| Attachment Type | `plugin.diff.unified` |
+
+## 开发
 
 ```sh
 cd clipbus-inspector-plugin
 npm install
-npm run dev        # Vite preview workbench
+npm run dev        # Vite 预览工作台
 npm run verify     # typecheck + lint + build + test
 ```
 
-Load in Clipbus: Settings → Plugins → Developer Plugins → Add Path → select this directory.
+加载：Settings → Plugins → Developer Plugins → Add Path → 选择本目录。
