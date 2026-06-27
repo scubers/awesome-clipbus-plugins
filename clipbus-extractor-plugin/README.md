@@ -25,6 +25,13 @@ Detects when the clipboard contains a single IPv4, IPv4 CIDR, IPv6, or IPv6 CIDR
 - **Detector** (`ip-detector`): input kind `text`, attachment type `plugin.extractor.ip`
 - **Renderer** (`ip-details`): for a plain IPv4 shows integer, hex, binary, reverse-DNS pointer, scope (Private / Public / Loopback / …), and legacy class; for a CIDR adds netmask, wildcard mask, network/broadcast addresses, first/last usable host, and total/usable counts; for IPv6 shows expanded and compressed forms plus scope
 
+### Geo Coordinates (`geo-*`)
+
+Detects when the clipboard contains a single latitude/longitude pair (decimal, with optional degree signs or hemisphere letters) and renders a breakdown card.
+
+- **Detector** (`geo-detector`): input kind `text`, attachment type `plugin.extractor.geo`
+- **Renderer** (`geo-coordinates`): displays decimal pair, latitude and longitude in DMS notation, hemisphere summary, and copyable OpenStreetMap and Google Maps URLs
+
 ### Regex Tester (`regex-tool`)
 
 A draft action providing an interactive regex debugger inside Clipbus.

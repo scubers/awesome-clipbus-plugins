@@ -83,6 +83,20 @@ const ipDetailsPayloadV6 = JSON.stringify({
   scope: "Global Unicast",
 });
 
+const geoCoordinatesPayload = JSON.stringify({
+  kind: "geo_coordinates",
+  version: 1,
+  input: "37.7749, -122.4194",
+  lat: 37.7749,
+  lng: -122.4194,
+  decimal: "37.7749, -122.4194",
+  latDms: "37°46'29.6\"N",
+  lngDms: "122°25'9.8\"W",
+  hemisphere: "N / W",
+  osmUrl: "https://www.openstreetmap.org/?mlat=37.7749&mlon=-122.4194#map=12/37.7749/-122.4194",
+  googleUrl: "https://maps.google.com/?q=37.7749,-122.4194",
+});
+
 export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "entities-renderer-mixed",
@@ -164,6 +178,22 @@ export const attachmentScenarios: AttachmentScenario[] = [
         attachmentType: "plugin.extractor.ip",
         attachmentKey: "primary",
         payloadJson: ipDetailsPayloadV6,
+      },
+    },
+  },
+  {
+    id: "geo-coordinates-sf",
+    label: "Coordinates: San Francisco decimal",
+    rendererComponent: "compact",
+    searchTerms: ["geo", "coordinates", "latitude", "longitude"],
+    accentHex: "#16A34A",
+    bootstrap: {
+      attachment: {
+        historyID: "preview-geo-sf",
+        owner: "plugin.extractor",
+        attachmentType: "plugin.extractor.geo",
+        attachmentKey: "primary",
+        payloadJson: geoCoordinatesPayload,
       },
     },
   },

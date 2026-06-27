@@ -1,6 +1,8 @@
 import { definePlugin } from "@clipbus/plugin-sdk/runtime";
 import { createEntitiesDetector } from "./features/entities-renderer/detector.ts";
 import { createEntitiesRenderer } from "./features/entities-renderer/renderer.ts";
+import { createGeoDetector } from "./features/geo-coordinates/detector.ts";
+import { createGeoRenderer } from "./features/geo-coordinates/renderer.ts";
 import { createIpDetector } from "./features/ip-details/detector.ts";
 import { createIpRenderer } from "./features/ip-details/renderer.ts";
 import { createRegexAction } from "./features/regex-tool/action.ts";
@@ -14,11 +16,13 @@ export default definePlugin({
         "entities-renderer": createEntitiesRenderer(),
         "url-parsed": createUrlRenderer(),
         "ip-details": createIpRenderer(),
+        "geo-coordinates": createGeoRenderer(),
       },
       detectors: {
         "entities-detector": createEntitiesDetector(),
         "url-detector": createUrlDetector(),
         "ip-detector": createIpDetector(),
+        "geo-detector": createGeoDetector(),
       },
       actions: {
         "regex-tool": createRegexAction(),

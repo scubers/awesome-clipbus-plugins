@@ -32,6 +32,12 @@
       "title": "IP Address Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.extractor.ip"]
+    },
+    {
+      "id": "geo-detector",
+      "title": "Coordinates Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.extractor.geo"]
     }
   ],
   "attachmentRenderers": [
@@ -55,6 +61,13 @@
       "attachmentType": "plugin.extractor.ip",
       "height": "auto",
       "uiEntry": "renderers/ip-details/index.html"
+    },
+    {
+      "id": "geo-coordinates",
+      "title": "Coordinates",
+      "attachmentType": "plugin.extractor.geo",
+      "height": "auto",
+      "uiEntry": "renderers/geo-coordinates/index.html"
     }
   ],
   "actions": [
