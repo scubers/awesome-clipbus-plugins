@@ -5,7 +5,7 @@
 export interface AttachmentScenario {
   id: string;
   label: string;
-  rendererComponent: "compact" | "expanded";
+  component: string;
   searchTerms: string[];
   accentHex: string;
   bootstrap: Record<string, unknown>;
@@ -15,7 +15,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "timestamp-renderer-seconds",
     label: "Unix Timestamp: 1700000000 (seconds)",
-    rendererComponent: "compact",
+    component: "timestamp-renderer",
     searchTerms: ["timestamp", "unix"],
     accentHex: "#0F766E",
     bootstrap: {
@@ -37,7 +37,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "duration-sample",
     label: "ISO 8601 Duration: P1Y2M10DT2H30M",
-    rendererComponent: "compact",
+    component: "duration",
     searchTerms: ["duration", "iso8601", "P1Y2M10DT2H30M"],
     accentHex: "#7C3AED",
     bootstrap: {
@@ -57,7 +57,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "temperature-sample",
     label: "Temperature: 37°C (body temperature)",
-    rendererComponent: "compact",
+    component: "temperature",
     searchTerms: ["temperature", "celsius", "37°C"],
     accentHex: "#EF4444",
     bootstrap: {
@@ -71,6 +71,29 @@ export const attachmentScenarios: AttachmentScenario[] = [
           fahrenheit: 98.6,
           kelvin: 310.15,
           belowAbsoluteZero: false,
+        }),
+      },
+    },
+  },
+  {
+    id: "radix-renderer-sample",
+    label: "Radix: 255 decimal",
+    component: "radix-renderer",
+    searchTerms: ["radix", "hex", "binary", "octal", "decimal"],
+    accentHex: "#4F46E5",
+    bootstrap: {
+      attachment: {
+        payloadJson: JSON.stringify({
+          kind: "radix_preview",
+          version: 1,
+          inputBase: "dec",
+          decimal: "255",
+          hex: "0xff",
+          octal: "0o377",
+          binary: "0b11111111",
+          bits: 8,
+          asciiChar: null,
+          isNegative: false,
         }),
       },
     },

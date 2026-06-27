@@ -5,7 +5,7 @@
 export interface AttachmentScenario {
   id: string;
   label: string;
-  rendererComponent: "compact" | "expanded";
+  component: string;
   searchTerms: string[];
   accentHex: string;
   bootstrap: Record<string, unknown>;
@@ -15,7 +15,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "text-stats-renderer-sample",
     label: "Text Stats: Sample Long Text",
-    rendererComponent: "compact",
+    component: "text-stats-renderer",
     searchTerms: ["stats", "hash", "sha256"],
     accentHex: "#7C3AED",
     bootstrap: {
@@ -39,7 +39,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "image-info-renderer-sample",
     label: "Image Details: 1920×1080 PNG",
-    rendererComponent: "compact",
+    component: "image-info-renderer",
     searchTerms: ["image", "png", "dimensions"],
     accentHex: "#0369a1",
     bootstrap: {
@@ -64,7 +64,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "char-info-renderer-sample",
     label: "Character: 😀 Grinning Face (U+1F600)",
-    rendererComponent: "compact",
+    component: "char-info-renderer",
     searchTerms: ["emoji", "unicode", "character"],
     accentHex: "#7c3aed",
     bootstrap: {
@@ -87,28 +87,30 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "diff-sample",
     label: "Unified Diff Sample",
-    rendererComponent: "expanded",
+    component: "diff-renderer",
     searchTerms: ["diff", "patch", "unified"],
     accentHex: "#0F766E",
     bootstrap: {
-      payloadJson: JSON.stringify({
-        kind: "diff_preview",
-        version: 1,
-        lines: [
-          { type: "meta", text: "diff --git a/src/app.ts b/src/app.ts" },
-          { type: "meta", text: "--- a/src/app.ts" },
-          { type: "meta", text: "+++ b/src/app.ts" },
-          { type: "hunk", text: "@@ -1,3 +1,4 @@" },
-          { type: "ctx", text: " const x = 1;" },
-          { type: "del", text: "-const y = 2;" },
-          { type: "add", text: "+const y = 3;" },
-          { type: "add", text: "+const z = 4;" },
-          { type: "ctx", text: " export { x, y };" },
-        ],
-        additions: 2,
-        deletions: 1,
-        files: 1,
-      }),
+      attachment: {
+        payloadJson: JSON.stringify({
+          kind: "diff_preview",
+          version: 1,
+          lines: [
+            { type: "meta", text: "diff --git a/src/app.ts b/src/app.ts" },
+            { type: "meta", text: "--- a/src/app.ts" },
+            { type: "meta", text: "+++ b/src/app.ts" },
+            { type: "hunk", text: "@@ -1,3 +1,4 @@" },
+            { type: "ctx", text: " const x = 1;" },
+            { type: "del", text: "-const y = 2;" },
+            { type: "add", text: "+const y = 3;" },
+            { type: "add", text: "+const z = 4;" },
+            { type: "ctx", text: " export { x, y };" },
+          ],
+          additions: 2,
+          deletions: 1,
+          files: 1,
+        }),
+      },
     },
   },
 ];

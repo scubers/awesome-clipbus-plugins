@@ -5,7 +5,7 @@
 export interface AttachmentScenario {
   id: string;
   label: string;
-  rendererComponent: "compact" | "expanded";
+  component: string;
   searchTerms: string[];
   accentHex: string;
   bootstrap: Record<string, unknown>;
@@ -15,7 +15,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "cron-weekdays-morning",
     label: "Weekdays at 9:30",
-    rendererComponent: "expanded",
+    component: "cron-renderer",
     searchTerms: ["cron", "schedule", "30 9 * * 1-5"],
     accentHex: "#B45309",
     bootstrap: {

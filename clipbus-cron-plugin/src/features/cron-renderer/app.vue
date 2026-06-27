@@ -203,6 +203,8 @@ function formatRunTime(ms: number): string {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  max-height: 140px;
+  overflow-y: auto;
 }
 
 .run-item {

@@ -73,14 +73,14 @@
       "id": "csv-table",
       "title": "CSV Table",
       "attachmentType": "plugin.formatter.csv",
-      "height": "auto",
+      "height": { "min": 160, "max": 460 },
       "uiEntry": "renderers/csv-table/index.html"
     },
     {
       "id": "query-table",
       "title": "Query String",
       "attachmentType": "plugin.formatter.query",
-      "height": "auto",
+      "height": { "min": 140, "max": 420 },
       "uiEntry": "renderers/query-table/index.html"
     }
   ],

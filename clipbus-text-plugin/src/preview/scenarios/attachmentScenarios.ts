@@ -5,7 +5,7 @@
 export interface AttachmentScenario {
   id: string;
   label: string;
-  rendererComponent: "compact" | "expanded";
+  component: string;
   searchTerms: string[];
   accentHex: string;
   bootstrap: Record<string, unknown>;

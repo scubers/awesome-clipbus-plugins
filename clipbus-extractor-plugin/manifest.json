@@ -64,35 +64,35 @@
       "id": "url-parsed",
       "title": "URL Details",
       "attachmentType": "plugin.extractor.url",
-      "height": "auto",
+      "height": { "min": 140, "max": 440 },
       "uiEntry": "renderers/url-parsed/index.html"
     },
     {
       "id": "ip-details",
       "title": "IP Address",
       "attachmentType": "plugin.extractor.ip",
-      "height": "auto",
+      "height": { "min": 140, "max": 380 },
       "uiEntry": "renderers/ip-details/index.html"
     },
     {
       "id": "geo-coordinates",
       "title": "Coordinates",
       "attachmentType": "plugin.extractor.geo",
-      "height": "auto",
+      "height": { "min": 120, "max": 340 },
       "uiEntry": "renderers/geo-coordinates/index.html"
     },
     {
       "id": "mac-address",
       "title": "MAC Address",
       "attachmentType": "plugin.extractor.mac",
-      "height": "auto",
+      "height": { "min": 120, "max": 320 },
       "uiEntry": "renderers/mac-address/index.html"
     },
     {
       "id": "uuid-details",
       "title": "UUID",
       "attachmentType": "plugin.extractor.uuid",
-      "height": "auto",
+      "height": { "min": 120, "max": 360 },
       "uiEntry": "renderers/uuid-details/index.html"
     }
   ],

@@ -5,6 +5,7 @@
 export interface ActionScenario {
   id: string;
   label: string;
+  component: string;
   bootstrap: Record<string, unknown>;
 }
 

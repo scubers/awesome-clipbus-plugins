@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted } from "vue";
 import { clipbus } from "@clipbus/plugin-sdk/ui";
+import { autoFit } from "@clipbus/plugin-sdk/dom";
 import { useTopicRef } from "../../shared/composables/useTopicRef";
 import { decodeUrlPayload } from "./payload";
 
@@ -18,8 +19,10 @@ const queryJson = computed(() => {
 });
 
 let unsub: (() => void) | null = null;
+let stopAutoFit: (() => void) | null = null;
 
 onMounted(async () => {
+  stopAutoFit = autoFit({ min: 140, max: 440 });
   try {
     await clipbus.attachmentRenderer.setButtons({
       buttons: [{ id: "copy", title: "Copy query params (JSON)" }],
@@ -40,6 +43,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   unsub?.();
+  stopAutoFit?.();
 });
 </script>
 
@@ -57,25 +61,27 @@ onUnmounted(() => {
       <!-- Query params table -->
       <div class="query-section">
         <div class="section-label">Query params</div>
-        <table v-if="payload.query.length > 0" class="query-table">
-          <thead>
-            <tr>
-              <th class="col-key">Key</th>
-              <th class="col-value">Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(q, i) in payload.query"
-              :key="i"
-              :class="i % 2 === 0 ? 'row-even' : 'row-odd'"
-            >
-              <td class="cell cell-key">{{ q.key }}</td>
-              <td class="cell cell-value">{{ q.value }}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div v-else class="no-query">No query params</div>
+        <div class="query-scroll">
+          <table v-if="payload.query.length > 0" class="query-table">
+            <thead>
+              <tr>
+                <th class="col-key">Key</th>
+                <th class="col-value">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(q, i) in payload.query"
+                :key="i"
+                :class="i % 2 === 0 ? 'row-even' : 'row-odd'"
+              >
+                <td class="cell cell-key">{{ q.key }}</td>
+                <td class="cell cell-value">{{ q.value }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div v-else class="no-query">No query params</div>
+        </div>
       </div>
     </section>
     <div v-else class="empty">Waiting for a URL…</div>
@@ -129,6 +135,11 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.query-scroll {
+  max-height: 240px;
+  overflow-y: auto;
 }
 
 .section-label {

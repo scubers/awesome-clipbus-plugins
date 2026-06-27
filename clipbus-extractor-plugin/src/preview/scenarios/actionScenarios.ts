@@ -7,6 +7,7 @@ import { INITIAL_DRAFT } from "../../features/regex-tool/payload";
 export interface ActionScenario {
   id: string;
   label: string;
+  component: string;
   bootstrap: Record<string, unknown>;
 }
 
@@ -14,6 +15,7 @@ export const actionScenarios: ActionScenario[] = [
   {
     id: "regex-tool",
     label: "Regex Tester",
+    component: "regex-tool",
     bootstrap: {
       ...INITIAL_DRAFT,
       pattern: "\\d+",

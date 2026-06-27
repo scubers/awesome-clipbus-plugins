@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { clipbus } from "@clipbus/plugin-sdk/ui";
+import { autoFit } from "@clipbus/plugin-sdk/dom";
 import { useTopicRef } from "../../shared/composables/useTopicRef";
 import { decodeIpPayload } from "./payload";
 import type { IpPayload } from "./payload";
@@ -27,8 +28,10 @@ async function copyText(key: string, text: string) {
 // ── Button host-invoke (optional: toolbar Copy button) ───────────────────────
 
 let unsub: (() => void) | null = null;
+let stopAutoFit: (() => void) | null = null;
 
 onMounted(async () => {
+  stopAutoFit = autoFit({ min: 140, max: 380 });
   try {
     await clipbus.attachmentRenderer.setButtons({
       buttons: [{ id: "copy-input", title: "Copy IP" }],
@@ -46,6 +49,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   unsub?.();
+  stopAutoFit?.();
   if (copyTimer) clearTimeout(copyTimer);
 });
 

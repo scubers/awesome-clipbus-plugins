@@ -4,7 +4,7 @@
 export interface AttachmentScenario {
   id: string;
   label: string;
-  rendererComponent: "compact" | "expanded";
+  component: string;
   searchTerms: string[];
   accentHex: string;
   bootstrap: Record<string, unknown>;
@@ -64,7 +64,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "color-swatch-blue",
     label: "Blue #3366FF",
-    rendererComponent: "compact",
+    component: "color-swatch",
     searchTerms: ["#3366FF", "blue"],
     accentHex: "#3366FF",
     bootstrap: {
@@ -74,7 +74,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "gradient-swatch-linear",
     label: "Gradient: Blue→Purple",
-    rendererComponent: "compact",
+    component: "gradient-swatch",
     searchTerms: ["gradient", "linear"],
     accentHex: "#8b5cf6",
     bootstrap: {
@@ -84,7 +84,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "markdown-renderer-sample",
     label: "Markdown: Combined Example",
-    rendererComponent: "expanded",
+    component: "markdown-renderer",
     searchTerms: ["markdown", "preview"],
     accentHex: "#0EA5E9",
     bootstrap: {

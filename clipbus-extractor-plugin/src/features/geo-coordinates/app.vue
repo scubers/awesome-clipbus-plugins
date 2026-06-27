@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { clipbus } from "@clipbus/plugin-sdk/ui";
+import { autoFit } from "@clipbus/plugin-sdk/dom";
 import { useTopicRef } from "../../shared/composables/useTopicRef";
 import { decodeGeoPayload } from "./payload";
 import type { GeoPayload } from "./payload";
@@ -27,8 +28,10 @@ async function copyText(key: string, text: string) {
 // ── Toolbar button ────────────────────────────────────────────────────────────
 
 let unsub: (() => void) | null = null;
+let stopAutoFit: (() => void) | null = null;
 
 onMounted(async () => {
+  stopAutoFit = autoFit({ min: 120, max: 340 });
   try {
     await clipbus.attachmentRenderer.setButtons({
       buttons: [{ id: "copy-decimal", title: "Copy Coordinates" }],
@@ -46,6 +49,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   unsub?.();
+  stopAutoFit?.();
   if (copyTimer) clearTimeout(copyTimer);
 });
 </script>

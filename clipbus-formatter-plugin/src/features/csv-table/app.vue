@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted } from "vue";
 import { clipbus } from "@clipbus/plugin-sdk/ui";
+import { autoFit } from "@clipbus/plugin-sdk/dom";
 import { useTopicRef } from "../../shared/composables/useTopicRef";
 import { decodeCsvPayload, buildMarkdownTable } from "./payload";
 
@@ -20,8 +21,11 @@ const hiddenRowCount = computed(() =>
 );
 
 let unsub: (() => void) | null = null;
+let stopAutoFit: (() => void) | null = null;
 
 onMounted(async () => {
+  stopAutoFit = autoFit({ min: 160, max: 460 });
+
   try {
     await clipbus.attachmentRenderer.setButtons({
       buttons: [{ id: "copy", title: "Copy as Markdown Table" }],
@@ -41,6 +45,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   unsub?.();
+  stopAutoFit?.();
 });
 </script>
 
@@ -133,6 +138,8 @@ onUnmounted(() => {
 
 .table-wrap {
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 360px;
   border: 1px solid var(--clipbus-border, #e2e8f0);
   border-radius: 6px;
 }

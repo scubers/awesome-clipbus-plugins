@@ -5,7 +5,7 @@
 export interface AttachmentScenario {
   id: string;
   label: string;
-  rendererComponent: "compact" | "expanded";
+  component: string;
   searchTerms: string[];
   accentHex: string;
   bootstrap: Record<string, unknown>;
@@ -15,11 +15,15 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "base64-renderer-hello",
     label: "Base64: Hello, World!",
-    rendererComponent: "compact",
+    component: "base64-renderer",
     searchTerms: ["base64", "decode"],
     accentHex: "#0F766E",
     bootstrap: {
       attachment: {
+        historyID: "preview-base64-hello",
+        owner: "plugin.decoder",
+        attachmentType: "plugin.decoder.base64",
+        attachmentKey: "primary",
         payloadJson: JSON.stringify({
           kind: "base64_preview",
           version: 1,
@@ -36,11 +40,15 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "base64-renderer-json",
     label: "Base64: JSON payload",
-    rendererComponent: "compact",
+    component: "base64-renderer",
     searchTerms: ["base64", "json"],
     accentHex: "#0F766E",
     bootstrap: {
       attachment: {
+        historyID: "preview-base64-json",
+        owner: "plugin.decoder",
+        attachmentType: "plugin.decoder.base64",
+        attachmentKey: "primary",
         payloadJson: JSON.stringify({
           kind: "base64_preview",
           version: 1,
@@ -57,11 +65,15 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "data-uri-text-plain",
     label: "Data URI: text/plain base64",
-    rendererComponent: "compact",
+    component: "data-uri",
     searchTerms: ["data-uri", "base64"],
     accentHex: "#0369A1",
     bootstrap: {
       attachment: {
+        historyID: "preview-datauri-text",
+        owner: "plugin.decoder",
+        attachmentType: "plugin.decoder.datauri",
+        attachmentKey: "primary",
         payloadJson: JSON.stringify({
           kind: "data_uri_preview",
           version: 1,
@@ -82,11 +94,15 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "data-uri-image-png",
     label: "Data URI: image/png",
-    rendererComponent: "compact",
+    component: "data-uri",
     searchTerms: ["data-uri", "image"],
     accentHex: "#0369A1",
     bootstrap: {
       attachment: {
+        historyID: "preview-datauri-image",
+        owner: "plugin.decoder",
+        attachmentType: "plugin.decoder.datauri",
+        attachmentKey: "primary",
         payloadJson: JSON.stringify({
           kind: "data_uri_preview",
           version: 1,
@@ -107,11 +123,15 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "jwt-renderer-canonical",
     label: "JWT: HS256 canonical token",
-    rendererComponent: "compact",
+    component: "jwt-renderer",
     searchTerms: ["jwt", "token"],
     accentHex: "#7C3AED",
     bootstrap: {
       attachment: {
+        historyID: "preview-jwt-hs256",
+        owner: "plugin.decoder",
+        attachmentType: "plugin.decoder.jwt",
+        attachmentKey: "primary",
         payloadJson: JSON.stringify({
           kind: "jwt_preview",
           version: 1,

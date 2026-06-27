@@ -5,7 +5,7 @@
 export interface AttachmentScenario {
   id: string;
   label: string;
-  rendererComponent: "compact" | "expanded";
+  component: string;
   searchTerms: string[];
   accentHex: string;
   bootstrap: Record<string, unknown>;
@@ -132,7 +132,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "entities-renderer-mixed",
     label: "Extracted Entities: URL + Email + IP",
-    rendererComponent: "compact",
+    component: "entities-renderer",
     searchTerms: ["extract", "url", "email", "ip"],
     accentHex: "#2563EB",
     bootstrap: {
@@ -151,7 +151,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "url-parsed-basic",
     label: "URL: parsed structure",
-    rendererComponent: "compact",
+    component: "url-parsed",
     searchTerms: ["url", "host", "query"],
     accentHex: "#2563EB",
     bootstrap: {
@@ -167,7 +167,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "ip-details-v4",
     label: "IP Address: IPv4 private host",
-    rendererComponent: "compact",
+    component: "ip-details",
     searchTerms: ["ip", "ipv4", "private", "address"],
     accentHex: "#0891B2",
     bootstrap: {
@@ -183,7 +183,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "ip-details-v4cidr",
     label: "IP Address: IPv4 CIDR /24",
-    rendererComponent: "compact",
+    component: "ip-details",
     searchTerms: ["ip", "cidr", "subnet", "netmask"],
     accentHex: "#0891B2",
     bootstrap: {
@@ -199,7 +199,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "ip-details-v6",
     label: "IP Address: IPv6 global unicast",
-    rendererComponent: "compact",
+    component: "ip-details",
     searchTerms: ["ip", "ipv6", "global", "unicast"],
     accentHex: "#0891B2",
     bootstrap: {
@@ -215,7 +215,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "mac-address-unicast",
     label: "MAC Address: unicast universal",
-    rendererComponent: "compact",
+    component: "mac-address",
     searchTerms: ["mac", "address", "ethernet", "oui"],
     accentHex: "#7C3AED",
     bootstrap: {
@@ -231,7 +231,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "geo-coordinates-sf",
     label: "Coordinates: San Francisco decimal",
-    rendererComponent: "compact",
+    component: "geo-coordinates",
     searchTerms: ["geo", "coordinates", "latitude", "longitude"],
     accentHex: "#16A34A",
     bootstrap: {
@@ -247,7 +247,7 @@ export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "uuid-details-v4",
     label: "UUID: random v4",
-    rendererComponent: "compact",
+    component: "uuid-details",
     searchTerms: ["uuid", "guid", "random", "identifier"],
     accentHex: "#7C3AED",
     bootstrap: {

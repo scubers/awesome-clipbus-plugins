@@ -1,253 +1,143 @@
 <template>
-  <main class="workbench" :data-theme="selectedTheme">
-    <section class="workbench__controls">
-      <label class="workbench__control">
+  <main class="wb" :data-theme="theme">
+    <header class="wb__bar">
+      <label class="wb__ctl" v-if="hasRenderer && hasAction">
         <span>View</span>
-        <select v-model="selectedView">
+        <select v-model="view">
           <option value="renderer">Renderer</option>
           <option value="action">Action</option>
         </select>
       </label>
-
-      <label v-if="activeScenarioOptions.length > 0" class="workbench__control">
+      <label class="wb__ctl" v-if="scenarios.length > 1">
         <span>Scenario</span>
-        <select v-model="selectedScenarioID">
-          <option
-            v-for="scenario in activeScenarioOptions"
-            :key="scenario.id"
-            :value="scenario.id"
-          >
-            {{ scenario.label }}
-          </option>
+        <select v-model="scenarioId">
+          <option v-for="s in scenarios" :key="s.id" :value="s.id">{{ s.label }}</option>
         </select>
       </label>
-
-      <label class="workbench__control">
+      <label class="wb__ctl">
         <span>Theme</span>
-        <select v-model="selectedTheme">
-          <option value="dark">Dark Host</option>
+        <select v-model="theme">
           <option value="light">Light Host</option>
+          <option value="dark">Dark Host</option>
         </select>
       </label>
-    </section>
+      <span class="wb__tag">{{ view === 'renderer' ? 'Attachment Renderer' : 'Draft Action' }}</span>
+    </header>
 
-    <section class="workbench__canvas">
-      <div class="host-frame">
-        <div class="host-frame__title">
-          <span>{{ selectedView === "renderer" ? "Attachment Renderer" : "Draft Action" }}</span>
-        </div>
-        <div class="host-frame__surface">
-          <!-- Replace this placeholder with real feature component imports once implemented. -->
-          <div class="host-frame__placeholder">
-            <template v-if="activeScenarioOptions.length === 0">
-              No scenarios yet — implement features and register scenarios in
-              <code>src/preview/scenarios/</code>.
-            </template>
-            <template v-else>
-              Scenario "{{ activeScenario?.label }}" — wire component in PreviewShellApp.vue.
-            </template>
-          </div>
+    <section class="wb__stage">
+      <div class="wb__card" :style="themeVars">
+        <component :is="activeComponent" v-if="activeComponent" :key="view + ':' + scenarioId" />
+        <div v-else class="wb__empty">
+          This plugin exposes no previewable WebView (auto-run actions / no renderers).
         </div>
       </div>
-
-      <aside class="workbench__notes">
-        <p class="workbench__notes-title">Preview Notes</p>
-        <p class="workbench__notes-body">
-          This workbench simulates host chrome and theme changes.
-        </p>
-        <p class="workbench__notes-body">
-          Once you add features: import each feature's <code>app.vue</code> here,
-          add scenarios to <code>src/preview/scenarios/</code>, and map them in
-          <code>activeComponent</code>.
-        </p>
-        <p class="workbench__notes-status">{{ statusMessage }}</p>
-      </aside>
     </section>
   </main>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { attachmentScenarios } from "./scenarios/attachmentScenarios";
 import { actionScenarios } from "./scenarios/actionScenarios";
 
+/* ─── PER-PLUGIN: import every renderer + draft-action feature component ─── */
+import ColorSwatch from "../features/color-swatch/app.vue";
+import GradientSwatch from "../features/gradient-swatch/app.vue";
+import MarkdownRenderer from "../features/markdown-renderer/app.vue";
+
+/* ─── PER-PLUGIN: map scenario.component (feature id) → component ─── */
+const RENDERERS: Record<string, unknown> = {
+  "color-swatch": ColorSwatch,
+  "gradient-swatch": GradientSwatch,
+  "markdown-renderer": MarkdownRenderer,
+};
+const ACTIONS: Record<string, unknown> = {};
+/* ──────────────────────────────────────────────────────────────────────── */
+
+// Mock host bridge so SDK host verbs resolve instead of throwing in the browser.
+const g = globalThis as unknown as { webkit?: { messageHandlers?: Record<string, unknown> } };
+if (!g.webkit?.messageHandlers?.clipbusPluginCall) {
+  g.webkit = { messageHandlers: { clipbusPluginCall: { postMessage: async () => ({ response: {} }) } } };
+}
+
 type ViewKey = "renderer" | "action";
-type ThemeKey = "light" | "dark";
+const hasRenderer = attachmentScenarios.length > 0;
+const hasAction = actionScenarios.length > 0;
+const params = new URLSearchParams(window.location.search);
+const view = ref<ViewKey>(
+  params.get("view") === "action" && hasAction ? "action" : hasRenderer ? "renderer" : "action"
+);
+const theme = ref<"light" | "dark">(params.get("theme") === "dark" ? "dark" : "light");
 
-const query = new URLSearchParams(window.location.search);
-const initialView: ViewKey = query.get("view") === "action" ? "action" : "renderer";
-const selectedView = ref<ViewKey>(initialView);
-const selectedTheme = ref<ThemeKey>(query.get("theme") === "light" ? "light" : "dark");
-const statusMessage = ref<string>("Ready. Implement features to start previewing.");
+const scenarios = computed(() => (view.value === "renderer" ? attachmentScenarios : actionScenarios));
+const scenarioId = ref<string>(scenarios.value[0]?.id ?? "");
+watch(scenarios, (list) => {
+  if (!list.some((s) => s.id === scenarioId.value)) scenarioId.value = list[0]?.id ?? "";
+});
+const scenario = computed(
+  () => scenarios.value.find((s) => s.id === scenarioId.value) ?? scenarios.value[0] ?? null
+);
+const activeComponent = computed(() => {
+  const s = scenario.value as { component?: string } | null;
+  if (!s?.component) return null;
+  return ((view.value === "renderer" ? RENDERERS : ACTIONS)[s.component] as unknown) ?? null;
+});
 
-const activeScenarioOptions = computed(() =>
-  selectedView.value === "renderer" ? attachmentScenarios : actionScenarios
+// Seed SDK topics BEFORE the child renders (sync + immediate). :key forces remount per scenario.
+watch(
+  [scenario, view],
+  () => {
+    const s = scenario.value as { bootstrap?: unknown } | null;
+    if (!s) return;
+    const mode = view.value === "renderer" ? "attachmentRenderer" : "action";
+    window.dispatchEvent(new CustomEvent("clipbus-plugin-context", { detail: { mode } }));
+    window.dispatchEvent(
+      new CustomEvent(view.value === "renderer" ? "clipbus-plugin-attachment" : "clipbus-plugin-draft", {
+        detail: s.bootstrap,
+      })
+    );
+  },
+  { immediate: true, flush: "sync" }
 );
 
-const selectedScenarioID = ref<string>(activeScenarioOptions.value[0]?.id ?? "");
-
-const activeScenario = computed(() =>
-  activeScenarioOptions.value.find((s) => s.id === selectedScenarioID.value) ??
-  activeScenarioOptions.value[0] ??
-  null
-);
+// Theme tokens so renderers using var(--clipbus-*) re-theme in the workbench.
+const LIGHT: Record<string, string> = {
+  "--clipbus-text-primary": "#0f172a", "--clipbus-text-secondary": "#475569",
+  "--clipbus-text-tertiary": "#94a3b8", "--clipbus-surface": "#ffffff",
+  "--clipbus-surface-elevated": "#f1f5f9", "--clipbus-border": "#e2e8f0",
+  "--clipbus-accent": "#2563eb", "--clipbus-on-accent": "#ffffff",
+};
+const DARK: Record<string, string> = {
+  "--clipbus-text-primary": "#e2e8f0", "--clipbus-text-secondary": "#94a3b8",
+  "--clipbus-text-tertiary": "#64748b", "--clipbus-surface": "#1e293b",
+  "--clipbus-surface-elevated": "#0f172a", "--clipbus-border": "#334155",
+  "--clipbus-accent": "#3b82f6", "--clipbus-on-accent": "#ffffff",
+};
+const themeVars = computed(() => (theme.value === "dark" ? DARK : LIGHT));
 </script>
 
 <style scoped>
-.workbench {
-  min-height: 100%;
-  padding: 24px;
-  color: #e2e8f0;
-  background:
-    radial-gradient(circle at top left, rgba(15, 118, 110, 0.22), transparent 24%),
-    linear-gradient(180deg, #111827, #0f172a);
-}
-
-.workbench[data-theme="light"] {
-  color: #0f172a;
-  background:
-    radial-gradient(circle at top left, rgba(14, 165, 233, 0.18), transparent 24%),
-    linear-gradient(180deg, #e2e8f0, #cbd5e1);
-}
-
-.workbench__controls {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-}
-
-.workbench__control {
-  display: grid;
-  gap: 6px;
-}
-
-.workbench__control span {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(226, 232, 240, 0.72);
-}
-
-.workbench[data-theme="light"] .workbench__control span {
-  color: rgba(15, 23, 42, 0.62);
-}
-
-.workbench__control select {
-  min-width: 170px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.26);
-  background: rgba(15, 23, 42, 0.48);
-  color: inherit;
-}
-
-.workbench[data-theme="light"] .workbench__control select {
-  background: rgba(255, 255, 255, 0.82);
-}
-
-.workbench__canvas {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 260px;
-  gap: 20px;
-  align-items: start;
-}
-
-.host-frame {
-  padding: 18px;
-  border-radius: 22px;
-  background: rgba(15, 23, 42, 0.34);
-  border: 1px solid rgba(45, 212, 191, 0.2);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  overflow: auto;
-}
-
-.workbench[data-theme="light"] .host-frame {
-  background: rgba(248, 250, 252, 0.52);
-  border-color: rgba(148, 163, 184, 0.28);
-}
-
-.host-frame__title {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: rgba(226, 232, 240, 0.8);
-}
-
-.workbench[data-theme="light"] .host-frame__title {
-  color: rgba(15, 23, 42, 0.7);
-}
-
-.host-frame__surface {
-  display: grid;
-  gap: 12px;
-}
-
-.host-frame__placeholder {
-  min-height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  border-radius: 12px;
-  border: 1px dashed rgba(148, 163, 184, 0.3);
-  color: rgba(226, 232, 240, 0.55);
-  font-size: 13px;
-  text-align: center;
-  line-height: 1.6;
-}
-
-.workbench[data-theme="light"] .host-frame__placeholder {
-  color: rgba(15, 23, 42, 0.45);
-}
-
-.workbench__notes {
-  padding: 16px;
-  border-radius: 18px;
-  background: rgba(15, 23, 42, 0.42);
-  border: 1px solid rgba(148, 163, 184, 0.16);
-}
-
-.workbench[data-theme="light"] .workbench__notes {
-  background: rgba(255, 255, 255, 0.76);
-}
-
-.workbench__notes-title {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.workbench__notes-body,
-.workbench__notes-status {
-  margin: 10px 0 0;
-  font-size: 13px;
-  line-height: 1.5;
-  color: rgba(226, 232, 240, 0.78);
-}
-
-.workbench[data-theme="light"] .workbench__notes-body,
-.workbench[data-theme="light"] .workbench__notes-status {
-  color: rgba(15, 23, 42, 0.72);
-}
-
-.workbench__notes-status {
-  font-weight: 600;
-}
-
-@media (max-width: 980px) {
-  .workbench__canvas {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .workbench__notes {
-    order: -1;
-  }
-}
+.wb { min-height: 100%; padding: 20px; display: flex; flex-direction: column; gap: 16px;
+  background: linear-gradient(180deg, #0f172a, #111827); }
+.wb[data-theme="light"] { background: linear-gradient(180deg, #e2e8f0, #cbd5e1); }
+.wb__bar { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+.wb__ctl { display: grid; gap: 6px; }
+.wb__ctl span { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.9); }
+.wb[data-theme="light"] .wb__ctl span { color: rgba(51, 65, 85, 0.8); }
+.wb__ctl select { min-width: 170px; padding: 8px 10px; border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.35); background: rgba(15, 23, 42, 0.5); color: inherit;
+  color: #e2e8f0; }
+.wb[data-theme="light"] .wb__ctl select { background: rgba(255, 255, 255, 0.85); color: #0f172a; }
+.wb__tag { margin-left: auto; align-self: center; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.04em; color: rgba(148, 163, 184, 0.85); }
+.wb__stage { display: flex; justify-content: center; }
+/* Card mimics the host renderer viewport. Fixed width, content drives height; the
+   renderer's own autoFit/overflow governs its internal layout. */
+.wb__card { width: 380px; max-width: 100%; padding: 14px; border-radius: 14px;
+  background: var(--clipbus-surface, #ffffff); color: var(--clipbus-text-primary, #0f172a);
+  border: 1px solid var(--clipbus-border, #e2e8f0); box-shadow: 0 10px 30px rgba(2, 6, 23, 0.35);
+  overflow: auto; }
+.wb__empty { padding: 28px 12px; text-align: center; font-size: 13px;
+  color: var(--clipbus-text-tertiary, #94a3b8); }
 </style>

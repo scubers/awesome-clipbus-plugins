@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, computed } from "vue";
 import { clipbus } from "@clipbus/plugin-sdk/ui";
+import { autoFit } from "@clipbus/plugin-sdk/dom";
 import { useTopicRef } from "../../shared/composables/useTopicRef";
 import { decodeQueryPayload } from "./payload";
 
@@ -10,8 +11,11 @@ const payload = computed(() =>
 );
 
 let unsub: (() => void) | null = null;
+let stopAutoFit: (() => void) | null = null;
 
 onMounted(async () => {
+  stopAutoFit = autoFit({ min: 140, max: 420 });
+
   try {
     await clipbus.attachmentRenderer.setButtons({
       buttons: [{ id: "copy-json", title: "Copy as JSON" }],
@@ -29,6 +33,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   unsub?.();
+  stopAutoFit?.();
 });
 </script>
 
@@ -115,6 +120,8 @@ onUnmounted(() => {
 
 .table-wrap {
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 280px;
   border: 1px solid var(--clipbus-border, #e2e8f0);
   border-radius: 6px;
 }
