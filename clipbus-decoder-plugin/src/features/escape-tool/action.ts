@@ -16,7 +16,7 @@ export function createEscapeAction(): PluginAutoRunActionHandler {
         (input as { content?: { text?: string } } | undefined)?.content?.text ?? "";
       return {
         displayName: "Escape & Encode",
-        buttons: [{ id: "submit", title: "复制编码结果", isEnabled: true }],
+        buttons: [{ id: "submit", title: "Copy Encoded Result", isEnabled: true }],
         defaultButtonID: "submit",
         initialDraft: {
           ...INITIAL_DRAFT,
@@ -27,7 +27,7 @@ export function createEscapeAction(): PluginAutoRunActionHandler {
     // Draft-lifecycle actions are driven by the UI; runAutoAction is a guarded stub
     // that satisfies the PluginAutoRunActionHandler interface.
     async runAutoAction(_input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
-      return actionResult.none({ userMessage: "draft 由 UI 驱动" });
+      return actionResult.none({ userMessage: "Draft is driven by the UI" });
     },
   };
 }

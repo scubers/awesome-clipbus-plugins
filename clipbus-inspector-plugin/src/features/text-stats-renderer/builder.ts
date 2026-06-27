@@ -54,7 +54,7 @@ export function buildTextStatsArtifact(input: unknown): PluginDetectorArtifact |
     searchProjection: {
       scope: "inspector",
       searchText: payload.sha256,
-      label: "文本统计",
+      label: "Text Stats",
     },
   };
 }

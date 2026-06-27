@@ -10,7 +10,7 @@ export function createJwtRenderer(): PluginAttachmentRendererHandler {
     async resolveAttachment(input: PluginResolveAttachmentInput): Promise<PluginAttachmentResolveResult> {
       const payload = decodeJwtPayload(input?.attachment?.payloadJson);
       if (!payload) return { displayName: "JWT", tintHex: "#7C3AED", shouldDisplay: false };
-      return { displayName: "JWT 解析", tintHex: "#7C3AED" };
+      return { displayName: "JWT Decoded", tintHex: "#7C3AED" };
     },
   };
 }

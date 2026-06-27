@@ -17,13 +17,13 @@
   "detectors": [
     {
       "id": "timestamp-detector",
-      "title": "Unix 时间戳识别",
+      "title": "Unix Timestamp Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.converter.timestamp"]
     },
     {
       "id": "radix-detector",
-      "title": "进制识别",
+      "title": "Radix Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.radix.number"]
     }
@@ -31,14 +31,14 @@
   "attachmentRenderers": [
     {
       "id": "timestamp-renderer",
-      "title": "Unix 时间戳转换",
+      "title": "Unix Timestamp Converter",
       "attachmentType": "plugin.converter.timestamp",
       "height": { "min": 140, "max": 300 },
       "uiEntry": "renderers/timestamp-renderer/index.html"
     },
     {
       "id": "radix-renderer",
-      "title": "进制转换",
+      "title": "Radix Converter",
       "attachmentType": "plugin.radix.number",
       "height": { "min": 120, "max": 300 },
       "uiEntry": "renderers/radix-renderer/index.html"
@@ -47,17 +47,17 @@
   "actions": [
     {
       "id": "timestamp-copy",
-      "title": "复制 ISO 8601 时间",
+      "title": "Copy ISO 8601 Timestamp",
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
-      "keywords": ["timestamp", "unix", "time", "时间戳"]
+      "keywords": ["timestamp", "unix", "time"]
     },
     {
       "id": "radix-copy",
-      "title": "复制各进制",
+      "title": "Copy All Radix Formats",
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
-      "keywords": ["radix", "hex", "binary", "octal", "decimal", "进制", "转换"]
+      "keywords": ["radix", "hex", "binary", "octal", "decimal", "convert"]
     },
     {
       "id": "case-tool",
@@ -65,7 +65,7 @@
       "supportedItemTypes": ["text"],
       "lifecycle": "draft",
       "uiEntry": "actions/case-tool/index.html",
-      "keywords": ["case", "camel", "snake", "kebab", "pascal", "转换", "命名"]
+      "keywords": ["case", "camel", "snake", "kebab", "pascal", "convert", "naming"]
     }
   ]
 }

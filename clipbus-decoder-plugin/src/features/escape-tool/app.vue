@@ -3,7 +3,7 @@
     <section class="escape-shell__controls">
       <!-- Mode toggle -->
       <div class="escape-shell__field escape-shell__field--row">
-        <span class="escape-shell__label">模式</span>
+        <span class="escape-shell__label">Mode</span>
         <div class="escape-shell__segmented">
           <button
             v-for="m in modes"
@@ -18,12 +18,12 @@
 
       <!-- Input -->
       <div class="escape-shell__field">
-        <label class="escape-shell__label" for="escape-input">输入</label>
+        <label class="escape-shell__label" for="escape-input">Input</label>
         <textarea
           id="escape-input"
           v-model="draft.input"
           class="escape-shell__textarea"
-          placeholder="在此输入文本…"
+          placeholder="Enter text here…"
           rows="3"
         />
       </div>
@@ -34,27 +34,27 @@
       <!-- Encoded result -->
       <div class="escape-shell__result-block">
         <div class="escape-shell__result-header">
-          <span class="escape-shell__label">编码结果</span>
+          <span class="escape-shell__label">Encoded</span>
           <button
             type="button"
             class="escape-shell__copy-btn"
             @click="copyText(result.encoded)"
-          >复制</button>
+          >Copy</button>
         </div>
-        <pre class="escape-shell__result-pre">{{ result.encoded || "（无内容）" }}</pre>
+        <pre class="escape-shell__result-pre">{{ result.encoded || "(empty)" }}</pre>
       </div>
 
       <!-- Decoded result -->
       <div class="escape-shell__result-block">
         <div class="escape-shell__result-header">
-          <span class="escape-shell__label">解码结果</span>
+          <span class="escape-shell__label">Decoded</span>
           <button
             type="button"
             class="escape-shell__copy-btn"
             @click="copyText(result.decoded)"
-          >复制</button>
+          >Copy</button>
         </div>
-        <pre class="escape-shell__result-pre">{{ result.decoded || "（无内容）" }}</pre>
+        <pre class="escape-shell__result-pre">{{ result.decoded || "(empty)" }}</pre>
       </div>
     </section>
   </main>
@@ -90,13 +90,13 @@ let unsubHostInvoke: (() => void) | null = null;
 
 onMounted(async () => {
   await clipbus.action.setButtons({
-    buttons: [{ id: "submit", title: "复制编码结果", isEnabled: true }],
+    buttons: [{ id: "submit", title: "Copy Encoded Result", isEnabled: true }],
   });
   unsubHostInvoke = clipbus.action.onHostInvoke.on(async (d) => {
     if (d?.buttonID === "submit") {
       await clipbus.action.complete({
         result: { resultKind: "text", text: result.value.encoded },
-        userMessage: "已复制编码结果",
+        userMessage: "Copied encoded result",
       });
     }
   });

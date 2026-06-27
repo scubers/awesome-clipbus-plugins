@@ -43,7 +43,7 @@ onUnmounted(() => {
         </div>
       </div>
     </section>
-    <div v-else class="empty">等待 Diff 内容</div>
+    <div v-else class="empty">Waiting for diff content</div>
   </main>
 </template>
 

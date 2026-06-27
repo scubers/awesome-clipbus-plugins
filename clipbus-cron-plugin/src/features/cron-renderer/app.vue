@@ -29,9 +29,9 @@ onUnmounted(() => {
       <table class="fields-table">
         <thead>
           <tr>
-            <th class="col-name">字段</th>
-            <th class="col-raw">原值</th>
-            <th class="col-desc">说明</th>
+            <th class="col-name">Field</th>
+            <th class="col-raw">Value</th>
+            <th class="col-desc">Description</th>
           </tr>
         </thead>
         <tbody>
@@ -45,7 +45,7 @@ onUnmounted(() => {
 
       <div class="summary">{{ payload.summary }}</div>
     </section>
-    <div v-else class="empty">等待 Cron 表达式</div>
+    <div v-else class="empty">Waiting for cron expression</div>
   </main>
 </template>
 

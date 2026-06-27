@@ -24,7 +24,7 @@ let unsub: (() => void) | null = null;
 onMounted(async () => {
   try {
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy", title: "复制为 Markdown 表" }],
+      buttons: [{ id: "copy", title: "Copy as Markdown Table" }],
     });
   } catch {
     /* not in attachment renderer context */
@@ -80,10 +80,10 @@ onUnmounted(() => {
         </table>
       </div>
       <div v-if="hiddenRowCount > 0" class="more-rows">
-        +{{ hiddenRowCount }} 更多行
+        +{{ hiddenRowCount }} more rows
       </div>
     </section>
-    <div v-else class="empty">等待 CSV 内容</div>
+    <div v-else class="empty">Waiting for CSV content</div>
   </main>
 </template>
 

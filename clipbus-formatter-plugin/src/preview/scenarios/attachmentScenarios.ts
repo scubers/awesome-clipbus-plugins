@@ -20,9 +20,9 @@ const jsonObjectPayload = JSON.stringify({
   topLevelType: "object",
   topLevelCount: 2,
   display: {
-    typeLabel: "JSON 对象",
-    headline: "JSON 对象 · 2 个键",
-    subheadline: '25 → 30 字符',
+    typeLabel: "JSON Object",
+    headline: "JSON Object · 2 keys",
+    subheadline: "25 → 30 chars",
   },
 });
 
@@ -35,18 +35,18 @@ const jsonArrayPayload = JSON.stringify({
   topLevelType: "array",
   topLevelCount: 3,
   display: {
-    typeLabel: "JSON 数组",
-    headline: "JSON 数组 · 3 项",
-    subheadline: "9 → 16 字符",
+    typeLabel: "JSON Array",
+    headline: "JSON Array · 3 items",
+    subheadline: "9 → 16 chars",
   },
 });
 
 export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "json-renderer-object",
-    label: "JSON 对象",
+    label: "JSON Object",
     rendererComponent: "compact",
-    searchTerms: ["json", "object", "格式化"],
+    searchTerms: ["json", "object", "format"],
     accentHex: "#7C3AED",
     bootstrap: {
       attachment: {
@@ -60,9 +60,9 @@ export const attachmentScenarios: AttachmentScenario[] = [
   },
   {
     id: "json-renderer-array",
-    label: "JSON 数组",
+    label: "JSON Array",
     rendererComponent: "compact",
-    searchTerms: ["json", "array", "数组"],
+    searchTerms: ["json", "array", "formatter"],
     accentHex: "#7C3AED",
     bootstrap: {
       attachment: {

@@ -23,7 +23,7 @@
       "supportedItemTypes": ["text"],
       "lifecycle": "draft",
       "uiEntry": "actions/gen-tool/index.html",
-      "keywords": ["uuid", "password", "密码", "生成", "generate"]
+      "keywords": ["uuid", "password", "generate", "random", "strong"]
     }
   ]
 }

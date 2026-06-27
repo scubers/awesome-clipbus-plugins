@@ -21,10 +21,10 @@ export function createJsonCopyAction(): PluginAutoRunActionHandler {
     ): Promise<PluginActionOperationResult> {
       const payload = createJsonPayload(input);
       if (!payload) {
-        return actionResult.none({ userMessage: "无法识别 JSON 内容" });
+        return actionResult.none({ userMessage: "Could not parse JSON content" });
       }
       return actionResult.text(payload.formatted, {
-        userMessage: "已复制格式化 JSON",
+        userMessage: "Formatted JSON copied",
       });
     },
   };

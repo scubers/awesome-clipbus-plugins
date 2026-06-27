@@ -14,9 +14,9 @@ const groups = computed(() => {
   if (!payload.value) return [];
   const p = payload.value;
   const result: { label: string; items: string[] }[] = [];
-  if (p.urls.length > 0) result.push({ label: "链接", items: p.urls });
-  if (p.emails.length > 0) result.push({ label: "邮箱", items: p.emails });
-  if (p.ips.length > 0) result.push({ label: "IP 地址", items: p.ips });
+  if (p.urls.length > 0) result.push({ label: "URLs", items: p.urls });
+  if (p.emails.length > 0) result.push({ label: "Emails", items: p.emails });
+  if (p.ips.length > 0) result.push({ label: "IP Addresses", items: p.ips });
   return result;
 });
 
@@ -28,7 +28,7 @@ onMounted(async () => {
 
   try {
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy-all", title: "复制全部" }],
+      buttons: [{ id: "copy-all", title: "Copy All" }],
     });
   } catch {
     /* not in attachment renderer context */
@@ -56,7 +56,7 @@ onUnmounted(() => {
   <main class="shell">
     <section v-if="payload" class="content">
       <div class="header-row">
-        <span class="title">提取结果</span>
+        <span class="title">Extracted Entities</span>
         <span class="badge">{{ payload.totalCount }}</span>
       </div>
       <div v-for="group in groups" :key="group.label" class="group">
@@ -71,7 +71,7 @@ onUnmounted(() => {
         </ul>
       </div>
     </section>
-    <div v-else class="empty">等待包含链接、邮箱或 IP 的文本</div>
+    <div v-else class="empty">Waiting for text with URLs, emails, or IPs</div>
   </main>
 </template>
 

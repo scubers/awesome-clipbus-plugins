@@ -12,7 +12,7 @@ export function createMarkdownRenderer(): PluginAttachmentRendererHandler {
     async resolveAttachment(input: PluginResolveAttachmentInput): Promise<PluginAttachmentResolveResult> {
       const payload = decodeMarkdownPayload(input?.attachment?.payloadJson);
       if (!payload) return { displayName: "Markdown", tintHex: TINT_HEX, shouldDisplay: false };
-      return { displayName: "Markdown 预览", tintHex: TINT_HEX };
+      return { displayName: "Markdown Preview", tintHex: TINT_HEX };
     },
   };
 }

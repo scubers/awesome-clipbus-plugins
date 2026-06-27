@@ -21,17 +21,17 @@ export function createUrlAction(): PluginAutoRunActionHandler {
     ): Promise<PluginActionOperationResult> {
       const payload = createUrlPayload(input);
       if (!payload) {
-        return actionResult.none({ userMessage: "不是 URL" });
+        return actionResult.none({ userMessage: "Not a URL" });
       }
       if (payload.query.length > 0) {
         const obj = Object.fromEntries(
           payload.query.map((q) => [q.key, q.value])
         );
         return actionResult.text(JSON.stringify(obj, null, 2), {
-          userMessage: "已复制查询参数",
+          userMessage: "Copied query params",
         });
       }
-      return actionResult.text(payload.href, { userMessage: "已复制 URL" });
+      return actionResult.text(payload.href, { userMessage: "Copied URL" });
     },
   };
 }

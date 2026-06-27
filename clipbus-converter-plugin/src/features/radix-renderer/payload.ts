@@ -101,7 +101,7 @@ export function buildRadixArtifact(input: unknown): PluginDetectorArtifact | nul
     searchProjection: {
       scope: "radix",
       searchText: `${payload.decimal} ${payload.hex} ${payload.binary}`.slice(0, 200),
-      label: "进制转换",
+      label: "Radix Conversion",
     },
   };
 }

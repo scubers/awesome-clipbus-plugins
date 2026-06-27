@@ -58,13 +58,13 @@ export function createJsonPayload(input: unknown): JsonFormatterPayload | null {
       ? formatted.slice(0, MAX_FORMATTED_CHARS) + "\n…"
       : formatted;
 
-  const typeLabel = type === "array" ? "JSON 数组" : "JSON 对象";
-  const countLabel = type === "array" ? `${count} 项` : `${count} 个键`;
+  const typeLabel = type === "array" ? "JSON Array" : "JSON Object";
+  const countLabel = type === "array" ? `${count} items` : `${count} keys`;
   const headline = `${typeLabel} · ${countLabel}`;
   const isAlreadyFormatted = raw === formatted;
   const subheadline = isAlreadyFormatted
-    ? `已格式化 · ${raw.length} 字符`
-    : `${raw.length} → ${formatted.length} 字符`;
+    ? `already formatted · ${raw.length} chars`
+    : `${raw.length} → ${formatted.length} chars`;
 
   return {
     kind: "json_formatter_preview",

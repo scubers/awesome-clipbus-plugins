@@ -37,7 +37,7 @@
       "title": "Copy as Markdown Table",
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
-      "keywords": ["csv", "table", "表格", "markdown"]
+      "keywords": ["csv", "table", "spreadsheet", "markdown"]
     }
   ]
 }

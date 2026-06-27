@@ -17,7 +17,7 @@ export function createRegexAction(): PluginAutoRunActionHandler {
       const text = content?.kind === "text" ? content.text : "";
       return {
         displayName: "Regex Tester",
-        buttons: [{ id: "submit", title: "复制匹配", isEnabled: true }],
+        buttons: [{ id: "submit", title: "Copy Matches", isEnabled: true }],
         defaultButtonID: "submit",
         initialDraft: {
           ...INITIAL_DRAFT,
@@ -28,7 +28,7 @@ export function createRegexAction(): PluginAutoRunActionHandler {
     // Draft-lifecycle actions are driven by the UI; runAutoAction is a guarded stub
     // that satisfies the PluginAutoRunActionHandler interface.
     async runAutoAction(_input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
-      return actionResult.none({ userMessage: "draft 由 UI 驱动" });
+      return actionResult.none({ userMessage: "driven by UI" });
     },
   };
 }

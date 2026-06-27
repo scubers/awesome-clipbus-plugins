@@ -22,7 +22,7 @@ onMounted(async () => {
 
   try {
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy-all", title: "复制全部进制" }],
+      buttons: [{ id: "copy-all", title: "Copy all radix" }],
     });
   } catch {
     /* not in attachment renderer context */
@@ -51,38 +51,38 @@ onUnmounted(() => {
         <div class="row">
           <span class="row-label">DEC</span>
           <code class="row-value">{{ payload.decimal }}</code>
-          <button class="copy-btn" @click="copyRow(payload!.decimal)">复制</button>
+          <button class="copy-btn" @click="copyRow(payload!.decimal)">Copy</button>
         </div>
         <div class="row">
           <span class="row-label">HEX</span>
           <code class="row-value">{{ payload.hex }}</code>
-          <button class="copy-btn" @click="copyRow(payload!.hex)">复制</button>
+          <button class="copy-btn" @click="copyRow(payload!.hex)">Copy</button>
         </div>
         <div class="row">
           <span class="row-label">OCT</span>
           <code class="row-value">{{ payload.octal }}</code>
-          <button class="copy-btn" @click="copyRow(payload!.octal)">复制</button>
+          <button class="copy-btn" @click="copyRow(payload!.octal)">Copy</button>
         </div>
         <div class="row">
           <span class="row-label">BIN</span>
           <code class="row-value bin-value">{{ payload.binary }}</code>
-          <button class="copy-btn" @click="copyRow(payload!.binary)">复制</button>
+          <button class="copy-btn" @click="copyRow(payload!.binary)">Copy</button>
         </div>
       </div>
 
       <div class="meta-row">
         <span class="meta-item">
-          <span class="meta-label">位数</span>
+          <span class="meta-label">Bits</span>
           <span class="meta-value">{{ payload.bits }}</span>
         </span>
         <span v-if="payload.asciiChar" class="meta-item">
           <span class="meta-label">ASCII</span>
           <code class="meta-value">{{ payload.asciiChar }}</code>
         </span>
-        <span v-if="payload.isNegative" class="badge badge--neg">负数</span>
+        <span v-if="payload.isNegative" class="badge badge--neg">Negative</span>
       </div>
     </section>
-    <div v-else class="empty">等待整数输入</div>
+    <div v-else class="empty">Waiting for integer</div>
   </main>
 </template>
 

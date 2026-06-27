@@ -116,7 +116,7 @@ export function buildBase64Artifact(input: unknown): PluginDetectorArtifact | nu
     searchProjection: {
       scope: "decoder",
       searchText: payload.decoded.slice(0, 200),
-      label: "Base64 解码",
+      label: "Base64 Decoded",
     },
   };
 }

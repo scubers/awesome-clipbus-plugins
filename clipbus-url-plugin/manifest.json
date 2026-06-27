@@ -37,7 +37,7 @@
       "title": "Copy URL Query",
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
-      "keywords": ["url", "链接", "query", "参数"]
+      "keywords": ["url", "link", "query", "param"]
     }
   ]
 }

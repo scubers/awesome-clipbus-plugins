@@ -21,10 +21,10 @@ export function createCsvAction(): PluginAutoRunActionHandler {
     ): Promise<PluginActionOperationResult> {
       const payload = createCsvPayload(input);
       if (!payload) {
-        return actionResult.none({ userMessage: "不是 CSV 表格" });
+        return actionResult.none({ userMessage: "Not a CSV table" });
       }
       const md = buildMarkdownTable(payload);
-      return actionResult.text(md, { userMessage: "已复制 Markdown 表" });
+      return actionResult.text(md, { userMessage: "Markdown table copied" });
     },
   };
 }

@@ -21,14 +21,14 @@ export interface CronPayload {
 
 // Field definitions for validation
 const FIELD_DEFS = [
-  { name: "分钟",  min: 0,  max: 59,  names: undefined as string[] | undefined },
-  { name: "小时",  min: 0,  max: 23,  names: undefined as string[] | undefined },
-  { name: "日",    min: 1,  max: 31,  names: undefined as string[] | undefined },
-  { name: "月",    min: 1,  max: 12,  names: ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"] },
-  { name: "星期",  min: 0,  max: 7,   names: ["SUN","MON","TUE","WED","THU","FRI","SAT"] },
+  { name: "Minute",  min: 0,  max: 59,  names: undefined as string[] | undefined },
+  { name: "Hour",    min: 0,  max: 23,  names: undefined as string[] | undefined },
+  { name: "Day",     min: 1,  max: 31,  names: undefined as string[] | undefined },
+  { name: "Month",   min: 1,  max: 12,  names: ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"] },
+  { name: "Weekday", min: 0,  max: 7,   names: ["SUN","MON","TUE","WED","THU","FRI","SAT"] },
 ];
 
-const WEEKDAY_NAMES_CN = ["周日","周一","周二","周三","周四","周五","周六"];
+const WEEKDAY_NAMES_EN = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const WEEKDAY_MAP: Record<string, number> = {
   SUN: 0, MON: 1, TUE: 2, WED: 3, THU: 4, FRI: 5, SAT: 6,
 };
@@ -86,39 +86,44 @@ function resolveWeekday(token: string): number | null {
   return null;
 }
 
+const MONTH_NAMES_EN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTH_MAP_EN: Record<string, string> = {
+  JAN:"Jan", FEB:"Feb", MAR:"Mar", APR:"Apr", MAY:"May", JUN:"Jun",
+  JUL:"Jul", AUG:"Aug", SEP:"Sep", OCT:"Oct", NOV:"Nov", DEC:"Dec",
+};
+
 function describeValue(token: string, fieldIdx: number): string {
   const upper = token.toUpperCase();
   if (fieldIdx === 4) {
     const wn = resolveWeekday(token);
-    if (wn !== null) return WEEKDAY_NAMES_CN[wn] ?? token;
+    if (wn !== null) return WEEKDAY_NAMES_EN[wn] ?? token;
   }
   if (fieldIdx === 3) {
-    const MONTH_MAP: Record<string, string> = {
-      JAN:"1月", FEB:"2月", MAR:"3月", APR:"4月", MAY:"5月", JUN:"6月",
-      JUL:"7月", AUG:"8月", SEP:"9月", OCT:"10月", NOV:"11月", DEC:"12月",
-    };
-    if (upper in MONTH_MAP) return MONTH_MAP[upper]!;
-    if (/^\d+$/.test(token)) return `${token}月`;
+    if (upper in MONTH_MAP_EN) return MONTH_MAP_EN[upper]!;
+    if (/^\d+$/.test(token)) {
+      const n = parseInt(token, 10);
+      if (n >= 1 && n <= 12) return MONTH_NAMES_EN[n - 1]!;
+    }
   }
-  const UNIT_NAMES = ["分钟", "小时", "日", "月", "星期"];
-  return `第 ${token} ${UNIT_NAMES[fieldIdx] ?? ""}`;
+  const UNIT_NAMES = ["minute", "hour", "day", "month", "weekday"];
+  return `${UNIT_NAMES[fieldIdx] ?? ""} ${token}`;
 }
 
 function describeToken(token: string, fieldIdx: number, unitName: string): string {
-  if (token === "*") return `每${unitName}`;
+  if (token === "*") return `every ${unitName}`;
 
   // Step
   const slashIdx = token.indexOf("/");
   if (slashIdx >= 0) {
     const base = token.slice(0, slashIdx);
     const step = token.slice(slashIdx + 1);
-    if (base === "*") return `每 ${step} ${unitName}`;
-    return `从 ${describeValue(base, fieldIdx)} 起每 ${step} ${unitName}`;
+    if (base === "*") return `every ${step} ${unitName}s`;
+    return `every ${step} ${unitName}s from ${describeValue(base, fieldIdx)}`;
   }
 
   // List
   if (token.includes(",")) {
-    return token.split(",").map((t) => describeValue(t, fieldIdx)).join("、");
+    return token.split(",").map((t) => describeValue(t, fieldIdx)).join(", ");
   }
 
   // Range
@@ -130,10 +135,10 @@ function describeToken(token: string, fieldIdx: number, unitName: string): strin
       const aNum = resolveWeekday(a);
       const bNum = resolveWeekday(b);
       if (aNum !== null && bNum !== null) {
-        return `${WEEKDAY_NAMES_CN[aNum] ?? a}至${WEEKDAY_NAMES_CN[bNum] ?? b}`;
+        return `${WEEKDAY_NAMES_EN[aNum] ?? a} through ${WEEKDAY_NAMES_EN[bNum] ?? b}`;
       }
     }
-    return `${describeValue(a, fieldIdx)} 至 ${describeValue(b, fieldIdx)}`;
+    return `${describeValue(a, fieldIdx)} through ${describeValue(b, fieldIdx)}`;
   }
 
   return describeValue(token, fieldIdx);
@@ -147,19 +152,19 @@ function buildSummary(fields: CronField[]): string {
 
   if (monthField.raw !== "*")   parts.push(monthField.description);
   if (weekdayField.raw !== "*") parts.push(weekdayField.description);
-  if (dayField.raw !== "*")     parts.push(`每月${dayField.description}`);
+  if (dayField.raw !== "*")     parts.push(`on the ${dayField.description} of the month`);
 
   if (hourField.raw === "*" && minField.raw === "*") {
-    parts.push("每分钟");
+    parts.push("every minute");
   } else if (hourField.raw === "*") {
     parts.push(minField.description);
   } else if (minField.raw === "0" || minField.raw === "00") {
-    parts.push(`${hourField.description}整点`);
+    parts.push(`${hourField.description} on the hour`);
   } else {
     parts.push(`${hourField.description} ${minField.description}`);
   }
 
-  return parts.join("，") + "执行";
+  return parts.join(", ");
 }
 
 export function createCronPayload(input: unknown): CronPayload | null {
@@ -179,7 +184,7 @@ export function createCronPayload(input: unknown): CronPayload | null {
     if (!validateToken(tokens[i]!, def.min, def.max, def.names)) return null;
   }
 
-  const UNIT_NAMES = ["分钟", "小时", "天", "月", "星期"];
+  const UNIT_NAMES = ["minute", "hour", "day", "month", "weekday"];
   const fields: CronField[] = tokens.map((token, i) => ({
     name:        FIELD_DEFS[i]!.name,
     raw:         token,

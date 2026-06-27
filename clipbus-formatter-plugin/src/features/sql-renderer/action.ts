@@ -18,9 +18,9 @@ export function createSqlCopyAction(): PluginAutoRunActionHandler {
     async runAutoAction(input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
       const payload = createSqlPayload(input);
       if (!payload) {
-        return actionResult.none({ userMessage: "未识别到 SQL" });
+        return actionResult.none({ userMessage: "Could not detect SQL" });
       }
-      return actionResult.text(payload.formatted, { userMessage: "已复制格式化 SQL" });
+      return actionResult.text(payload.formatted, { userMessage: "Formatted SQL copied" });
     },
   };
 }

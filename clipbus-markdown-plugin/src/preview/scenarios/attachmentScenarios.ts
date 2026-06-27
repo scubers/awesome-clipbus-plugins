@@ -13,7 +13,7 @@ export interface AttachmentScenario {
 export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "markdown-renderer-sample",
-    label: "Markdown: 综合示例",
+    label: "Markdown: Combined Example",
     rendererComponent: "expanded",
     searchTerms: ["markdown", "preview"],
     accentHex: "#0EA5E9",
@@ -23,12 +23,12 @@ export const attachmentScenarios: AttachmentScenario[] = [
           kind: "markdown_preview",
           version: 1,
           html: [
-            "<h1>Markdown 预览</h1>",
-            "<p>这是一段 <strong>加粗</strong> 和 <em>斜体</em> 的示例文字，还有 <code>inline code</code>。</p>",
-            "<ul><li>无序列表项 A</li><li>无序列表项 B</li></ul>",
-            "<blockquote><p>引用内容示例</p></blockquote>",
+            "<h1>Markdown Preview</h1>",
+            "<p>A sample paragraph with <strong>bold</strong> and <em>italic</em> text, plus <code>inline code</code>.</p>",
+            "<ul><li>Unordered list item A</li><li>Unordered list item B</li></ul>",
+            "<blockquote><p>A blockquote example</p></blockquote>",
             '<pre><code class="language-ts">const x: number = 42;</code></pre>',
-            '<p><a href="https://example.com">外部链接示例</a></p>',
+            '<p><a href="https://example.com">External link example</a></p>',
           ].join("\n"),
           sourceChars: 180,
           lineCount: 12,

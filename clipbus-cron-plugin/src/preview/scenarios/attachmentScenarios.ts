@@ -14,7 +14,7 @@ export interface AttachmentScenario {
 export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "cron-weekdays-morning",
-    label: "工作日早 9:30",
+    label: "Weekdays at 9:30",
     rendererComponent: "expanded",
     searchTerms: ["cron", "schedule", "30 9 * * 1-5"],
     accentHex: "#B45309",
@@ -29,13 +29,13 @@ export const attachmentScenarios: AttachmentScenario[] = [
           version: 1,
           expression: "30 9 * * 1-5",
           fields: [
-            { name: "分钟", raw: "30",  description: "第 30 分钟" },
-            { name: "小时", raw: "9",   description: "第 9 小时" },
-            { name: "日",   raw: "*",   description: "每天" },
-            { name: "月",   raw: "*",   description: "每月" },
-            { name: "星期", raw: "1-5", description: "周一至周五" },
+            { name: "Minute",  raw: "30",  description: "minute 30" },
+            { name: "Hour",    raw: "9",   description: "hour 9" },
+            { name: "Day",     raw: "*",   description: "every day" },
+            { name: "Month",   raw: "*",   description: "every month" },
+            { name: "Weekday", raw: "1-5", description: "Mon through Fri" },
           ],
-          summary: "周一至周五，第 9 小时 第 30 分钟执行",
+          summary: "Mon through Fri, hour 9 minute 30",
         }),
       },
     },

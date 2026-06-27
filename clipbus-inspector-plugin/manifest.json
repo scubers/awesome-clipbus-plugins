@@ -17,13 +17,13 @@
   "detectors": [
     {
       "id": "text-stats-detector",
-      "title": "文本统计识别",
+      "title": "Text Stats Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.inspector.text-stats"]
     },
     {
       "id": "diff-detector",
-      "title": "Unified Diff 识别",
+      "title": "Unified Diff Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.diff.unified"]
     }
@@ -31,14 +31,14 @@
   "attachmentRenderers": [
     {
       "id": "text-stats-renderer",
-      "title": "文本统计",
+      "title": "Text Stats",
       "attachmentType": "plugin.inspector.text-stats",
       "height": { "min": 160, "max": 360 },
       "uiEntry": "renderers/text-stats-renderer/index.html"
     },
     {
       "id": "diff-renderer",
-      "title": "Diff 查看",
+      "title": "Diff Viewer",
       "attachmentType": "plugin.diff.unified",
       "height": { "min": 140, "max": 480 },
       "uiEntry": "renderers/diff-renderer/index.html"

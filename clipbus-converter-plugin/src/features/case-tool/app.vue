@@ -1,13 +1,13 @@
 <template>
   <main class="case-shell">
     <section class="case-shell__input-section">
-      <label class="case-shell__label" for="case-input">输入文本</label>
+      <label class="case-shell__label" for="case-input">Input text</label>
       <input
         id="case-input"
         v-model="draft.input"
         type="text"
         class="case-shell__input"
-        placeholder="例如：helloWorld / foo_bar-baz"
+        placeholder="e.g. helloWorld / foo_bar-baz"
         @input="syncDraft"
       />
     </section>
@@ -25,7 +25,7 @@
           class="case-shell__copy-btn"
           :disabled="!variant.value"
           @click="copyVariant(variant.value)"
-        >复制</button>
+        >Copy</button>
       </div>
     </section>
   </main>
@@ -57,13 +57,13 @@ let unsubHostInvoke: (() => void) | null = null;
 
 onMounted(async () => {
   await clipbus.action.setButtons({
-    buttons: [{ id: "submit", title: "复制 camelCase", isEnabled: true }],
+    buttons: [{ id: "submit", title: "Copy camelCase", isEnabled: true }],
   });
   unsubHostInvoke = clipbus.action.onHostInvoke.on(async (d) => {
     if (d?.buttonID === "submit") {
       await clipbus.action.complete({
         result: { resultKind: "text", text: toCamel(draft.input) },
-        userMessage: "已复制",
+        userMessage: "Copied",
       });
     }
   });

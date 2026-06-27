@@ -85,27 +85,28 @@ function relativeLabel(expSeconds: number, nowMs: number): string {
   const past = deltaMs < 0;
   const seconds = Math.abs(deltaMs) / 1000;
   const units: Array<[number, string]> = [
-    [86400, "天"],
-    [3600, "小时"],
-    [60, "分钟"],
-    [1, "秒"],
+    [86400, "day"],
+    [3600, "hour"],
+    [60, "minute"],
+    [1, "second"],
   ];
-  let label = "0 秒";
+  let label = "0 seconds";
   for (const [size, name] of units) {
     if (seconds >= size) {
-      label = `${Math.floor(seconds / size)} ${name}`;
+      const count = Math.floor(seconds / size);
+      label = `${count} ${name}${count === 1 ? "" : "s"}`;
       break;
     }
   }
-  return past ? `已过期 ${label}` : `${label}后过期`;
+  return past ? `Expired ${label} ago` : `Expires in ${label}`;
 }
 
 const CLAIM_LABELS: Record<string, string> = {
-  iss: "签发者 (iss)",
-  sub: "主题 (sub)",
-  aud: "受众 (aud)",
-  azp: "授权方 (azp)",
-  scope: "范围 (scope)",
+  iss: "Issuer (iss)",
+  sub: "Subject (sub)",
+  aud: "Audience (aud)",
+  azp: "Authorized party (azp)",
+  scope: "Scope (scope)",
   name: "name",
   email: "email",
   jti: "JWT ID (jti)",
@@ -154,10 +155,10 @@ export function createJwtPayload(input: unknown): JwtPayload | null {
     relLabel = relativeLabel(expSeconds, nowMs);
   }
   if (typeof claims.iat === "number") {
-    claimFacts.push({ label: "签发时间 (iat)", value: unixToIso(claims.iat) ?? String(claims.iat) });
+    claimFacts.push({ label: "Issued at (iat)", value: unixToIso(claims.iat) ?? String(claims.iat) });
   }
   if (typeof claims.nbf === "number") {
-    claimFacts.push({ label: "生效时间 (nbf)", value: unixToIso(claims.nbf) ?? String(claims.nbf) });
+    claimFacts.push({ label: "Not before (nbf)", value: unixToIso(claims.nbf) ?? String(claims.nbf) });
   }
 
   return {

@@ -5,8 +5,8 @@ export function createTimestampRenderer(): PluginAttachmentRendererHandler {
   return {
     async resolveAttachment(input: PluginResolveAttachmentInput): Promise<PluginAttachmentResolveResult> {
       const payload = decodeTimestampPayload(input?.attachment?.payloadJson);
-      if (!payload) return { displayName: "Unix 时间戳", tintHex: "#0F766E", shouldDisplay: false };
-      return { displayName: "Unix 时间戳转换", tintHex: "#0F766E" };
+      if (!payload) return { displayName: "Unix Timestamp", tintHex: "#0F766E", shouldDisplay: false };
+      return { displayName: "Unix Timestamp Converter", tintHex: "#0F766E" };
     },
   };
 }

@@ -1,32 +1,32 @@
 # Cron Explainer
 
-Clipbus 插件，自动识别剪贴板中的 cron 表达式并可视化解释每个字段的含义。
+Clipbus plugin that automatically detects cron expressions on the clipboard and renders a visual breakdown of each field.
 
-## 功能
+## Features
 
-- **自动检测**：识别标准 5 字段 cron 表达式（分 时 日 月 周）
-- **字段说明**：以表格形式展示每个字段的原值与人话翻译
-- **自然语言概述**：底部一句中文描述执行规律
-- **域值校验**：分 0-59、时 0-23、日 1-31、月 1-12（支持 JAN-DEC）、周 0-7（支持 SUN-SAT）
-- **防误判护栏**：纯数字五段（如 `1 2 3 4 5`）不触发，至少含一个 cron 特殊字符才识别
+- **Auto-detection**: Recognises standard 5-field cron expressions (minute hour day month weekday)
+- **Field breakdown**: Displays each field's raw value alongside a human-readable description in a table
+- **Plain-English summary**: A concise sentence at the bottom describing the schedule's cadence
+- **Domain validation**: Minute 0–59, Hour 0–23, Day 1–31, Month 1–12 (supports JAN–DEC), Weekday 0–7 (supports SUN–SAT)
+- **False-positive guard**: Pure five-number strings like `1 2 3 4 5` are ignored — at least one cron special character (`* / , -`) must be present
 
-## 支持语法
+## Supported Syntax
 
-| 语法     | 示例       | 含义       |
-|----------|------------|------------|
-| 通配符   | `*`        | 每…        |
-| 整数     | `30`       | 第 30 …    |
-| 范围     | `1-5`      | 1 至 5     |
-| 列表     | `1,3,5`    | 枚举值     |
-| 步进     | `*/15`     | 每 15 …    |
-| 命名月份 | `JAN-MAR`  | 1 月至 3 月 |
-| 命名星期 | `MON-FRI`  | 周一至周五 |
+| Syntax        | Example    | Meaning              |
+|---------------|------------|----------------------|
+| Wildcard      | `*`        | every …              |
+| Integer       | `30`       | at … 30              |
+| Range         | `1-5`      | 1 through 5          |
+| List          | `1,3,5`    | enumerated values    |
+| Step          | `*/15`     | every 15 …           |
+| Named month   | `JAN-MAR`  | Jan through Mar      |
+| Named weekday | `MON-FRI`  | Mon through Fri      |
 
-## 示例
+## Examples
 
 ```
-30 9 * * 1-5     # 工作日每天 9:30
-*/15 * * * *     # 每 15 分钟
-0 0 1 * *        # 每月 1 日午夜
-0 8 * * MON-FRI  # 工作日早 8:00
+30 9 * * 1-5     # weekdays at 9:30
+*/15 * * * *     # every 15 minutes
+0 0 1 * *        # midnight on the 1st of each month
+0 8 * * MON-FRI  # weekdays at 8:00
 ```

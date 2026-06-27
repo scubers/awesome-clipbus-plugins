@@ -18,7 +18,7 @@ onMounted(async () => {
 
   try {
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy", title: "复制解码结果" }],
+      buttons: [{ id: "copy", title: "Copy Decoded Result" }],
     });
   } catch {
     /* not in attachment renderer context */
@@ -42,14 +42,14 @@ onUnmounted(() => {
     <section v-if="payload" class="content">
       <div class="meta-row">
         <span class="badge">{{ payload.encoding === "url-safe" ? "Base64 URL-safe" : "Base64" }}</span>
-        <span class="char-count">{{ payload.originalLength }} → {{ payload.decodedLength }} 字符</span>
+        <span class="char-count">{{ payload.originalLength }} → {{ payload.decodedLength }} chars</span>
       </div>
       <div class="decoded-block">
-        <div class="decoded-label">解码结果</div>
+        <div class="decoded-label">Decoded</div>
         <pre class="decoded-text">{{ payload.decoded }}</pre>
       </div>
     </section>
-    <div v-else class="empty">等待 Base64 内容</div>
+    <div v-else class="empty">Waiting for Base64 content</div>
   </main>
 </template>
 

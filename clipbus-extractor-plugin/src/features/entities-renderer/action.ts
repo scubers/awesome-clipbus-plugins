@@ -13,11 +13,11 @@ export function createEntitiesCopyAction(): PluginAutoRunActionHandler {
     async runAutoAction(input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
       const payload = createEntitiesPayload(input);
       if (!payload) {
-        return actionResult.none({ userMessage: "未找到足够的链接/邮箱/IP（至少需要 2 个）" });
+        return actionResult.none({ userMessage: "No URLs, emails, or IPs found (need at least 2)" });
       }
       const allItems = [...payload.urls, ...payload.emails, ...payload.ips];
       const joined = allItems.join("\n");
-      return actionResult.text(joined, { userMessage: `已复制 ${payload.totalCount} 个提取项` });
+      return actionResult.text(joined, { userMessage: `Copied ${payload.totalCount} item(s)` });
     },
   };
 }

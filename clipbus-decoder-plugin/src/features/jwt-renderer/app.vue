@@ -18,7 +18,7 @@ onMounted(async () => {
 
   try {
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy", title: "复制 Payload" }],
+      buttons: [{ id: "copy", title: "Copy Payload" }],
     });
   } catch {
     /* not in attachment renderer context */
@@ -48,7 +48,7 @@ onUnmounted(() => {
           class="pill"
           :class="payload.isExpired ? 'pill--expired' : 'pill--valid'"
         >{{ payload.relativeLabel }}</span>
-        <span v-if="!payload.signaturePresent" class="pill pill--warn">无签名</span>
+        <span v-if="!payload.signaturePresent" class="pill pill--warn">No signature</span>
       </div>
 
       <dl v-if="payload.claimFacts.length" class="facts">
@@ -63,7 +63,7 @@ onUnmounted(() => {
         <pre class="code-text">{{ payload.payloadPretty }}</pre>
       </div>
     </section>
-    <div v-else class="empty">等待 JWT 内容</div>
+    <div v-else class="empty">Waiting for JWT content</div>
   </main>
 </template>
 

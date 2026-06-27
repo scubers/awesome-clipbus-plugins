@@ -18,10 +18,10 @@ export function createRadixCopyAction(): PluginAutoRunActionHandler {
     async runAutoAction(input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
       const payload = createRadixPayload(input);
       if (!payload) {
-        return actionResult.none({ userMessage: "未识别到整数" });
+        return actionResult.none({ userMessage: "No integer detected" });
       }
       const text = `DEC: ${payload.decimal}\nHEX: ${payload.hex}\nOCT: ${payload.octal}\nBIN: ${payload.binary}`;
-      return actionResult.text(text, { userMessage: "已复制各进制" });
+      return actionResult.text(text, { userMessage: "Copied all radix formats" });
     },
   };
 }

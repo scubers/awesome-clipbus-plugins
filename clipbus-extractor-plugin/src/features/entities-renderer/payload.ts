@@ -74,7 +74,7 @@ export function buildEntitiesArtifact(input: unknown): PluginDetectorArtifact | 
     searchProjection: {
       scope: "extractor",
       searchText: allTerms.join(" ").slice(0, 200),
-      label: "提取结果",
+      label: "Extracted Entities",
     },
   };
 }

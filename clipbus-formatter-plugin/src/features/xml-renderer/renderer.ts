@@ -10,7 +10,7 @@ export function createXmlRenderer(): PluginAttachmentRendererHandler {
     async resolveAttachment(input: PluginResolveAttachmentInput): Promise<PluginAttachmentResolveResult> {
       const payload = decodeXmlPayload(input?.attachment?.payloadJson);
       if (!payload) return { displayName: "XML", tintHex: "#7C3AED", shouldDisplay: false };
-      return { displayName: "XML 格式化", tintHex: "#7C3AED" };
+      return { displayName: "XML Formatter", tintHex: "#7C3AED" };
     },
   };
 }

@@ -101,7 +101,7 @@ export function base64Decode(s: string): string {
     }
     return new TextDecoder().decode(bytes);
   } catch {
-    return "[无效 Base64]";
+    return "[Invalid Base64]";
   }
 }
 
@@ -145,7 +145,7 @@ export function jsonDecode(s: string): string {
   try {
     return JSON.parse(`"${s}"`);
   } catch {
-    return "[无效 JSON 转义]";
+    return "[Invalid JSON escape]";
   }
 }
 

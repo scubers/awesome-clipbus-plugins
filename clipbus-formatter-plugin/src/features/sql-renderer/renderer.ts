@@ -10,7 +10,7 @@ export function createSqlRenderer(): PluginAttachmentRendererHandler {
     async resolveAttachment(input: PluginResolveAttachmentInput): Promise<PluginAttachmentResolveResult> {
       const payload = decodeSqlPayload(input?.attachment?.payloadJson);
       if (!payload) return { displayName: "SQL", tintHex: "#0369A1", shouldDisplay: false };
-      return { displayName: "SQL 格式化", tintHex: "#0369A1" };
+      return { displayName: "SQL Formatter", tintHex: "#0369A1" };
     },
   };
 }

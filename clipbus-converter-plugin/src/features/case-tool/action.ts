@@ -15,7 +15,7 @@ export function createCaseAction(): PluginAutoRunActionHandler {
       const prefill = ((input as unknown) as { content?: { text?: string } })?.content?.text ?? "";
       return {
         displayName: "Case Converter",
-        buttons: [{ id: "submit", title: "复制 camelCase", isEnabled: true }],
+        buttons: [{ id: "submit", title: "Copy camelCase", isEnabled: true }],
         defaultButtonID: "submit",
         initialDraft: { ...INITIAL_DRAFT, input: prefill } as unknown as Record<string, unknown>,
       };
@@ -23,7 +23,7 @@ export function createCaseAction(): PluginAutoRunActionHandler {
     // Draft-lifecycle actions are driven by the UI; runAutoAction is a guarded stub
     // that satisfies the PluginAutoRunActionHandler interface.
     async runAutoAction(_input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
-      return actionResult.none({ userMessage: "draft 由 UI 驱动" });
+      return actionResult.none({ userMessage: "driven by the UI" });
     },
   };
 }

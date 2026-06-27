@@ -17,7 +17,7 @@
   "detectors": [
     {
       "id": "markdown-detector",
-      "title": "Markdown 识别",
+      "title": "Markdown Detection",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.markdown.preview"]
     }
@@ -25,7 +25,7 @@
   "attachmentRenderers": [
     {
       "id": "markdown-renderer",
-      "title": "Markdown 预览",
+      "title": "Markdown Preview",
       "attachmentType": "plugin.markdown.preview",
       "height": { "min": 120, "max": 480 },
       "uiEntry": "renderers/markdown-renderer/index.html"

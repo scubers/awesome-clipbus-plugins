@@ -21,10 +21,10 @@ export function createColorAction(): PluginAutoRunActionHandler {
     ): Promise<PluginActionOperationResult> {
       const payload = createColorPayload(input);
       if (!payload) {
-        return actionResult.none({ userMessage: "不是颜色值" });
+        return actionResult.none({ userMessage: "Not a color value" });
       }
       const text = `${payload.hex}\n${payload.rgbString}\n${payload.hslString}`;
-      return actionResult.text(text, { userMessage: "已复制颜色格式" });
+      return actionResult.text(text, { userMessage: "Color formats copied" });
     },
   };
 }

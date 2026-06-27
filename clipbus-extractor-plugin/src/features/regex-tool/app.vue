@@ -3,20 +3,20 @@
     <section class="rx-shell__inputs">
       <!-- Pattern -->
       <div class="rx-shell__field">
-        <label class="rx-shell__label" for="rx-pattern">正则表达式</label>
+        <label class="rx-shell__label" for="rx-pattern">Pattern</label>
         <input
           id="rx-pattern"
           v-model="draft.pattern"
           type="text"
           class="rx-shell__input rx-shell__input--mono"
-          placeholder="例：\d+"
+          placeholder="e.g. \d+"
           spellcheck="false"
         />
       </div>
 
       <!-- Flags -->
       <div class="rx-shell__field">
-        <label class="rx-shell__label" for="rx-flags">标志位</label>
+        <label class="rx-shell__label" for="rx-flags">Flags</label>
         <input
           id="rx-flags"
           v-model="draft.flags"
@@ -29,12 +29,12 @@
 
       <!-- Test text -->
       <div class="rx-shell__field">
-        <label class="rx-shell__label" for="rx-text">测试文本</label>
+        <label class="rx-shell__label" for="rx-text">Test Text</label>
         <textarea
           id="rx-text"
           v-model="draft.text"
           class="rx-shell__textarea"
-          placeholder="在此粘贴要测试的文本…"
+          placeholder="Paste text to test here…"
           rows="4"
           spellcheck="false"
         ></textarea>
@@ -44,14 +44,14 @@
     <!-- Status bar -->
     <div class="rx-shell__status" :class="{ 'rx-shell__status--error': !result.ok }">
       <template v-if="!draft.pattern">
-        <span class="rx-shell__status-hint">请输入正则表达式</span>
+        <span class="rx-shell__status-hint">Enter a regex pattern</span>
       </template>
       <template v-else-if="!result.ok">
         <span class="rx-shell__status-icon">⚠</span>
         <span>{{ result.error }}</span>
       </template>
       <template v-else>
-        <span class="rx-shell__status-count">{{ result.matchCount }} 个匹配</span>
+        <span class="rx-shell__status-count">{{ result.matchCount }} match(es)</span>
       </template>
     </div>
 
@@ -67,14 +67,14 @@
           <span class="rx-shell__match-text">{{ m.match }}</span>
           <span class="rx-shell__match-pos">@{{ m.index }}</span>
           <span v-if="m.groups.length > 0" class="rx-shell__match-groups">
-            组：{{ m.groups.join(", ") }}
+            Groups: {{ m.groups.join(", ") }}
           </span>
         </li>
       </ul>
     </section>
 
     <div v-else-if="result.ok && draft.pattern && draft.text" class="rx-shell__empty">
-      无匹配
+      No matches
     </div>
   </main>
 </template>
@@ -96,14 +96,14 @@ let unsubHostInvoke: (() => void) | null = null;
 
 onMounted(async () => {
   await clipbus.action.setButtons({
-    buttons: [{ id: "submit", title: "复制匹配", isEnabled: true }],
+    buttons: [{ id: "submit", title: "Copy Matches", isEnabled: true }],
   });
   unsubHostInvoke = clipbus.action.onHostInvoke.on(async (d) => {
     if (d?.buttonID === "submit") {
       const text = result.value.matches.map((m) => m.match).join("\n");
       await clipbus.action.complete({
         result: { resultKind: "text", text },
-        userMessage: "已复制匹配",
+        userMessage: "Matches copied",
       });
     }
   });

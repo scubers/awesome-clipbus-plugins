@@ -1,45 +1,45 @@
-# 检视工具
+# clipbus-inspector-plugin
 
-一个 Clipbus 插件，集成文本统计与 Unified Diff 查看两大功能。
+A Clipbus plugin that combines text statistics with unified diff viewing in a single package.
 
-## 文本统计 + MD5/SHA 哈希（text-stats-*）
+## Text Stats + MD5/SHA Hashes (`text-stats-*`)
 
-识别剪贴板中的任意文本，自动计算并展示：
+Detects any text on the clipboard and automatically computes and displays:
 
-- 字符数、去空格字符数、单词数、行数、字节数
-- MD5、SHA-1、SHA-256 哈希值
-- 文本预览摘要
+- Character count, non-whitespace character count, word count, line count, and byte count
+- MD5, SHA-1, and SHA-256 hash values
+- A preview excerpt of the text
 
-触发条件：文本 `trim().length >= 20`。
+Trigger condition: text `trim().length >= 20`.
 
-| 扩展点 | ID |
+| Extension point | ID |
 |---|---|
 | Detector | `text-stats-detector` |
 | Attachment Renderer | `text-stats-renderer` |
 | Attachment Type | `plugin.inspector.text-stats` |
 
-## Unified Diff 查看（diff-*）
+## Unified Diff Viewer (`diff-*`)
 
-识别标准 unified diff 格式（支持 `diff --git` 头及纯 hunk 格式），展示：
+Detects standard unified diff format (supports `diff --git` headers and bare hunk format) and displays:
 
-- 统计条：修改文件数、新增行数（+）、删除行数（−）
-- 逐行着色：新增行绿色高亮、删除行红色高亮、上下文行保持原色
+- Stats bar: number of changed files, added lines (+), and deleted lines (−)
+- Syntax-coloured lines: added lines in green, deleted lines in red, context lines unchanged
 
-触发条件：包含 `---`/`+++` 头及至少两行变更行（`+`/`-`）。
+Trigger condition: text contains `---`/`+++` headers plus at least two change lines (`+`/`-`).
 
-| 扩展点 | ID |
+| Extension point | ID |
 |---|---|
 | Detector | `diff-detector` |
 | Attachment Renderer | `diff-renderer` |
 | Attachment Type | `plugin.diff.unified` |
 
-## 开发
+## Development
 
 ```sh
 cd clipbus-inspector-plugin
 npm install
-npm run dev        # Vite 预览工作台
+npm run dev        # Vite preview workbench
 npm run verify     # typecheck + lint + build + test
 ```
 
-加载：Settings → Plugins → Developer Plugins → Add Path → 选择本目录。
+Loading: Settings → Plugins → Developer Plugins → Add Path → select this directory.

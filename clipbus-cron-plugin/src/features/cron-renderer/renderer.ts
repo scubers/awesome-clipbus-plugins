@@ -14,7 +14,7 @@ export function createCronRenderer(): PluginAttachmentRendererHandler {
     ): Promise<PluginAttachmentResolveResult> {
       const payload = decodeCronPayload(input?.attachment?.payloadJson);
       if (!payload) return { displayName: "Cron", tintHex: TINT, shouldDisplay: false };
-      return { displayName: "Cron 解析", tintHex: TINT };
+      return { displayName: "Cron Schedule", tintHex: TINT };
     },
   };
 }

@@ -18,7 +18,7 @@ export const actionScenarios: ActionScenario[] = [
       ...INITIAL_DRAFT,
       pattern: "\\d+",
       flags: "g",
-      text: "价格：99元，折后49元，再减10元",
+      text: "Price: $99, discounted $49, save $10",
     } as Record<string, unknown>,
   },
 ];

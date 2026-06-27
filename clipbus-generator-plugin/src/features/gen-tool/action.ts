@@ -14,7 +14,7 @@ export function createGenAction(): PluginAutoRunActionHandler {
     async resolveSession(_input, _ctx) {
       return {
         displayName: "Generator",
-        buttons: [{ id: "submit", title: "生成并复制", isEnabled: true }],
+        buttons: [{ id: "submit", title: "Generate & Copy", isEnabled: true }],
         defaultButtonID: "submit",
         initialDraft: { ...INITIAL_DRAFT } as unknown as Record<string, unknown>,
       };
@@ -22,7 +22,7 @@ export function createGenAction(): PluginAutoRunActionHandler {
     // Draft-lifecycle actions are driven by the UI; runAutoAction is a guarded stub
     // that satisfies the PluginAutoRunActionHandler interface.
     async runAutoAction(_input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
-      return actionResult.none({ userMessage: "draft 由 UI 驱动" });
+      return actionResult.none({ userMessage: "draft is driven by the UI" });
     },
   };
 }

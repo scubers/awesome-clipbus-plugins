@@ -25,15 +25,15 @@ onUnmounted(() => {
   <main class="shell">
     <section v-if="payload" class="content">
       <div class="meta-row">
-        <span class="meta-item">{{ payload.sourceChars }} 字符</span>
+        <span class="meta-item">{{ payload.sourceChars }} chars</span>
         <span class="meta-sep">·</span>
-        <span class="meta-item">{{ payload.lineCount }} 行</span>
+        <span class="meta-item">{{ payload.lineCount }} lines</span>
         <span v-if="payload.headingCount > 0" class="meta-sep">·</span>
-        <span v-if="payload.headingCount > 0" class="meta-item">{{ payload.headingCount }} 标题</span>
+        <span v-if="payload.headingCount > 0" class="meta-item">{{ payload.headingCount }} headings</span>
       </div>
       <div class="md-body" v-html="payload.html"></div>
     </section>
-    <div v-else class="empty">等待 Markdown 内容</div>
+    <div v-else class="empty">Awaiting Markdown content</div>
   </main>
 </template>
 

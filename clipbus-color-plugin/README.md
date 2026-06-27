@@ -22,11 +22,11 @@ Displays a rich color card at a fixed height of 260px:
 - **Swatch block**: A 120px tall rounded block filled with the detected color. The hex label is rendered in whichever of white or black achieves higher WCAG contrast against the swatch.
 - **Facts grid**: HEX, RGB, and HSL representations in monospace type.
 - **Contrast row**: Contrast ratios vs. white and black with WCAG level badges (AA if >= 4.5:1, AAA if >= 7:1).
-- **Host button**: "复制全部格式" copies all three format strings (HEX, RGB, HSL) to the clipboard.
+- **Host button**: "Copy All Formats" copies all three format strings (HEX, RGB, HSL) to the clipboard.
 
 ### Auto-run Action: `color-copy`
 
-Triggered for text items matching keywords `color`, `颜色`, `hex`, `rgb`. When the content is a recognized color, immediately returns all three format strings as a text result with the message "已复制颜色格式". Non-color content returns a `none` result.
+Triggered for text items matching keywords `color`, `hex`, `rgb`. When the content is a recognized color, immediately returns all three format strings as a text result with the message "Color formats copied". Non-color content returns a `none` result.
 
 ## Getting started
 

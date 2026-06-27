@@ -18,10 +18,10 @@ const relativeTime = computed(() => {
   const absHour = Math.floor(absMin / 60);
   const absDay = Math.floor(absHour / 24);
 
-  if (absSec < 60) return "刚刚";
-  if (absMin < 60) return diffMs < 0 ? `${absMin} 分钟前` : `${absMin} 分钟后`;
-  if (absHour < 24) return diffMs < 0 ? `${absHour} 小时前` : `${absHour} 小时后`;
-  return diffMs < 0 ? `${absDay} 天前` : `${absDay} 天后`;
+  if (absSec < 60) return "just now";
+  if (absMin < 60) return diffMs < 0 ? `${absMin}m ago` : `in ${absMin}m`;
+  if (absHour < 24) return diffMs < 0 ? `${absHour}h ago` : `in ${absHour}h`;
+  return diffMs < 0 ? `${absDay}d ago` : `in ${absDay}d`;
 });
 
 let unsub: (() => void) | null = null;
@@ -32,7 +32,7 @@ onMounted(async () => {
 
   try {
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy-iso", title: "复制 ISO 8601" }],
+      buttons: [{ id: "copy-iso", title: "Copy ISO 8601" }],
     });
   } catch {
     /* not in attachment renderer context */
@@ -55,8 +55,8 @@ onUnmounted(() => {
   <main class="shell">
     <section v-if="payload" class="content">
       <div class="meta-row">
-        <span class="badge">Unix 时间戳</span>
-        <span class="unit-chip">{{ payload.unit === "seconds" ? "秒" : "毫秒" }}</span>
+        <span class="badge">Unix Timestamp</span>
+        <span class="unit-chip">{{ payload.unit === "seconds" ? "sec" : "ms" }}</span>
       </div>
       <div class="local-time">{{ payload.local }}</div>
       <div class="facts">
@@ -69,16 +69,16 @@ onUnmounted(() => {
           <span class="fact-value mono">{{ payload.utc }}</span>
         </div>
         <div class="fact-row">
-          <span class="fact-label">星期</span>
+          <span class="fact-label">Weekday</span>
           <span class="fact-value">{{ payload.weekday }}</span>
         </div>
         <div class="fact-row">
-          <span class="fact-label">相对时间</span>
+          <span class="fact-label">Relative</span>
           <span class="fact-value">{{ relativeTime }}</span>
         </div>
       </div>
     </section>
-    <div v-else class="empty">等待 Unix 时间戳</div>
+    <div v-else class="empty">Waiting for Unix timestamp</div>
   </main>
 </template>
 

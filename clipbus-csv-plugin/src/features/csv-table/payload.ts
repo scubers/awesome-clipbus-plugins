@@ -119,7 +119,7 @@ export function createCsvPayload(input: unknown): CsvPayload | null {
   const { delimiter, headers, rows } = parsed;
   const rowCount = rows.length;
   const colCount = headers.length;
-  const headline = `${colCount} 列 × ${rowCount} 行`;
+  const headline = `${colCount} columns × ${rowCount} rows`;
 
   return {
     kind: "csv_table",
@@ -130,7 +130,7 @@ export function createCsvPayload(input: unknown): CsvPayload | null {
     rowCount,
     colCount,
     display: {
-      typeLabel: "CSV 表格",
+      typeLabel: "CSV Table",
       headline,
       facts: [
         { label: "Rows", value: String(rowCount) },

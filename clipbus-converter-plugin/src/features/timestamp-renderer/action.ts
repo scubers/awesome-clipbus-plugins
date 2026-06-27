@@ -13,9 +13,9 @@ export function createTimestampCopyAction(): PluginAutoRunActionHandler {
     async runAutoAction(input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
       const payload = createTimestampPayload(input);
       if (!payload) {
-        return actionResult.none({ userMessage: "无法识别时间戳" });
+        return actionResult.none({ userMessage: "No timestamp detected" });
       }
-      return actionResult.text(payload.iso, { userMessage: "已复制 ISO 8601 时间" });
+      return actionResult.text(payload.iso, { userMessage: "Copied ISO 8601 timestamp" });
     },
   };
 }

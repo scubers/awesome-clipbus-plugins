@@ -37,7 +37,7 @@
       "title": "Copy Color Formats",
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
-      "keywords": ["color", "颜色", "hex", "rgb"]
+      "keywords": ["color", "hex", "rgb"]
     }
   ]
 }

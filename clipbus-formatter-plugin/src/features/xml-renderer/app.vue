@@ -18,7 +18,7 @@ onMounted(async () => {
 
   try {
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy-xml", title: "复制格式化 XML" }],
+      buttons: [{ id: "copy-xml", title: "Copy Formatted XML" }],
     });
   } catch {
     /* not in attachment renderer context */
@@ -41,17 +41,17 @@ onUnmounted(() => {
   <main class="shell">
     <section v-if="payload" class="content">
       <div class="stats-row">
-        <span class="stat">元素 {{ payload.elementCount }}</span>
+        <span class="stat">Elements {{ payload.elementCount }}</span>
         <span class="sep">·</span>
-        <span class="stat">属性 {{ payload.attributeCount }}</span>
+        <span class="stat">Attrs {{ payload.attributeCount }}</span>
         <span class="sep">·</span>
-        <span class="stat">深度 {{ payload.maxDepth }}</span>
+        <span class="stat">Depth {{ payload.maxDepth }}</span>
       </div>
       <div class="code-block">
         <pre class="code-text">{{ payload.formatted }}</pre>
       </div>
     </section>
-    <div v-else class="empty">等待 XML 内容</div>
+    <div v-else class="empty">Waiting for XML content</div>
   </main>
 </template>
 

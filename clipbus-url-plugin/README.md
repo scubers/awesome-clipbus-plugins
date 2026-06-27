@@ -13,16 +13,16 @@ Scans clipboard text for a URL with a scheme + `//` authority (accepts `http`, `
 Displays a content-driven card (height `"auto"`) with:
 
 - **Facts grid**: Scheme, Host, Port (if non-default), Path, and Hash in monospace type.
-- **Query params table**: Key/value table with zebra-striped rows for all query parameters; shows "无查询参数" when none are present.
-- **Host button**: "复制查询参数 JSON" copies all query parameters as a formatted JSON object (or the full href when there are no query params).
+- **Query params table**: Key/value table with zebra-striped rows for all query parameters; shows "No query params" when none are present.
+- **Host button**: "Copy query params (JSON)" copies all query parameters as a formatted JSON object (or the full href when there are no query params).
 
 ### Auto-run Action: `url-copy`
 
-Triggered for text items matching keywords `url`, `链接`, `query`, `参数`. Behaviour:
+Triggered for text items matching keywords `url`, `link`, `query`, `param`. Behaviour:
 
-- URL with query parameters → returns a formatted JSON object of key/value pairs with message "已复制查询参数".
-- URL without query parameters → returns the full href with message "已复制 URL".
-- Non-URL content → returns `none` with message "不是 URL".
+- URL with query parameters → returns a formatted JSON object of key/value pairs with message "Copied query params".
+- URL without query parameters → returns the full href with message "Copied URL".
+- Non-URL content → returns `none` with message "Not a URL".
 
 ## Getting started
 

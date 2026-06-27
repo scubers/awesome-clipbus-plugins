@@ -197,7 +197,7 @@ function formatXml(source: string): {
   }
 
   let formatted = lines.join("\n");
-  if (truncated) formatted += "\n... (输入过大，已截断)";
+  if (truncated) formatted += "\n... (input too large, truncated)";
   return { formatted, elementCount, attributeCount, maxDepth };
 }
 

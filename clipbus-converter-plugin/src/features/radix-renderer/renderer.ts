@@ -9,8 +9,8 @@ export function createRadixRenderer(): PluginAttachmentRendererHandler {
   return {
     async resolveAttachment(input: PluginResolveAttachmentInput): Promise<PluginAttachmentResolveResult> {
       const payload = decodeRadixPayload(input?.attachment?.payloadJson);
-      if (!payload) return { displayName: "进制转换", tintHex: "#4F46E5", shouldDisplay: false };
-      return { displayName: "进制转换", tintHex: "#4F46E5" };
+      if (!payload) return { displayName: "Radix Conversion", tintHex: "#4F46E5", shouldDisplay: false };
+      return { displayName: "Radix Conversion", tintHex: "#4F46E5" };
     },
   };
 }

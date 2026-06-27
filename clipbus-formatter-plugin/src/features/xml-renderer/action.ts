@@ -18,9 +18,9 @@ export function createXmlCopyAction(): PluginAutoRunActionHandler {
     async runAutoAction(input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
       const payload = createXmlPayload(input);
       if (!payload) {
-        return actionResult.none({ userMessage: "未识别到 XML" });
+        return actionResult.none({ userMessage: "Could not detect XML" });
       }
-      return actionResult.text(payload.formatted, { userMessage: "已复制格式化 XML" });
+      return actionResult.text(payload.formatted, { userMessage: "Formatted XML copied" });
     },
   };
 }

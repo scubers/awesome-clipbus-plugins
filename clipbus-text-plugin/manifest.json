@@ -22,21 +22,21 @@
       "title": "Sort Lines",
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
-      "keywords": ["sort", "排序", "lines"]
+      "keywords": ["sort", "order", "lines"]
     },
     {
       "id": "text-dedup",
       "title": "Remove Duplicate Lines",
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
-      "keywords": ["dedup", "去重", "unique"]
+      "keywords": ["dedup", "unique", "duplicates"]
     },
     {
       "id": "text-trim",
       "title": "Tidy Whitespace",
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
-      "keywords": ["trim", "空白", "whitespace"]
+      "keywords": ["trim", "whitespace", "spaces"]
     }
   ]
 }

@@ -13,9 +13,9 @@ export function createBase64CopyAction(): PluginAutoRunActionHandler {
     async runAutoAction(input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
       const payload = createBase64Payload(input);
       if (!payload) {
-        return actionResult.none({ userMessage: "无法识别 Base64 内容" });
+        return actionResult.none({ userMessage: "Could not recognize Base64 content" });
       }
-      return actionResult.text(payload.decoded, { userMessage: "已复制 Base64 解码结果" });
+      return actionResult.text(payload.decoded, { userMessage: "Copied Base64 decoded result" });
     },
   };
 }

@@ -38,14 +38,14 @@ test("detect '30 9 * * 1-5' returns 5 fields", () => {
   assert.equal(payload.fields.length, 5);
 });
 
-test("weekday field description for '1-5' contains '周'", () => {
+test("weekday field description for '1-5' contains English weekday names", () => {
   const { createCronPayload } = require(path.resolve(root, "src/features/cron-renderer/payload.ts"));
   const payload = createCronPayload(textInput("30 9 * * 1-5"));
   assert.ok(payload, "should parse '30 9 * * 1-5'");
   const weekdayField = payload.fields[4];
   assert.ok(
-    weekdayField.description.includes("周") || weekdayField.description.includes("1 至 5"),
-    `weekday description should contain '周' or '1 至 5', got: ${weekdayField.description}`
+    weekdayField.description.includes("Mon") || weekdayField.description.includes("Fri") || weekdayField.description.includes("1-5"),
+    `weekday description should contain 'Mon', 'Fri', or '1-5', got: ${weekdayField.description}`
   );
 });
 

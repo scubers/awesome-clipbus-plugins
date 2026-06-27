@@ -14,9 +14,9 @@ export interface AttachmentScenario {
 export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "timestamp-renderer-seconds",
-    label: "Unix 时间戳: 1700000000 (秒)",
+    label: "Unix Timestamp: 1700000000 (seconds)",
     rendererComponent: "compact",
-    searchTerms: ["timestamp", "unix", "时间戳"],
+    searchTerms: ["timestamp", "unix"],
     accentHex: "#0F766E",
     bootstrap: {
       attachment: {

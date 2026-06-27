@@ -22,7 +22,7 @@ let unsub: (() => void) | null = null;
 onMounted(async () => {
   try {
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy", title: "复制查询参数 JSON" }],
+      buttons: [{ id: "copy", title: "Copy query params (JSON)" }],
     });
   } catch {
     /* not in attachment renderer context */
@@ -56,7 +56,7 @@ onUnmounted(() => {
 
       <!-- Query params table -->
       <div class="query-section">
-        <div class="section-label">查询参数</div>
+        <div class="section-label">Query params</div>
         <table v-if="payload.query.length > 0" class="query-table">
           <thead>
             <tr>
@@ -75,10 +75,10 @@ onUnmounted(() => {
             </tr>
           </tbody>
         </table>
-        <div v-else class="no-query">无查询参数</div>
+        <div v-else class="no-query">No query params</div>
       </div>
     </section>
-    <div v-else class="empty">等待 URL 内容</div>
+    <div v-else class="empty">Waiting for a URL…</div>
   </main>
 </template>
 

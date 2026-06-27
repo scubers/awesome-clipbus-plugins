@@ -17,7 +17,7 @@
   "detectors": [
     {
       "id": "entities-detector",
-      "title": "链接/邮箱/IP 识别",
+      "title": "URL / Email / IP Detection",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.extractor.entities"]
     }
@@ -25,7 +25,7 @@
   "attachmentRenderers": [
     {
       "id": "entities-renderer",
-      "title": "提取结果",
+      "title": "Extracted Entities",
       "attachmentType": "plugin.extractor.entities",
       "height": { "min": 140, "max": 420 },
       "uiEntry": "renderers/entities-renderer/index.html"
@@ -34,10 +34,10 @@
   "actions": [
     {
       "id": "entities-copy",
-      "title": "提取并复制链接/邮箱/IP",
+      "title": "Extract & Copy URLs / Emails / IPs",
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
-      "keywords": ["extract", "url", "email", "ip", "提取"]
+      "keywords": ["extract", "url", "email", "ip"]
     },
     {
       "id": "regex-tool",
@@ -45,7 +45,7 @@
       "supportedItemTypes": ["text"],
       "lifecycle": "draft",
       "uiEntry": "actions/regex-tool/index.html",
-      "keywords": ["regex", "regexp", "正则", "匹配", "pattern"]
+      "keywords": ["regex", "regexp", "pattern", "match"]
     }
   ]
 }

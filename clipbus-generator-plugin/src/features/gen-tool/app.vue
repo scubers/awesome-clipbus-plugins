@@ -3,7 +3,7 @@
     <section class="gen-shell__controls">
       <!-- Mode toggle -->
       <div class="gen-shell__field gen-shell__field--row">
-        <span class="gen-shell__label">模式</span>
+        <span class="gen-shell__label">Mode</span>
         <div class="gen-shell__segmented">
           <button
             type="button"
@@ -16,13 +16,13 @@
             class="gen-shell__seg-btn"
             :class="{ 'gen-shell__seg-btn--active': draft.mode === 'password' }"
             @click="setMode('password')"
-          >密码</button>
+          >Password</button>
         </div>
       </div>
 
       <!-- Count -->
       <div class="gen-shell__field gen-shell__field--row">
-        <label class="gen-shell__label" for="gen-count">数量</label>
+        <label class="gen-shell__label" for="gen-count">Count</label>
         <input
           id="gen-count"
           v-model.number="draft.count"
@@ -36,7 +36,7 @@
       <!-- Password-specific controls -->
       <template v-if="draft.mode === 'password'">
         <div class="gen-shell__field gen-shell__field--row">
-          <label class="gen-shell__label" for="gen-length">长度</label>
+          <label class="gen-shell__label" for="gen-length">Length</label>
           <input
             id="gen-length"
             v-model.number="draft.length"
@@ -49,15 +49,15 @@
         <div class="gen-shell__checkboxes">
           <label class="gen-shell__check">
             <input v-model="draft.useUppercase" type="checkbox" />
-            <span>大写字母</span>
+            <span>Uppercase</span>
           </label>
           <label class="gen-shell__check">
             <input v-model="draft.useNumbers" type="checkbox" />
-            <span>数字</span>
+            <span>Digits</span>
           </label>
           <label class="gen-shell__check">
             <input v-model="draft.useSymbols" type="checkbox" />
-            <span>符号</span>
+            <span>Symbols</span>
           </label>
         </div>
       </template>
@@ -66,14 +66,14 @@
     <!-- Result preview -->
     <section class="gen-shell__preview">
       <div class="gen-shell__preview-header">
-        <span class="gen-shell__label">结果</span>
+        <span class="gen-shell__label">Result</span>
         <button
           type="button"
           class="gen-shell__regen-btn"
           @click="regenerate"
-        >重新生成</button>
+        >Regenerate</button>
       </div>
-      <pre class="gen-shell__result">{{ draft.result || "（点击重新生成）" }}</pre>
+      <pre class="gen-shell__result">{{ draft.result || "(click Regenerate to preview)" }}</pre>
     </section>
   </main>
 </template>
@@ -141,13 +141,13 @@ let unsubHostInvoke: (() => void) | null = null;
 onMounted(async () => {
   regenerate();
   await clipbus.action.setButtons({
-    buttons: [{ id: "submit", title: "生成并复制", isEnabled: true }],
+    buttons: [{ id: "submit", title: "Generate & Copy", isEnabled: true }],
   });
   unsubHostInvoke = clipbus.action.onHostInvoke.on(async (d) => {
     if (d?.buttonID === "submit") {
       await clipbus.action.complete({
         result: { resultKind: "text", text: draft.result },
-        userMessage: "已生成",
+        userMessage: "Generated",
       });
     }
   });

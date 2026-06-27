@@ -30,7 +30,7 @@ test("markdown-renderer uiEntry references renderers/ path", () => {
 
 test("detector fires on text with heading + bold + list (3 signals)", () => {
   const { buildMarkdownArtifact } = require(path.resolve(root, "src/features/markdown-renderer/payload.ts"));
-  const src = "# 标题\n\n**粗体文字**\n\n- 列表项一\n- 列表项二";
+  const src = "# Heading\n\n**bold text**\n\n- list item one\n- list item two";
   const artifact = buildMarkdownArtifact(textInput(src));
   assert.ok(artifact, "should detect markdown with multiple signals");
   assert.equal(artifact.attachmentType, "plugin.markdown.preview");

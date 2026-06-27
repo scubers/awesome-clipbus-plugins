@@ -1,25 +1,23 @@
-# 转换工具
+# clipbus-converter-plugin
 
-Clipbus 转换工具插件，集成三类转换能力：
+Clipbus plugin that integrates three conversion capabilities: Unix timestamp display, integer radix conversion, and text case transformation.
 
-## Unix 时间戳转换
+## Features
 
-自动识别剪贴板中的 10 位（秒）或 13 位（毫秒）Unix 时间戳，展示本地时间、UTC 时间及 ISO 8601 格式，支持一键复制。
+- **Unix Timestamp Detector** (`timestamp-detector`): Recognises 10-digit (seconds) and 13-digit (milliseconds) Unix timestamps in clipboard text. Rejects values that fall outside the year range 2001–2099.
+- **Unix Timestamp Renderer** (`timestamp-renderer`): Displays the detected timestamp as local time, UTC, ISO 8601, weekday, and a human-readable relative time (e.g. "3h ago"). Includes a "Copy ISO 8601" button.
+- **Copy ISO 8601 Timestamp** (`timestamp-copy`): Auto-run action that copies the ISO 8601 representation of the detected timestamp to the clipboard.
+- **Radix Detector** (`radix-detector`): Recognises integers written in decimal, hexadecimal (`0x`), binary (`0b`), or octal (`0o`) notation. Rejects floats and non-numeric text.
+- **Radix Converter** (`radix-renderer`): Shows the detected integer in all four bases (DEC / HEX / OCT / BIN) with per-row copy buttons. Also displays bit count, ASCII character (printable range 32–126), and a "Negative" badge for signed values. Includes a "Copy all radix" button.
+- **Copy All Radix Formats** (`radix-copy`): Auto-run action that copies all four radix representations as a multi-line string.
+- **Case Converter** (`case-tool`): Draft action that converts clipboard text into eight naming conventions — camelCase, snake_case, kebab-case, PascalCase, CONSTANT_CASE, Title Case, Sentence case, dot.case — and lets you copy any variant or submit the camelCase result.
 
-## 整数进制对照（radix-*）
-
-自动识别十进制、十六进制（`0x`）、二进制（`0b`）、八进制（`0o`）整数，转换并展示四种进制表示及对应 ASCII 字符，支持一键复制各进制格式。
-
-## 命名风格转换（case-tool）
-
-Draft action，将剪贴板文本转换为 camelCase、snake_case、kebab-case、PascalCase、CONSTANT_CASE、Title Case、Sentence case、dot.case 等八种命名风格，在交互表单中选择后提交。
-
-## 开发
+## Development
 
 ```sh
 npm install
-npm run dev        # Vite 预览工作台
-npm run build      # 完整构建
-npm test           # 运行测试
-npm run verify     # 构建 + 测试（提交前门禁）
+npm run dev        # Vite preview workbench
+npm run build      # Full build
+npm test           # Run tests
+npm run verify     # Build + test (pre-commit gate)
 ```

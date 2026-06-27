@@ -18,9 +18,9 @@ export function createJwtCopyAction(): PluginAutoRunActionHandler {
     async runAutoAction(input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
       const payload = createJwtPayload(input);
       if (!payload) {
-        return actionResult.none({ userMessage: "未识别到 JWT" });
+        return actionResult.none({ userMessage: "No JWT recognized" });
       }
-      return actionResult.text(payload.payloadPretty, { userMessage: "已复制 JWT Payload" });
+      return actionResult.text(payload.payloadPretty, { userMessage: "Copied JWT payload" });
     },
   };
 }

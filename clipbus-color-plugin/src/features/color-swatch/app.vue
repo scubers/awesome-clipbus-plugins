@@ -20,7 +20,7 @@ let unsub: (() => void) | null = null;
 onMounted(async () => {
   try {
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy", title: "复制全部格式" }],
+      buttons: [{ id: "copy", title: "Copy All Formats" }],
     });
   } catch {
     /* not in attachment renderer context */
@@ -61,7 +61,7 @@ onUnmounted(() => {
       <!-- Contrast row -->
       <div class="contrast-row">
         <div class="contrast-item">
-          <span class="contrast-bg contrast-bg--white">白</span>
+          <span class="contrast-bg contrast-bg--white">White</span>
           <span class="contrast-ratio">{{ payload.contrastWhite.toFixed(1) }}:1</span>
           <span
             class="contrast-badge"
@@ -72,7 +72,7 @@ onUnmounted(() => {
           >{{ wcagLevel(payload.contrastWhite) }}</span>
         </div>
         <div class="contrast-item">
-          <span class="contrast-bg contrast-bg--black">黑</span>
+          <span class="contrast-bg contrast-bg--black">Black</span>
           <span class="contrast-ratio">{{ payload.contrastBlack.toFixed(1) }}:1</span>
           <span
             class="contrast-badge"
@@ -84,7 +84,7 @@ onUnmounted(() => {
         </div>
       </div>
     </section>
-    <div v-else class="empty">等待颜色内容</div>
+    <div v-else class="empty">No color detected</div>
   </main>
 </template>
 

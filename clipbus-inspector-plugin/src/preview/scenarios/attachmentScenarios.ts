@@ -14,7 +14,7 @@ export interface AttachmentScenario {
 export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "text-stats-renderer-sample",
-    label: "文本统计: 示例长文本",
+    label: "Text Stats: Sample Long Text",
     rendererComponent: "compact",
     searchTerms: ["stats", "hash", "sha256"],
     accentHex: "#7C3AED",

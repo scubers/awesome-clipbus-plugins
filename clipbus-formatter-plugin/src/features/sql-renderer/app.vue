@@ -18,7 +18,7 @@ onMounted(async () => {
 
   try {
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy", title: "复制格式化 SQL" }],
+      buttons: [{ id: "copy", title: "Copy Formatted SQL" }],
     });
   } catch {
     /* not in attachment renderer context */
@@ -46,11 +46,11 @@ onUnmounted(() => {
       </div>
 
       <div class="code-block">
-        <div class="code-label">格式化 SQL</div>
+        <div class="code-label">Formatted SQL</div>
         <pre class="code-text">{{ payload.formatted }}</pre>
       </div>
     </section>
-    <div v-else class="empty">等待 SQL 内容</div>
+    <div v-else class="empty">Waiting for SQL content</div>
   </main>
 </template>
 

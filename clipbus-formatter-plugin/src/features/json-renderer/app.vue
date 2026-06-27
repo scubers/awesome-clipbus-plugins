@@ -18,7 +18,7 @@ onMounted(async () => {
 
   try {
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy", title: "复制格式化结果" }],
+      buttons: [{ id: "copy", title: "Copy Formatted Result" }],
     });
   } catch {
     /* not in attachment renderer context */
@@ -45,11 +45,11 @@ onUnmounted(() => {
         <span class="char-count">{{ payload.display.subheadline }}</span>
       </div>
       <div class="code-block">
-        <div class="code-label">格式化结果</div>
+        <div class="code-label">Formatted Result</div>
         <pre class="code-text">{{ payload.formatted }}</pre>
       </div>
     </section>
-    <div v-else class="empty">等待 JSON 内容</div>
+    <div v-else class="empty">Waiting for JSON content</div>
   </main>
 </template>
 

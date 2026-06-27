@@ -21,10 +21,10 @@ export function createDedupAction(): PluginAutoRunActionHandler {
     ): Promise<PluginActionOperationResult> {
       const { content } = input;
       if (content.kind !== "text" || !content.text.trim()) {
-        return actionResult.none({ userMessage: "无可处理文本" });
+        return actionResult.none({ userMessage: "Nothing to process" });
       }
       const out = dedupLines(content.text);
-      return actionResult.text(out, { userMessage: "已处理" });
+      return actionResult.text(out, { userMessage: "Done" });
     },
   };
 }

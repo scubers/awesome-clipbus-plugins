@@ -14,7 +14,7 @@ export interface AttachmentScenario {
 export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "entities-renderer-mixed",
-    label: "提取结果：URL + 邮箱 + IP",
+    label: "Extracted Entities: URL + Email + IP",
     rendererComponent: "compact",
     searchTerms: ["extract", "url", "email", "ip"],
     accentHex: "#2563EB",

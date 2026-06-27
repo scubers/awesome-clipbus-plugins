@@ -6,7 +6,7 @@ export function createBase64Renderer(): PluginAttachmentRendererHandler {
     async resolveAttachment(input: PluginResolveAttachmentInput): Promise<PluginAttachmentResolveResult> {
       const payload = decodeBase64Payload(input?.attachment?.payloadJson);
       if (!payload) return { displayName: "Base64", tintHex: "#0F766E", shouldDisplay: false };
-      return { displayName: "Base64 解码", tintHex: "#0F766E" };
+      return { displayName: "Base64 Decode", tintHex: "#0F766E" };
     },
   };
 }

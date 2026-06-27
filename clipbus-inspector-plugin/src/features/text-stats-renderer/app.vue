@@ -19,8 +19,8 @@ onMounted(async () => {
   try {
     await clipbus.attachmentRenderer.setButtons({
       buttons: [
-        { id: "copy-sha256", title: "复制 SHA-256" },
-        { id: "copy-md5", title: "复制 MD5" },
+        { id: "copy-sha256", title: "Copy SHA-256" },
+        { id: "copy-md5", title: "Copy MD5" },
       ],
     });
   } catch {
@@ -47,32 +47,32 @@ onUnmounted(() => {
   <main class="shell">
     <section v-if="payload" class="content">
       <div class="header-row">
-        <span class="badge">文本统计</span>
+        <span class="badge">Text Stats</span>
         <span class="preview-text">{{ payload.preview }}</span>
       </div>
 
       <div class="stats-grid">
         <div class="stat-tile">
           <span class="stat-value">{{ payload.chars.toLocaleString() }}</span>
-          <span class="stat-label">字符</span>
-          <span class="stat-sub">非空白 {{ payload.charsNoSpaces.toLocaleString() }}</span>
+          <span class="stat-label">chars</span>
+          <span class="stat-sub">non-space {{ payload.charsNoSpaces.toLocaleString() }}</span>
         </div>
         <div class="stat-tile">
           <span class="stat-value">{{ payload.words.toLocaleString() }}</span>
-          <span class="stat-label">词</span>
+          <span class="stat-label">words</span>
         </div>
         <div class="stat-tile">
           <span class="stat-value">{{ payload.lines.toLocaleString() }}</span>
-          <span class="stat-label">行</span>
+          <span class="stat-label">lines</span>
         </div>
         <div class="stat-tile">
           <span class="stat-value">{{ payload.bytes.toLocaleString() }}</span>
-          <span class="stat-label">字节</span>
+          <span class="stat-label">bytes</span>
         </div>
       </div>
 
       <div class="hash-block">
-        <div class="hash-section-label">哈希</div>
+        <div class="hash-section-label">Hashes</div>
         <div class="hash-row">
           <span class="hash-name">MD5</span>
           <span class="hash-value">{{ payload.md5 }}</span>
@@ -87,7 +87,7 @@ onUnmounted(() => {
         </div>
       </div>
     </section>
-    <div v-else class="empty">等待文本内容</div>
+    <div v-else class="empty">Waiting for text content</div>
   </main>
 </template>
 

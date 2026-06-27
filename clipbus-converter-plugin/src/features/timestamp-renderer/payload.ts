@@ -73,7 +73,7 @@ export function buildTimestampArtifact(input: unknown): PluginDetectorArtifact |
     searchProjection: {
       scope: "converter",
       searchText: payload.iso,
-      label: "Unix 时间戳",
+      label: "Unix Timestamp",
     },
   };
 }
