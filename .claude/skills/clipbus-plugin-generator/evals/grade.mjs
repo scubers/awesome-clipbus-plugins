@@ -2,7 +2,7 @@
  * grade.mjs — 客观核验一个生成出来的 Clipbus 插件是否满足结构性断言。
  *
  * 用法: node grade.mjs <repoRoot> <pluginDir>
- *   repoRoot   合集仓库根（含 PLUGINS.md 与各插件目录）
+ *   repoRoot   合集仓库根（含 README.md / README_zh.md 索引与各插件目录）
  *   pluginDir  插件目录名，如 clipbus-decoder-plugin
  *
  * 输出: stdout 打印 JSON { plugin, checks:[{name,passed,evidence}], passedCount, total }
@@ -98,12 +98,12 @@ async function main() {
   const readme = (await tryRead(path.join(root, "README.md"))) ?? "";
   add("README.md 存在且非空", readme.trim().length > 80, `${readme.length} chars`);
 
-  // 7. 根 PLUGINS.md 收录该插件
-  const pluginsIndex = (await tryRead(path.join(repoRoot, "PLUGINS.md"))) ?? "";
+  // 7. 根索引 README.md（英文主页）收录该插件
+  const pluginsIndex = (await tryRead(path.join(repoRoot, "README.md"))) ?? "";
   add(
-    "根 PLUGINS.md 收录该插件",
+    "根 README.md 收录该插件",
     pluginsIndex.includes(pluginDir),
-    pluginsIndex ? (pluginsIndex.includes(pluginDir) ? "found" : "未提到该插件") : "PLUGINS.md 缺失"
+    pluginsIndex ? (pluginsIndex.includes(pluginDir) ? "found" : "未提到该插件") : "README.md 缺失"
   );
 
   // 8. dist 产物存在（npm run build 跑过的代理证据；权威绿/红由调用方真实 verify）

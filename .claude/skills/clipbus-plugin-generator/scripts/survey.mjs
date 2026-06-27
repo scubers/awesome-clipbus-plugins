@@ -79,7 +79,7 @@ async function main() {
     .map((e) => e.name)
     .sort();
 
-  const pluginsIndexExists = (await tryRead(path.join(repoRoot, "PLUGINS.md"))) !== null;
+  const pluginsIndexExists = (await tryRead(path.join(repoRoot, "README.md"))) !== null;
 
   const plugins = [];
   const usedDirs = [];

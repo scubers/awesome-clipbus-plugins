@@ -15,7 +15,7 @@
 |---|---|---|
 | 1 | 自主度 | **双模式带开关**：默认"先提选题再生成"（含归属决策，等用户确认）；一句话切"全自主一条龙"。用户给了选题则直接用。 |
 | 2 | 完成度 | **完整实现 + 必须构建通过**。产出真实逻辑，修到验证全绿才算完成。 |
-| 3 | 避重/归属 | **按功能类别**。每个插件 README 记录自身功能；根目录 `PLUGINS.md` 做索引。skill 开跑先读、收尾更新。 |
+| 3 | 避重/归属 | **按功能类别**。每个插件 README 记录自身功能；根目录 `README.md`（英文）+ `README_zh.md`（中文）做索引。skill 开跑先读、收尾**中英双写**更新。 |
 | 4 | 能力组合 | **按需覆盖**，不强行铺满。**detector 必配 renderer**（纯检测不展示无意义）；action 按选题需要才加；draft 仅当需要用户输入。 |
 | 5 | 验证门槛 | **`npm run verify` 全绿**（typecheck+lint+build+verify-build + 精简冒烟测试）。模板里写死 id 的机关与测试改写成匹配新插件。 |
 | 6 | skill 结构 | **工作流 + 精简脚本 + 通用脚手架**（方案 A）。 |
@@ -44,7 +44,7 @@
 - 解析调用意图：用户是否给了选题？是否要求全自主（关键词如"自动选题/直接生成/全自主"）。
 
 ### 阶段 1 · 勘察（survey.mjs）
-- 运行 `node scripts/survey.mjs <repo-root>`，得到：已有 `clipbus-*-plugin` 列表、各自类别与功能点（读 manifest + README + `PLUGINS.md`）、**已占用的 plugin.id / attachmentType / 目录名**（避免命名碰撞）。
+- 运行 `node scripts/survey.mjs <repo-root>`，得到：已有 `clipbus-*-plugin` 列表、各自类别与功能点（读 manifest + README + 根 `README.md`）、**已占用的 plugin.id / attachmentType / 目录名**（避免命名碰撞）。
 
 ### 阶段 2 · 选题与归属
 - **默认模式**：基于 `topic-ideas.md` 与勘察结果，提 2-4 个候选选题，每个给：一句卖点、定位（实用/视觉/整活）、**归属决策**（新建 `clipbus-{topic}-plugin` / 或加进已有 `clipbus-{类别}-plugin`）、要实现的扩展点。等用户选定。
@@ -67,7 +67,7 @@
 - 修到 typecheck/lint/build/verify-build/冒烟测试**全绿**。扩展场景是整插件重验。
 
 ### 阶段 6 · 更新目录
-- 更新目标插件 `README.md` 功能清单；更新根 `PLUGINS.md` 索引条目（简述 + 链接）。`PLUGINS.md` 不存在则创建。
+- 更新目标插件 `README.md` 功能清单（英文）；**同步更新根 `README.md`（英文）与 `README_zh.md`（中文）两个索引**条目（简述 + 链接）。不存在则创建。
 
 ### 阶段 7 · 汇报
 - 列出：插件目录、新增/变更能力、验证结果（命令 + 结论）、索引更新。

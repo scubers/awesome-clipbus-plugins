@@ -2,7 +2,7 @@
 name: clipbus-plugin-generator
 description: >-
   在本剪贴板插件合集仓库里生成一个真实可用的新 Clipbus 插件（参考 template-plugin
-  与已有插件、避开重复、同类合并/新类另起、目录名 clipbus-{topic}-plugin、跑到
+  与已有插件、避开重复、同类合并/新类另起、目录名 clipbus-{topic}-plugin、面向用户文案用英文、跑到
   npm run verify 全绿）。只要用户想新建/生成/扩展/再来一个剪贴板插件——哪怕只是
   模糊地说"做个解码插件""再来一个插件""generate a clipbus plugin""扩展一下功能"，
   或点名某个 clipbus-*-plugin——就用这个 skill。涉及在本合集新增能力时优先用它。
@@ -76,14 +76,14 @@ description: >-
 
 遇到失败别绕过：用 systematic-debugging 的思路定位根因再改。
 
-### 6 · 更新目录索引
+### 6 · 更新目录索引（中英双写，强制）
 
-- 更新目标插件 `README.md`：写清它**覆盖了哪些功能**（feature 清单）。
-- 更新根 `PLUGINS.md`：按插件维度加/改一条（简述 + 链接到该插件 README）。不存在则创建。
+- 更新目标插件 `README.md`：写清它**覆盖了哪些功能**（feature 清单），**用英文写**（见「铁律 · 文案语言」）。
+- 更新根索引——**`README.md`（英文，仓库主页）与 `README_zh.md`（中文）两个文件必须同步加/改同一条**（简述 + 链接到该插件 README）。两文件的插件条目须一一对应；任一不存在则创建。**只更新一个、漏掉另一个 = 没完成。**
 
 ### 7 · 汇报
 
-给出：插件目录、新增/变更的能力、验证结果（命令 + 结论）、索引更新情况。
+给出：插件目录、新增/变更的能力、验证结果（命令 + 结论）、**中英双索引（`README.md` + `README_zh.md`）的更新情况**。
 
 ## 铁律（接线不变量，违反必出错）
 
@@ -92,6 +92,7 @@ description: >-
 - **输入仅三种 kind**：`text` / `image` / `path_reference`（snake_case）；content envelope 扁平。
 - **能力签名以 API.md 为准**；不改 `node_modules/@clipbus/plugin-sdk/` 内 SDK 源码。
 - UI 禁裸 hex，一律 `var(--clipbus-*, 回退)`。
+- **文案语言（面向用户文字一律英文）**：后续生产的插件 / 新 feature，所有**面向用户**的文案——`manifest.json` 的 `title` / `description`、UI（`app.vue` 等）里可见的字符串与按钮标题、插件自身 `README.md`——**必须用英文**。根索引按 `README.md`（英文）+ `README_zh.md`（中文）双写。代码注释、本仓库内部说明、commit message 不受此限。
 - **`.ts` 扩展名**：运行时 `.ts` 文件间相对 import 带 `.ts`（冒烟测试用 Node 直接 require，不会自动补扩展名）；`.vue` 文件内可不带。
 - **`payload.ts` 必须 UI 安全**：它被 `app.vue` 与 runtime 两侧 import，**严禁出现 `import … from "node:*"`**（`node:crypto`/`fs` 等）——否则 `build:ui` 时 Rollup 报 `MISSING_EXPORT`。需 Node API 算 payload（哈希等）就拆出 runtime-only 的 `builder.ts` 承载，`payload.ts` 只留类型 + `decode*Payload`。详见 authoring-guide 第 2 节。
 
