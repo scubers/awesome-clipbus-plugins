@@ -17,3 +17,4 @@
 | [clipbus-text-plugin](./clipbus-text-plugin/README.md) | 文本行处理工具——排序行 / 去重行 / 整理空白，三个一键 auto-run 动作 |
 | [clipbus-generator-plugin](./clipbus-generator-plugin/README.md) | 生成 UUID v4 或强随机密码（可配置长度 / 大小写 / 数字 / 符号 / 数量），draft 表单实时预览并复制（Web Crypto） |
 | [clipbus-jwt-plugin](./clipbus-jwt-plugin/README.md) | 识别 JWT，解码 header / payload，展示 alg/typ、标准 claims 与过期状态，一键复制 payload（仅本地解码、不校验签名）|
+| [clipbus-markdown-plugin](./clipbus-markdown-plugin/README.md) | 识别 Markdown 文本（≥2 种语法信号才触发），本地安全渲染为格式化 HTML 预览卡片（HTML 转义 + 链接协议白名单，不执行脚本）|

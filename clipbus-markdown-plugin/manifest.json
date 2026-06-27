@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.markdown",
+    "title": "Markdown Preview",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": ["setAttachment"],
+  "detectors": [
+    {
+      "id": "markdown-detector",
+      "title": "Markdown 识别",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.markdown.preview"]
+    }
+  ],
+  "attachmentRenderers": [
+    {
+      "id": "markdown-renderer",
+      "title": "Markdown 预览",
+      "attachmentType": "plugin.markdown.preview",
+      "height": { "min": 120, "max": 480 },
+      "uiEntry": "renderers/markdown-renderer/index.html"
+    }
+  ],
+  "actions": []
+}
