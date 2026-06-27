@@ -20,3 +20,4 @@
 | [clipbus-markdown-plugin](./clipbus-markdown-plugin/README.md) | 识别 Markdown 文本（≥2 种语法信号才触发），本地安全渲染为格式化 HTML 预览卡片（HTML 转义 + 链接协议白名单，不执行脚本）|
 | [clipbus-diff-plugin](./clipbus-diff-plugin/README.md) | 识别 unified diff，渲染带 `+N −M · K files` 统计条与逐行增删着色的 Diff 查看器 |
 | [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | 识别 5 段 cron 表达式，逐字段中文释义表 + 一句执行概述（带护栏避免误判普通数字行）|
+| [clipbus-radix-plugin](./clipbus-radix-plugin/README.md) | 识别整数（十进制 / 0x 十六 / 0b 二 / 0o 八），BigInt 任意精度对照四种进制 + 位数 + ASCII，逐行复制 |
