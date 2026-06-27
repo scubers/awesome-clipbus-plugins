@@ -8,6 +8,7 @@
 # Custom folder icons
 Icon
 .omc
+worktree/
 
 # Volume root files
 .DocumentRevisions-V100
