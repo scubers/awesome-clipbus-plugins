@@ -25,13 +25,13 @@
       "id": "xml-detector",
       "title": "XML Detector",
       "supportedInputKinds": ["text"],
-      "attachmentTypes": ["plugin.xml.formatted"]
+      "attachmentTypes": ["plugin.formatter.xml"]
     },
     {
       "id": "sql-detector",
       "title": "SQL Detector",
       "supportedInputKinds": ["text"],
-      "attachmentTypes": ["plugin.sql.formatted"]
+      "attachmentTypes": ["plugin.formatter.sql"]
     }
   ],
   "attachmentRenderers": [
@@ -45,14 +45,14 @@
     {
       "id": "xml-renderer",
       "title": "XML Formatter",
-      "attachmentType": "plugin.xml.formatted",
+      "attachmentType": "plugin.formatter.xml",
       "height": { "min": 140, "max": 480 },
       "uiEntry": "renderers/xml-renderer/index.html"
     },
     {
       "id": "sql-renderer",
       "title": "SQL Formatter",
-      "attachmentType": "plugin.sql.formatted",
+      "attachmentType": "plugin.formatter.sql",
       "height": { "min": 140, "max": 460 },
       "tint": "#0369A1",
       "uiEntry": "renderers/sql-renderer/index.html"

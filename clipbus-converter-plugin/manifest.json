@@ -25,7 +25,7 @@
       "id": "radix-detector",
       "title": "Radix Detector",
       "supportedInputKinds": ["text"],
-      "attachmentTypes": ["plugin.radix.number"]
+      "attachmentTypes": ["plugin.converter.radix"]
     }
   ],
   "attachmentRenderers": [
@@ -39,7 +39,7 @@
     {
       "id": "radix-renderer",
       "title": "Radix Converter",
-      "attachmentType": "plugin.radix.number",
+      "attachmentType": "plugin.converter.radix",
       "height": { "min": 120, "max": 300 },
       "uiEntry": "renderers/radix-renderer/index.html"
     }

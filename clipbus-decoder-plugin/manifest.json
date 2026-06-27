@@ -25,7 +25,7 @@
       "id": "jwt-detector",
       "title": "JWT Detection",
       "supportedInputKinds": ["text"],
-      "attachmentTypes": ["plugin.jwt.token"]
+      "attachmentTypes": ["plugin.decoder.jwt"]
     }
   ],
   "attachmentRenderers": [
@@ -39,7 +39,7 @@
     {
       "id": "jwt-renderer",
       "title": "JWT Parse",
-      "attachmentType": "plugin.jwt.token",
+      "attachmentType": "plugin.decoder.jwt",
       "height": { "min": 140, "max": 440 },
       "uiEntry": "renderers/jwt-renderer/index.html"
     }

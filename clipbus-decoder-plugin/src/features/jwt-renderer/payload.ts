@@ -5,7 +5,7 @@
 
 import type { PluginDetectorArtifact } from "@clipbus/plugin-sdk/runtime";
 
-const ATTACHMENT_TYPE = "plugin.jwt.token";
+const ATTACHMENT_TYPE = "plugin.decoder.jwt";
 
 export interface JwtFact {
   label: string;

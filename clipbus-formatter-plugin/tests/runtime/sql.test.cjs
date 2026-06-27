@@ -33,7 +33,7 @@ test("detect SELECT…FROM with = guard returns statementType SELECT", () => {
   const { buildSqlArtifact } = require(path.resolve(root, "src/features/sql-renderer/payload.ts"));
   const artifact = buildSqlArtifact(textInput("select id, name from users where id = 1"));
   assert.ok(artifact, "should detect SQL query");
-  assert.equal(artifact.attachmentType, "plugin.sql.formatted");
+  assert.equal(artifact.attachmentType, "plugin.formatter.sql");
   const payload = JSON.parse(artifact.payloadJson);
   assert.equal(payload.kind, "sql_preview");
   assert.equal(payload.statementType, "SELECT");
@@ -112,8 +112,8 @@ test("renderer returns shouldDisplay:false for bad payload", async () => {
     attachments: [],
     attachment: {
       historyID: "h1",
-      owner: "plugin.sql",
-      attachmentType: "plugin.sql.formatted",
+      owner: "plugin.formatter",
+      attachmentType: "plugin.formatter.sql",
       attachmentKey: "primary",
       payloadJson: "not-valid-json",
     },
@@ -132,7 +132,7 @@ test("renderer returns a displayName for a valid payload", async () => {
     attachments: [],
     attachment: {
       historyID: "h1",
-      owner: "plugin.sql",
+      owner: "plugin.formatter",
       attachmentType: artifact.attachmentType,
       attachmentKey: artifact.attachmentKey,
       payloadJson: artifact.payloadJson,

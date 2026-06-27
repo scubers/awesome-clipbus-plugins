@@ -4,7 +4,7 @@
 
 import type { PluginDetectorArtifact } from "@clipbus/plugin-sdk/runtime";
 
-const ATTACHMENT_TYPE = "plugin.radix.number";
+const ATTACHMENT_TYPE = "plugin.converter.radix";
 
 export type InputBase = "dec" | "hex" | "bin" | "oct";
 

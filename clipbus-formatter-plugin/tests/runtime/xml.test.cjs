@@ -33,7 +33,7 @@ test("detect <a><b>1</b></a> → elementCount 2, formatted contains newline+inde
   const { buildXmlArtifact } = require(path.resolve(root, "src/features/xml-renderer/payload.ts"));
   const artifact = buildXmlArtifact(textInput("<a><b>1</b></a>"));
   assert.ok(artifact, "should detect XML");
-  assert.equal(artifact.attachmentType, "plugin.xml.formatted");
+  assert.equal(artifact.attachmentType, "plugin.formatter.xml");
   const p = JSON.parse(artifact.payloadJson);
   assert.equal(p.kind, "xml_preview");
   assert.equal(p.elementCount, 2);
@@ -120,8 +120,8 @@ test("renderer returns shouldDisplay:false for bad payload", async () => {
     attachments: [],
     attachment: {
       historyID: "h1",
-      owner: "plugin.xml",
-      attachmentType: "plugin.xml.formatted",
+      owner: "plugin.formatter",
+      attachmentType: "plugin.formatter.xml",
       attachmentKey: "primary",
       payloadJson: "not-valid-json",
     },
@@ -139,7 +139,7 @@ test("renderer returns displayName for valid payload", async () => {
     attachments: [],
     attachment: {
       historyID: "h1",
-      owner: "plugin.xml",
+      owner: "plugin.formatter",
       attachmentType: artifact.attachmentType,
       attachmentKey: artifact.attachmentKey,
       payloadJson: artifact.payloadJson,

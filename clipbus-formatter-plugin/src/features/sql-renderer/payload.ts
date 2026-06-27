@@ -3,7 +3,7 @@
 
 import type { PluginDetectorArtifact } from "@clipbus/plugin-sdk/runtime";
 
-const ATTACHMENT_TYPE = "plugin.sql.formatted";
+const ATTACHMENT_TYPE = "plugin.formatter.sql";
 
 export interface SqlPayload {
   kind: "sql_preview";

@@ -3,7 +3,7 @@
 
 import type { PluginDetectorArtifact } from "@clipbus/plugin-sdk/runtime";
 
-const ATTACHMENT_TYPE = "plugin.xml.formatted";
+const ATTACHMENT_TYPE = "plugin.formatter.xml";
 const MAX_INPUT = 20000;
 const INDENT = "  ";
 

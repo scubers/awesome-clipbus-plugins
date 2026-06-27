@@ -31,7 +31,7 @@ Trigger condition: text contains `---`/`+++` headers plus at least two change li
 |---|---|
 | Detector | `diff-detector` |
 | Attachment Renderer | `diff-renderer` |
-| Attachment Type | `plugin.diff.unified` |
+| Attachment Type | `plugin.inspector.diff` |
 
 ## Development
 

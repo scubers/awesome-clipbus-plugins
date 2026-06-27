@@ -45,7 +45,7 @@ test("detector decodes the canonical JWT header and claims", () => {
   const { buildJwtArtifact } = require(path.resolve(root, "src/features/jwt-renderer/payload.ts"));
   const artifact = buildJwtArtifact(textInput(CANONICAL));
   assert.ok(artifact, "should detect canonical JWT");
-  assert.equal(artifact.attachmentType, "plugin.jwt.token");
+  assert.equal(artifact.attachmentType, "plugin.decoder.jwt");
   const payload = JSON.parse(artifact.payloadJson);
   assert.equal(payload.kind, "jwt_preview");
   assert.equal(payload.alg, "HS256");
@@ -116,7 +116,7 @@ test("renderer returns shouldDisplay:false for bad payload", async () => {
     item: sampleItem,
     content: { kind: "text", text: "" },
     attachments: [],
-    attachment: { historyID: "h1", owner: "plugin.jwt", attachmentType: "plugin.jwt.token", attachmentKey: "primary", payloadJson: "not-valid-json" },
+    attachment: { historyID: "h1", owner: "plugin.decoder", attachmentType: "plugin.decoder.jwt", attachmentKey: "primary", payloadJson: "not-valid-json" },
   });
   assert.equal(result.shouldDisplay, false);
 });
@@ -129,7 +129,7 @@ test("renderer returns a displayName for a valid payload", async () => {
     item: sampleItem,
     content: { kind: "text", text: CANONICAL },
     attachments: [],
-    attachment: { historyID: "h1", owner: "plugin.jwt", attachmentType: artifact.attachmentType, attachmentKey: artifact.attachmentKey, payloadJson: artifact.payloadJson },
+    attachment: { historyID: "h1", owner: "plugin.decoder", attachmentType: artifact.attachmentType, attachmentKey: artifact.attachmentKey, payloadJson: artifact.payloadJson },
   });
   assert.ok(result.displayName);
   assert.notEqual(result.shouldDisplay, false);

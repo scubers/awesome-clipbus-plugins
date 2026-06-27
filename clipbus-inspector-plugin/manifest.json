@@ -25,7 +25,7 @@
       "id": "diff-detector",
       "title": "Unified Diff Detector",
       "supportedInputKinds": ["text"],
-      "attachmentTypes": ["plugin.diff.unified"]
+      "attachmentTypes": ["plugin.inspector.diff"]
     }
   ],
   "attachmentRenderers": [
@@ -39,7 +39,7 @@
     {
       "id": "diff-renderer",
       "title": "Diff Viewer",
-      "attachmentType": "plugin.diff.unified",
+      "attachmentType": "plugin.inspector.diff",
       "height": { "min": 140, "max": 480 },
       "uiEntry": "renderers/diff-renderer/index.html"
     }

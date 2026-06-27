@@ -44,7 +44,7 @@ test("buildDiffArtifact detects a canonical unified diff", () => {
   const { buildDiffArtifact } = require(path.resolve(root, "src/features/diff-renderer/payload.ts"));
   const artifact = buildDiffArtifact(textInput(SAMPLE_DIFF));
   assert.ok(artifact, "should detect canonical unified diff");
-  assert.equal(artifact.attachmentType, "plugin.diff.unified");
+  assert.equal(artifact.attachmentType, "plugin.inspector.diff");
 });
 
 test("additions and deletions counts are correct", () => {
@@ -122,8 +122,8 @@ test("renderer returns shouldDisplay:false for a bad payload", async () => {
     attachments: [],
     attachment: {
       historyID: "h1",
-      owner: "plugin.diff",
-      attachmentType: "plugin.diff.unified",
+      owner: "plugin.inspector",
+      attachmentType: "plugin.inspector.diff",
       attachmentKey: "primary",
       payloadJson: "not-valid-json",
     },
@@ -141,7 +141,7 @@ test("renderer returns a displayName for a valid payload", async () => {
     attachments: [],
     attachment: {
       historyID: "h1",
-      owner: "plugin.diff",
+      owner: "plugin.inspector",
       attachmentType: artifact.attachmentType,
       attachmentKey: artifact.attachmentKey,
       payloadJson: artifact.payloadJson,

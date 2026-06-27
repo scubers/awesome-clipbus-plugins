@@ -12,13 +12,13 @@ Clipbus plugin that detects JSON, XML, and SQL text on the clipboard, auto-forma
 
 ### XML
 
-- **XML Detector** (`xml-detector`): Detects text containing valid tag structure (element pairs, prolog, or comments) and attaches `plugin.xml.formatted`.
+- **XML Detector** (`xml-detector`): Detects text containing valid tag structure (element pairs, prolog, or comments) and attaches `plugin.formatter.xml`.
 - **XML Formatter** (`xml-renderer`): Preview card showing element count, attribute count, nesting depth, and the indented XML.
 - **Copy Formatted XML** (`xml-copy`, auto-run): Returns the indented XML text to the clipboard.
 
 ### SQL
 
-- **SQL Detector** (`sql-detector`): Detects SELECT / INSERT / UPDATE / DELETE and other SQL statement patterns, attaches `plugin.sql.formatted`. Filters out natural-language English sentences that accidentally match (e.g. "select the best option from the menu").
+- **SQL Detector** (`sql-detector`): Detects SELECT / INSERT / UPDATE / DELETE and other SQL statement patterns, attaches `plugin.formatter.sql`. Filters out natural-language English sentences that accidentally match (e.g. "select the best option from the menu").
 - **SQL Formatter** (`sql-renderer`): Preview card showing the statement type and keyword-uppercased, clause-per-line SQL.
 - **Copy Formatted SQL** (`sql-copy`, auto-run): Returns the formatted SQL text to the clipboard.
 

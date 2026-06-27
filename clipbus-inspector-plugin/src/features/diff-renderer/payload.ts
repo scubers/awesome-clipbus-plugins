@@ -3,7 +3,7 @@
 
 import type { PluginDetectorArtifact } from "@clipbus/plugin-sdk/runtime";
 
-const ATTACHMENT_TYPE = "plugin.diff.unified";
+const ATTACHMENT_TYPE = "plugin.inspector.diff";
 
 export type DiffLineType = "add" | "del" | "ctx" | "hunk" | "meta";
 

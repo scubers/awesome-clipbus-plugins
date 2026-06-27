@@ -111,8 +111,8 @@ test("renderer returns shouldDisplay:false for bad payload", async () => {
     attachments: [],
     attachment: {
       historyID: "h1",
-      owner: "plugin.radix",
-      attachmentType: "plugin.radix.number",
+      owner: "plugin.converter",
+      attachmentType: "plugin.converter.radix",
       attachmentKey: "primary",
       payloadJson: "not-valid-json",
     },
@@ -130,7 +130,7 @@ test("renderer returns displayName for valid payload", async () => {
     attachments: [],
     attachment: {
       historyID: "h1",
-      owner: "plugin.radix",
+      owner: "plugin.converter",
       attachmentType: artifact.attachmentType,
       attachmentKey: artifact.attachmentKey,
       payloadJson: artifact.payloadJson,
