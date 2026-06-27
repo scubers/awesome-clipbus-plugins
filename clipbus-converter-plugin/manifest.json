@@ -26,6 +26,12 @@
       "title": "Radix Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.converter.radix"]
+    },
+    {
+      "id": "duration-detector",
+      "title": "Duration Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.converter.duration"]
     }
   ],
   "attachmentRenderers": [
@@ -42,6 +48,13 @@
       "attachmentType": "plugin.converter.radix",
       "height": { "min": 120, "max": 300 },
       "uiEntry": "renderers/radix-renderer/index.html"
+    },
+    {
+      "id": "duration",
+      "title": "Duration",
+      "attachmentType": "plugin.converter.duration",
+      "height": { "min": 140, "max": 300 },
+      "uiEntry": "renderers/duration/index.html"
     }
   ],
   "actions": [

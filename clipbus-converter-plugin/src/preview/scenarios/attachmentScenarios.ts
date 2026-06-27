@@ -34,4 +34,24 @@ export const attachmentScenarios: AttachmentScenario[] = [
       },
     },
   },
+  {
+    id: "duration-sample",
+    label: "ISO 8601 Duration: P1Y2M10DT2H30M",
+    rendererComponent: "compact",
+    searchTerms: ["duration", "iso8601", "P1Y2M10DT2H30M"],
+    accentHex: "#7C3AED",
+    bootstrap: {
+      attachment: {
+        payloadJson: JSON.stringify({
+          kind: "duration_preview",
+          version: 1,
+          original: "P1Y2M10DT2H30M",
+          components: { years: 1, months: 2, days: 10, hours: 2, minutes: 30 },
+          humanBreakdown: "1 year, 2 months, 10 days, 2 hours, 30 minutes",
+          totalSeconds: 37690200,
+          approximate: true,
+        }),
+      },
+    },
+  },
 ];
