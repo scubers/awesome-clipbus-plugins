@@ -7,7 +7,7 @@
 | 插件 | 描述 |
 |------|------|
 | [clipbus-decoder-plugin](./clipbus-decoder-plugin/README.md) | 编解码工具：Base64 识别解码、JWT 解析（header/payload + 过期状态）、多编解码 draft（URL / HTML / Base64 / Unicode / JSON 双向）|
-| [clipbus-formatter-plugin](./clipbus-formatter-plugin/README.md) | 识别 JSON 对象/数组，展示格式化（美化缩进）预览，支持一键复制格式化结果 |
+| [clipbus-formatter-plugin](./clipbus-formatter-plugin/README.md) | 格式美化：识别 JSON / XML / SQL，缩进或关键字大写重排预览，一键复制格式化结果 |
 | [clipbus-converter-plugin](./clipbus-converter-plugin/README.md) | 识别剪贴板中的 Unix 时间戳（10 位秒 / 13 位毫秒），展示本地时间、ISO 8601、UTC、星期与相对时间，一键复制 ISO 8601 |
 | [clipbus-extractor-plugin](./clipbus-extractor-plugin/README.md) | 从大段文本中提取并去重所有 URL / Email / IPv4，分组展示并一键复制全部（命中 ≥ 2 个才触发）|
 | [clipbus-inspector-plugin](./clipbus-inspector-plugin/README.md) | 统计文本字符/词/行/字节并计算 MD5/SHA-1/SHA-256，只读信息卡，可直接从卡片复制哈希 |
@@ -20,7 +20,5 @@
 | [clipbus-diff-plugin](./clipbus-diff-plugin/README.md) | 识别 unified diff，渲染带 `+N −M · K files` 统计条与逐行增删着色的 Diff 查看器 |
 | [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | 识别 5 段 cron 表达式，逐字段中文释义表 + 一句执行概述（带护栏避免误判普通数字行）|
 | [clipbus-radix-plugin](./clipbus-radix-plugin/README.md) | 识别整数（十进制 / 0x 十六 / 0b 二 / 0o 八），BigInt 任意精度对照四种进制 + 位数 + ASCII，逐行复制 |
-| [clipbus-sql-plugin](./clipbus-sql-plugin/README.md) | 识别 SQL 语句，关键字大写并按子句换行重排，monospace 卡片展示并一键复制（仅做可读性重排）|
-| [clipbus-xml-plugin](./clipbus-xml-plugin/README.md) | 识别 XML / HTML 片段，按层缩进美化并统计元素 / 属性 / 最大深度，一键复制格式化结果 |
 | [clipbus-case-plugin](./clipbus-case-plugin/README.md) | 命名风格转换 draft 工具：把剪贴板文本实时转为 camel / Pascal / snake / CONSTANT / kebab / Title / Sentence / dot 共 8 种，逐条复制 |
 | [clipbus-regex-plugin](./clipbus-regex-plugin/README.md) | 正则测试 draft 工具：输入 pattern + flags + 测试文本，实时显示匹配数、匹配项与捕获组，一键复制匹配 |

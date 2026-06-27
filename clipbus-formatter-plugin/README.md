@@ -1,37 +1,31 @@
 # clipbus-formatter-plugin
 
-识别剪贴板中的 JSON 内容，自动格式化（美化缩进），并展示格式化预览，支持一键复制结果。
+格式美化插件：识别剪贴板中的 JSON、XML、SQL 内容，自动格式化并展示预览，支持一键复制结果。
 
 ## 功能
 
-| Feature | 能力 id | 说明 |
-|---|---|---|
-| JSON 识别与渲染 | `json-renderer` | 检测有效 JSON 对象/数组，展示格式化预览卡片 |
-| JSON 格式化复制 | `json-copy` | 一键将格式化（2 空格缩进）的 JSON 复制到剪贴板 |
+### JSON
 
-Detector id：`json-detector`（attachmentType：`plugin.formatter.json`）。
+- **识别**（`json-detector`）：对 `text` 类型输入尝试 `JSON.parse`，成功且为对象/数组时挂 `plugin.formatter.json` 附件
+- **缩进美化**（`json-renderer`）：卡片展示顶层类型（对象/数组）、字段数、2 空格缩进后的代码块
+- **一键复制**（`json-copy`，auto-run）：直接将格式化后的 JSON 文本返回至剪贴板
 
-## 使用场景
+### XML
 
-- 从 API 响应、日志或网页复制了压缩 JSON，想立即看清楚结构
-- 需要把格式化好的 JSON 粘贴到文档或代码注释中
+- **识别**（`xml-detector`）：检测包含合法标签结构（元素对/prolog/注释）的文本，挂 `plugin.xml.formatted` 附件
+- **缩进美化**（`xml-renderer`）：卡片展示元素数、属性数、格式化后的 XML 代码块
+- **一键复制**（`xml-copy`，auto-run）：将缩进格式化后的 XML 文本返回至剪贴板
 
-## 能力说明
+### SQL
 
-- **detector**（`json-detector`）：对 `text` 类型输入尝试 `JSON.parse`，成功且为对象/数组时挂 `plugin.formatter.json` 附件
-- **renderer**（`json-renderer`）：卡片展示类型标签（JSON 对象/JSON 数组）、字数变化、格式化后的代码块；按钮"复制格式化结果"
-- **action**（`json-copy`，auto-run）：直接将格式化后的 JSON 文本作为结果返回
-
-## 未来可加
-
-- XML 格式化（`xml-renderer`）
-- SQL 格式化（`sql-renderer`）
-- YAML 格式化（`yaml-renderer`）
+- **识别**（`sql-detector`）：检测 SELECT/INSERT/UPDATE/DELETE 等 SQL 语句特征，挂 `plugin.sql.formatted` 附件；过滤口语化英文（如 "select the best option from the menu"）
+- **大写美化**（`sql-renderer`）：卡片展示语句类型（SELECT/INSERT/UPDATE/DELETE）、关键字大写 + 换行缩进后的 SQL
+- **一键复制**（`sql-copy`，auto-run）：将格式化后的 SQL 文本返回至剪贴板
 
 ## 本地开发
 
 ```sh
 npm install
 npm run dev       # Vite 预览工作台
-npm run verify    # typecheck + lint + build + 冒烟测试（全绿才算完成）
+npm run verify    # typecheck + lint + build + 测试（全绿才算完成）
 ```
