@@ -40,17 +40,29 @@ description: >-
 
 ### 2 · 选题与归属
 
-先**归类（强制，动手前必做）**：**必须先读 `references/topic-ideas.md` 的类别词表**，把新选题对到其中某个 canonical 类别——**别凭直觉自判"这是新类别"**。词表已把大量功能点名归进固定类别，例如：JWT / URL 百分号 / HTML 实体 / Unicode / Base64 等编解码 → `decoder`；JSON / XML / SQL / CSV / YAML 美化 → `formatter`；进制转换 / 命名风格(camel/snake/…) / 时间戳 → `converter`；正则匹配项 / URL / Email / IP 提取 → `extractor`；文本统计 / 哈希 / 文本 diff → `inspector`；Markdown 实时预览 / 色块 → `visual`。再定**归属**：
-- 选题落入词表某类别、且 `clipbus-{类别}-plugin` **已存在** → **一律作为新 feature 加进去（扩展），禁止另起新插件**（只是别和已覆盖的 feature 重复）。
-- 选题落入词表某类别、但该插件尚不存在 → 新建**该类别**插件 `clipbus-{类别}-plugin`，首发 1-2 个 feature。
-- 选题**确实不属于词表任何类别**（如 cron 定时表达式）→ 才新建 `clipbus-{topic}-plugin`，并建议把新类别补进 `topic-ideas.md`。
-- **判不准时默认"扩展进已有"，不默认"新建"。**
+分两步：**先自由选题，再 survey 驱动归属。**
 
-然后：
-- **默认模式**：提 2-4 个候选选题，每个给「一句卖点 / 定位（实用·视觉·整活）/ 归属（新建 X 或加进 Y）/ 计划实现的扩展点」。用 AskUserQuestion 让用户选定，再继续。
-- **全自主模式**：按 实用>视觉>整活 自己挑一个**尚未被现有插件覆盖的 feature**——注意是"挑 feature"，**不是"挑一个没建过的新插件"**；优先把它作为 feature 加进命中类别的已有插件，只有属于全新类别才新建。直接继续，不停顿。先输出一行「类别词表命中：<类别>；归属：加进 <已有插件> ／ 新建 <类别插件>；选定 feature：<topic>，理由：<一句>」，便于回溯选题与归属依据。
+**A. 选题（自由发散）**
+- 自由构思一个"剪贴板里常见、做了有用"的 feature。`references/topic-ideas.md` 只是**灵感源**（卡壳时翻），**不是清单、更不是归类约束**——鼓励提出表里没有的新点子，发掘新能力正是本 skill 的目的。
+- 优先级：实用 > 视觉 > 整活。用户给定选题则直接用。
 
-避重/合并铁律：① 不要重复已有插件已覆盖的功能；② plugin.id / attachmentType / 目录名都不能和勘察结果撞；③ **同一功能类别只能有一个插件**——命中已有类别必须扩展进去，**严禁为同类功能另起新插件**（这是本 skill 最常见的退化：20 次调用生成 20 个本应合并的插件，务必守住）。
+**B. 归属（survey 驱动，合并优先）**
+拿选定的 feature，**基于阶段 1 survey 出的「现有插件真实职责」**判断（看每个插件的 `readmeSummary` + detectors/renderers/actions——**看实际职责，不是看名字、更不是拿 topic 表的分组对号入座**）：
+- 逐个问"这个 feature 并入哪个现有插件最自然？"——**找到职责契合的宿主就并入它（作为新 feature 扩展）**，别与它已覆盖的重复。
+- **确实没有任何现有插件职责契合 → 才新建** `clipbus-{topic}-plugin`。
+- **判不准时默认"并入最接近的"，不默认"新建"。**
+
+两条归属经验法则：
+- **被动 vs 主动**：被动检测+展示（detector+renderer）的 feature，并入以 detector/renderer 为主的插件；用户主动调用（action）的 feature，并入以 action 为主的插件。例：解码（被动识别编码串，detector 驱动）与格式转换（用户主动换格式，action 驱动）**即使都沾"转换"，也分属不同插件**。
+- **一个职责一个插件**：同一职责域只应有一个插件。发现天然归属已存在就扩展进去。
+
+然后按模式：
+- **默认模式**：提 2-4 个候选，每个给「一句卖点 / 定位（实用·视觉·整活）/ 归属（survey 里并入 X 或新建 Y）/ 计划扩展点」。用 AskUserQuestion 让用户选定，再继续。
+- **全自主模式**：自己挑一个**现有插件尚未覆盖的 feature**（挑 feature，**不是**"挑一个没建过的插件名"），直接继续、不停顿。**新建前必须过硬门控**，先输出一行：
+  `选定 feature：<topic>；考察候选宿主：<逐个列 survey 里相关插件 + 各自为何不契合>；归属：并入 <X> ／ 新建 <Y>；理由：<一句>`
+  **若写不出"每个相关插件都不契合的具体理由"，就不许新建，必须并入最接近的那个。**
+
+避重/合并铁律（survey 驱动）：① 不重复已有插件已覆盖的功能；② plugin.id / attachmentType / 目录名都不能和 survey 结果撞；③ **同一职责域只能有一个插件**——并入是默认、新建是例外。全自主模式靠上面的硬门控挡住"为同类另起插件"的退化（这是本 skill 最常见的退化：20 次调用生成 20 个本应合并的插件，务必守住）。
 
 ### 3 · 落地基线
 
@@ -80,6 +92,7 @@ description: >-
 ### 6 · 更新目录索引（中英双写，强制）
 
 - 更新目标插件 `README.md`：写清它**覆盖了哪些功能**（feature 清单），**用英文写**（见「铁律 · 文案语言」）。
+- **措辞自检（强制）**：按「铁律 · 文案风格统一」复查本次的 `plugin.title` / README H1 / detector·renderer 标题；**本次 survey 或扩展触及的现有插件**若发现裸 slug、`Detection`、过去分词等不一致，**顺手一并修正**（这是用户期望的"顺带 review 现有插件措辞"）。
 - 更新根索引——**`README.md`（英文，仓库主页）与 `README_zh.md`（中文）两个文件必须同步加/改同一条**（简述 + 链接到该插件 README）。两文件的插件条目须一一对应；任一不存在则创建。**只更新一个、漏掉另一个 = 没完成。**
 
 ### 7 · 汇报
@@ -96,6 +109,7 @@ description: >-
 - **能力签名以 API.md 为准**；不改 `node_modules/@clipbus/plugin-sdk/` 内 SDK 源码。
 - UI 禁裸 hex，一律 `var(--clipbus-*, 回退)`。
 - **文案语言（面向用户文字一律英文）**：后续生产的插件 / 新 feature，所有**面向用户**的文案——`manifest.json` 的 `title` / `description`、UI（`app.vue` 等）里可见的字符串与按钮标题、插件自身 `README.md`——**必须用英文**。根索引按 `README.md`（英文）+ `README_zh.md`（中文）双写。代码注释、本仓库内部说明、commit message 不受此限。
+- **文案风格统一（命名一致性）**：`plugin.title` 用简洁的**类别名或功能名**（如 `Formatter` / `Extractor` / `Cron Explainer`），不要用裸目录名；**README 的 H1 必须是人类标题**，禁止 `# clipbus-xxx-plugin` 裸 slug；detector 的 `title` 统一 `<X> Detector`（不要 `Detection`）；renderer 的 `title` 用**内容名词**（`Color Swatch` / `CSV Table` / `URL Details`），避免过去分词（如 `URL Parsed`）。同插件其余条目也对齐这套风格，跨插件保持一致。
 - **`.ts` 扩展名**：运行时 `.ts` 文件间相对 import 带 `.ts`（冒烟测试用 Node 直接 require，不会自动补扩展名）；`.vue` 文件内可不带。
 - **`payload.ts` 必须 UI 安全**：它被 `app.vue` 与 runtime 两侧 import，**严禁出现 `import … from "node:*"`**（`node:crypto`/`fs` 等）——否则 `build:ui` 时 Rollup 报 `MISSING_EXPORT`。需 Node API 算 payload（哈希等）就拆出 runtime-only 的 `builder.ts` 承载，`payload.ts` 只留类型 + `decode*Payload`。详见 authoring-guide 第 2 节。
 
@@ -113,4 +127,4 @@ description: >-
 
 - `references/architecture.md` — 两侧架构、四扩展点、接线不变量、通用约定速查（动手前先读）。
 - `references/authoring-guide.md` — 怎么写真实 detector/renderer/action、payload 范式、视觉规范、冒烟测试范式（阶段 4 跟着做）。
-- `references/topic-ideas.md` — 实用选题点子库 + 类别词表（阶段 2 用）。
+- `references/topic-ideas.md` — 选题**灵感库**（启发式，**非归类约束**；归属一律看 survey，见阶段 2）。

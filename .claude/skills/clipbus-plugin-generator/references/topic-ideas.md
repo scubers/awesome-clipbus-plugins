@@ -1,66 +1,41 @@
-# 选题点子库 + 类别词表
+# 选题灵感库（启发式 · 非归类约束）
 
-双重用途：① 阶段 2 提案选题的灵感源；② **类别词表**——给新选题归类，决定"加进已有 `clipbus-{类别}-plugin` 还是新建"。
+本文件是**选题时的灵感源**——一堆"剪贴板里常见、做成插件有用"的点子。
 
-**优先级：功能实用 > 视觉呈现 > 整活/情绪价值。** 默认从"实用"类里挑；视觉/整活作点缀。
+> ⚠️ **它不是归类词表，不构成任何硬约束。**
+> 选题阶段应当**自由发散、主动发掘新点子**；本表只是卡壳时的提示，不是清单。
+> **归属判断（合并进已有插件 vs 新建）一律以 `survey.mjs` 跑出的「现有插件真实职责」为准**
+> （见 SKILL.md 阶段 2）。**不要**拿本表给选题"对号入座"、再据此决定建不建插件——
+> 那正是本 skill 退化成"同类功能各起一个插件"的根源。
 
-> 归类原则：同一**功能类别**进同一插件（如各种解码都进 `clipbus-decoder-plugin`，作为各自 feature）。类别名取插件目录里的 `{topic}`。下面每个一级条目就是一个候选**类别 = 一个插件**，子条目是该插件里的 feature。
-
-## 实用类（优先）
-
-### decoder（解码/编码）`clipbus-decoder-plugin`
-剪贴板里常见编码串，识别→展示解码结果→一键复制。
-- base64 编解码、URL 百分号编解码、JWT 解析（header/payload）、Hex↔文本、Unicode `\u` 转义、HTML 实体、Quoted-Printable、Punycode。
-- 扩展点：detector（识别编码特征）+ renderer（展示解码）+ auto-run action（复制解码结果）。
-
-### formatter（格式化/美化）`clipbus-formatter-plugin`
-识别结构化文本→美化缩进→展示+复制。
-- JSON、XML、SQL、YAML、TOML、CSV 对齐、GraphQL。
-- 扩展点：detector + renderer（高亮/缩进预览）+ auto-run action（复制格式化结果）。
-
-### converter（转换）`clipbus-converter-plugin`
-一种表示↔另一种表示。
-- 时间戳↔日期（含时区）、进制转换（2/8/10/16）、单位换算、命名风格（camel/snake/kebab/Pascal）、Markdown↔HTML、颜色模型（hex/rgb/hsl，**带色块视觉**）。
-- 扩展点：detector + renderer + auto-run action（或 draft：让用户选目标格式）。
-
-### extractor（提取）`clipbus-extractor-plugin`
-从大段文本里抽出目标。
-- 提取所有 URL / Email / IP / 手机号、正则匹配项、代码块、Markdown 链接。
-- 扩展点：detector + renderer（列出命中项，可计数）+ auto-run action（复制全部命中）。
-
-### inspector（检视/校验）`clipbus-inspector-plugin`
-对内容做度量/校验，给信息而非改写。
-- 字符串统计（字符/词/行/字节）、哈希（md5/sha1/sha256）、JSON 校验+路径提示、文本 diff、图片尺寸/格式（image kind）。
-- 扩展点：detector + renderer（信息卡）；多为只读，未必要 action。
-
-### generator（生成）`clipbus-generator-plugin`
-按需产出新内容（常配 draft 让用户调参）。
-- UUID、随机密码、Lorem、二维码（**生成图片**，用 `host.asset.registerImage` 出 `clipbus-asset://`）、哈希、占位数据。
-- 扩展点：draft action（参数表单 + `clipbus.action.complete`）或 auto-run；生成图片走 asset 注册。
-
-### text（文本处理）`clipbus-text-plugin`
-对剪贴板文本做常见清洗。
-- 去重行、排序、去空白、slugify、大小写、统计、反转、计数替换。
-- 扩展点：detector + renderer（预览处理后）+ auto-run action。
-
-## 视觉类（次优先，点缀）
-
-### visual（可视化预览）`clipbus-visual-plugin`
-强调"看"的渲染。
-- 颜色色块预览（hex/rgb→大色块 + 对比色）、Markdown 实时预览、图片 EXIF/尺寸卡、二维码渲染、JSON 树形折叠视图。
-- 扩展点：detector + renderer（`height:"auto"` 或 `{min,max}` + `autoFit`，重排版与主题）。
-
-## 整活类（最低优先，情绪价值）
-
-### fun（整活）`clipbus-fun-plugin`
-- emoji 化、Zalgo、花体/全角美化、ASCII art、彩虹文字预览、复读机。
-- 扩展点：detector + renderer + auto-run action。视觉可以夸张但仍守主题 token。
-
----
+**选题优先级：功能实用 > 视觉呈现 > 整活/情绪价值。**
 
 ## 怎么用这张表
 
-1. survey 拿到已有插件后，先看新想法**落在哪个类别**。
-2. 该类别的 `clipbus-{类别}-plugin` **已存在** → 作为新 feature 加进去（别和已覆盖的 feature 重复）。
-3. **不存在** → 新建该插件，先实现 1-2 个最有用的 feature，README 里留出"未来可加"的清单。
-4. 提案时给用户的每条都标明：类别 / 归属（新建 or 加进 X）/ 定位（实用·视觉·整活）/ 计划扩展点。
+1. 想做点有用的东西？先扫一眼下面的点子找灵感——**也鼓励想表里没有的新点子**（skill 的目的就是不断发掘新能力）。
+2. 定下一个具体 feature 后，去 SKILL.md **阶段 2** 做归属：survey 现有插件，找"谁的职责最该承载它"，能并就并，都不合适才新建。
+3. 下面的分组只是**主题聚类**，方便浏览，**不等于插件边界**——真实的插件边界看 survey，不看本表。
+
+## 实用类（优先）
+
+- **解码/编码**：base64、URL 百分号、JWT 解析、Hex↔文本、Unicode `\u` 转义、HTML 实体、Quoted-Printable、Punycode。
+- **格式化/美化**：JSON、XML、SQL、YAML、TOML、CSV 表格对齐、GraphQL。
+- **转换**：时间戳↔日期（含时区）、进制（2/8/10/16）、单位换算、命名风格（camel/snake/kebab/Pascal）、Markdown↔HTML、颜色模型（hex/rgb/hsl）。
+- **提取/解析**：URL / Email / IP / 手机号、正则匹配项、代码块、Markdown 链接、单个 URL 的结构解析（scheme/host/path/query）。
+- **检视/校验**：字符/词/行/字节统计、哈希（md5/sha1/sha256）、JSON 校验+路径提示、文本 diff、图片尺寸/格式。
+- **生成**：UUID、随机密码、Lorem、二维码（生成图片）、占位数据。
+- **文本清洗**：去重行、排序、去空白、slugify、大小写、反转、计数替换。
+- **解释**：cron 表达式、正则可读化、HTTP 状态码、User-Agent 解析、权限位（chmod）。
+
+## 视觉类（次优先，点缀）
+
+- 颜色色块预览（大色块 + 对比色 + WCAG）、Markdown 实时预览、图片 EXIF/尺寸卡、二维码渲染、JSON 树形折叠视图。
+
+## 整活类（最低优先，情绪价值）
+
+- emoji 化、Zalgo、花体/全角美化、ASCII art、彩虹文字、复读机。
+
+---
+
+> 再次强调：**这些只是灵感**。要不要新建插件、还是并入哪个已有插件，
+> **永远先 `survey` 现状、再按职责推理**，不要把本表的分组当插件清单。
