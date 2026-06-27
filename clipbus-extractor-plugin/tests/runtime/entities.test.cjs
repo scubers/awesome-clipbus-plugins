@@ -29,11 +29,6 @@ test('manifest has entities-renderer', () => {
   assert.ok(ids.includes('entities-renderer'), 'missing entities-renderer');
 });
 
-test('manifest has entities-copy action', () => {
-  const ids = manifest.actions.map((a) => a.id);
-  assert.ok(ids.includes('entities-copy'), 'missing entities-copy');
-});
-
 test('entities-renderer uiEntry references renderers/ path', () => {
   const renderer = manifest.attachmentRenderers.find((r) => r.id === 'entities-renderer');
   assert.ok(renderer.uiEntry.startsWith('renderers/'), `unexpected uiEntry: ${renderer.uiEntry}`);
@@ -142,41 +137,3 @@ test('renderer resolveAttachment returns displayName for valid payload', async (
   assert.notEqual(result.shouldDisplay, false, 'valid payload should display');
 });
 
-// ---------------------------------------------------------------------------
-// Action
-// ---------------------------------------------------------------------------
-
-test('entities-copy runAutoAction returns text result for valid input', async () => {
-  const { createEntitiesCopyAction } = require(path.resolve(root, 'src/features/entities-renderer/action.ts'));
-  const action = createEntitiesCopyAction();
-  const text = 'Contact me at john@example.com or visit https://example.com and https://foo.org, server 192.168.1.1';
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'text', 'valid input should return text result');
-});
-
-test('entities-copy runAutoAction returns none for input with fewer than 2 entities', async () => {
-  const { createEntitiesCopyAction } = require(path.resolve(root, 'src/features/entities-renderer/action.ts'));
-  const action = createEntitiesCopyAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: 'https://only-one.com' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'none', 'single entity should return none');
-});
-
-test('entities-copy resolveSession returns expected shape', async () => {
-  const { createEntitiesCopyAction } = require(path.resolve(root, 'src/features/entities-renderer/action.ts'));
-  const action = createEntitiesCopyAction();
-  const result = await action.resolveSession({
-    item: sampleItem,
-    content: { kind: 'text', text: '' },
-    attachments: [],
-  });
-  assert.ok(Array.isArray(result.buttons), 'buttons should be an array');
-  assert.ok('initialDraft' in result, 'initialDraft should be present');
-});

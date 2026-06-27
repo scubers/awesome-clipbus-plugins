@@ -29,11 +29,6 @@ test('manifest has csv-table renderer', () => {
   assert.ok(ids.includes('csv-table'), 'missing csv-table');
 });
 
-test('manifest has csv-copy action', () => {
-  const ids = manifest.actions.map((a) => a.id);
-  assert.ok(ids.includes('csv-copy'), 'missing csv-copy');
-});
-
 test('csv-table uiEntry references renderers/ path', () => {
   const renderer = manifest.attachmentRenderers.find((r) => r.id === 'csv-table');
   assert.ok(renderer.uiEntry.startsWith('renderers/'), `unexpected uiEntry: ${renderer.uiEntry}`);
@@ -57,10 +52,6 @@ test('each factory file exports expected function', () => {
   const { createCsvRenderer } =
     require(path.resolve(root, 'src/features/csv-table/renderer.ts'));
   assert.equal(typeof createCsvRenderer, 'function');
-
-  const { createCsvAction } =
-    require(path.resolve(root, 'src/features/csv-table/action.ts'));
-  assert.equal(typeof createCsvAction, 'function');
 });
 
 // ---------------------------------------------------------------------------
@@ -223,44 +214,3 @@ test('renderer resolveAttachment returns displayName for valid payload', async (
   assert.notEqual(result.shouldDisplay, false, 'valid payload should display');
 });
 
-// ---------------------------------------------------------------------------
-// Action
-// ---------------------------------------------------------------------------
-
-test('csv-copy runAutoAction returns text result with pipe chars for valid CSV', async () => {
-  const { createCsvAction } =
-    require(path.resolve(root, 'src/features/csv-table/action.ts'));
-  const action = createCsvAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: 'name,age\nAlice,30\nBob,25' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'text');
-  assert.ok(result.result.text.includes('|'), 'Markdown table should contain pipe chars');
-});
-
-test('csv-copy runAutoAction returns none for non-CSV input', async () => {
-  const { createCsvAction } =
-    require(path.resolve(root, 'src/features/csv-table/action.ts'));
-  const action = createCsvAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: 'hello' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'none');
-});
-
-test('csv-copy resolveSession returns expected shape', async () => {
-  const { createCsvAction } =
-    require(path.resolve(root, 'src/features/csv-table/action.ts'));
-  const action = createCsvAction();
-  const result = await action.resolveSession({
-    item: sampleItem,
-    content: { kind: 'text', text: '' },
-    attachments: [],
-  });
-  assert.ok(Array.isArray(result.buttons), 'buttons should be an array');
-  assert.ok('initialDraft' in result, 'initialDraft should be present');
-});

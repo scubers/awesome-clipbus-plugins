@@ -28,10 +28,9 @@ function textInput(text) {
 
 // ── Manifest contract ─────────────────────────────────────────────────────────
 
-test("manifest declares jwt-detector / jwt-renderer / jwt-copy", () => {
+test("manifest declares jwt-detector / jwt-renderer", () => {
   assert.ok(manifest.detectors.map((d) => d.id).includes("jwt-detector"));
   assert.ok(manifest.attachmentRenderers.map((r) => r.id).includes("jwt-renderer"));
-  assert.ok(manifest.actions.map((a) => a.id).includes("jwt-copy"));
 });
 
 test("jwt-renderer uiEntry references renderers/ path", () => {
@@ -135,24 +134,3 @@ test("renderer returns a displayName for a valid payload", async () => {
   assert.notEqual(result.shouldDisplay, false);
 });
 
-// ── Action ────────────────────────────────────────────────────────────────────
-
-test("jwt-copy runAutoAction returns the decoded payload as text", async () => {
-  const { createJwtCopyAction } = require(path.resolve(root, "src/features/jwt-renderer/action.ts"));
-  const result = await createJwtCopyAction().runAutoAction(textInput(CANONICAL));
-  assert.equal(result.result.resultKind, "text");
-  assert.match(result.result.text, /John Doe/);
-});
-
-test("jwt-copy runAutoAction returns none for non-JWT input", async () => {
-  const { createJwtCopyAction } = require(path.resolve(root, "src/features/jwt-renderer/action.ts"));
-  const result = await createJwtCopyAction().runAutoAction(textInput("just some text"));
-  assert.equal(result.result.resultKind, "none");
-});
-
-test("jwt-copy resolveSession returns expected shape", async () => {
-  const { createJwtCopyAction } = require(path.resolve(root, "src/features/jwt-renderer/action.ts"));
-  const result = await createJwtCopyAction().resolveSession(textInput(""));
-  assert.ok(Array.isArray(result.buttons));
-  assert.ok("initialDraft" in result);
-});

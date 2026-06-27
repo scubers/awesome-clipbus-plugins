@@ -31,13 +31,5 @@
       "uiEntry": "renderers/csv-table/index.html"
     }
   ],
-  "actions": [
-    {
-      "id": "csv-copy",
-      "title": "Copy as Markdown Table",
-      "supportedItemTypes": ["text"],
-      "lifecycle": "auto-run",
-      "keywords": ["csv", "table", "spreadsheet", "markdown"]
-    }
-  ]
+  "actions": []
 }

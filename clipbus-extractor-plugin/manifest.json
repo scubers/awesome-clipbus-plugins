@@ -33,13 +33,6 @@
   ],
   "actions": [
     {
-      "id": "entities-copy",
-      "title": "Extract & Copy URLs / Emails / IPs",
-      "supportedItemTypes": ["text"],
-      "lifecycle": "auto-run",
-      "keywords": ["extract", "url", "email", "ip"]
-    },
-    {
       "id": "regex-tool",
       "title": "Regex Tester",
       "supportedItemTypes": ["text"],

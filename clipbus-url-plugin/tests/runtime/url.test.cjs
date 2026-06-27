@@ -31,11 +31,6 @@ test('manifest has url-parsed renderer', () => {
   assert.ok(ids.includes('url-parsed'), 'missing url-parsed');
 });
 
-test('manifest has url-copy action', () => {
-  const ids = manifest.actions.map((a) => a.id);
-  assert.ok(ids.includes('url-copy'), 'missing url-copy');
-});
-
 test('url-parsed uiEntry references renderers/ path', () => {
   const renderer = manifest.attachmentRenderers.find((r) => r.id === 'url-parsed');
   assert.ok(renderer.uiEntry.startsWith('renderers/'), `unexpected uiEntry: ${renderer.uiEntry}`);
@@ -55,13 +50,6 @@ test('createUrlRenderer returns a handler with resolveAttachment method', () => 
   const { createUrlRenderer } = require(path.resolve(root, 'src/features/url-parsed/renderer.ts'));
   const handler = createUrlRenderer();
   assert.equal(typeof handler.resolveAttachment, 'function');
-});
-
-test('createUrlAction returns a handler with runAutoAction and resolveSession methods', () => {
-  const { createUrlAction } = require(path.resolve(root, 'src/features/url-parsed/action.ts'));
-  const handler = createUrlAction();
-  assert.equal(typeof handler.runAutoAction, 'function');
-  assert.equal(typeof handler.resolveSession, 'function');
 });
 
 // ---------------------------------------------------------------------------
@@ -176,56 +164,3 @@ test('renderer resolveAttachment returns displayName for valid payload', async (
   assert.notEqual(result.shouldDisplay, false, 'valid payload should display');
 });
 
-// ---------------------------------------------------------------------------
-// Action
-// ---------------------------------------------------------------------------
-
-test('url-copy runAutoAction returns text result for URL with query', async () => {
-  const { createUrlAction } = require(path.resolve(root, 'src/features/url-parsed/action.ts'));
-  const action = createUrlAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: sampleUrl },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'text', 'URL with query → resultKind text');
-  // Should be JSON of query params
-  const parsed = JSON.parse(result.result.text);
-  assert.equal(parsed.x, '1');
-  assert.equal(parsed.y, '2');
-});
-
-test('url-copy runAutoAction returns text result for URL without query', async () => {
-  const { createUrlAction } = require(path.resolve(root, 'src/features/url-parsed/action.ts'));
-  const action = createUrlAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: 'https://example.com/path' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'text', 'URL without query → resultKind text');
-  assert.ok(result.result.text.startsWith('https://'), 'result should be the href');
-});
-
-test('url-copy runAutoAction returns none for non-URL input', async () => {
-  const { createUrlAction } = require(path.resolve(root, 'src/features/url-parsed/action.ts'));
-  const action = createUrlAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: 'hello' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'none', 'non-URL → resultKind none');
-});
-
-test('url-copy resolveSession returns expected shape', async () => {
-  const { createUrlAction } = require(path.resolve(root, 'src/features/url-parsed/action.ts'));
-  const action = createUrlAction();
-  const result = await action.resolveSession({
-    item: sampleItem,
-    content: { kind: 'text', text: '' },
-    attachments: [],
-  });
-  assert.ok(Array.isArray(result.buttons), 'buttons should be an array');
-  assert.ok('initialDraft' in result, 'initialDraft should be present');
-});

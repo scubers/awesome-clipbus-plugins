@@ -46,20 +46,6 @@
   ],
   "actions": [
     {
-      "id": "base64-copy",
-      "title": "Copy Base64 Decoded Result",
-      "supportedItemTypes": ["text"],
-      "lifecycle": "auto-run",
-      "keywords": ["base64", "decode", "copy"]
-    },
-    {
-      "id": "jwt-copy",
-      "title": "Copy JWT Payload",
-      "supportedItemTypes": ["text"],
-      "lifecycle": "auto-run",
-      "keywords": ["jwt", "token", "payload", "decode", "copy"]
-    },
-    {
       "id": "escape-tool",
       "title": "Escape & Encode",
       "supportedItemTypes": ["text"],

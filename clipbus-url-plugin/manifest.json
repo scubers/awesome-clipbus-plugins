@@ -31,13 +31,5 @@
       "uiEntry": "renderers/url-parsed/index.html"
     }
   ],
-  "actions": [
-    {
-      "id": "url-copy",
-      "title": "Copy URL Query",
-      "supportedItemTypes": ["text"],
-      "lifecycle": "auto-run",
-      "keywords": ["url", "link", "query", "param"]
-    }
-  ]
+  "actions": []
 }

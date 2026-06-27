@@ -31,13 +31,5 @@
       "uiEntry": "renderers/color-swatch/index.html"
     }
   ],
-  "actions": [
-    {
-      "id": "color-copy",
-      "title": "Copy Color Formats",
-      "supportedItemTypes": ["text"],
-      "lifecycle": "auto-run",
-      "keywords": ["color", "hex", "rgb"]
-    }
-  ]
+  "actions": []
 }

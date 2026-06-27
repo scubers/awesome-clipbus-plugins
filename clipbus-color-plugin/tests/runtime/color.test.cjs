@@ -29,11 +29,6 @@ test('manifest has color-swatch renderer', () => {
   assert.ok(ids.includes('color-swatch'), 'missing color-swatch');
 });
 
-test('manifest has color-copy action', () => {
-  const ids = manifest.actions.map((a) => a.id);
-  assert.ok(ids.includes('color-copy'), 'missing color-copy');
-});
-
 test('color-swatch uiEntry references renderers/ path', () => {
   const renderer = manifest.attachmentRenderers.find((r) => r.id === 'color-swatch');
   assert.ok(renderer.uiEntry.startsWith('renderers/'), `unexpected uiEntry: ${renderer.uiEntry}`);
@@ -53,13 +48,6 @@ test('createColorRenderer returns a handler with resolveAttachment method', () =
   const { createColorRenderer } = require(path.resolve(root, 'src/features/color-swatch/renderer.ts'));
   const handler = createColorRenderer();
   assert.equal(typeof handler.resolveAttachment, 'function');
-});
-
-test('createColorAction returns a handler with runAutoAction and resolveSession methods', () => {
-  const { createColorAction } = require(path.resolve(root, 'src/features/color-swatch/action.ts'));
-  const handler = createColorAction();
-  assert.equal(typeof handler.runAutoAction, 'function');
-  assert.equal(typeof handler.resolveSession, 'function');
 });
 
 // ---------------------------------------------------------------------------
@@ -180,41 +168,3 @@ test('renderer resolveAttachment returns displayName for valid payload', async (
   assert.notEqual(result.shouldDisplay, false, 'valid payload should display');
 });
 
-// ---------------------------------------------------------------------------
-// Action
-// ---------------------------------------------------------------------------
-
-test('color-copy runAutoAction returns text result for valid color #fff', async () => {
-  const { createColorAction } = require(path.resolve(root, 'src/features/color-swatch/action.ts'));
-  const action = createColorAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: '#fff' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'text', 'valid color → resultKind text');
-  assert.ok(result.result.text.includes('#'), 'result text should contain hex');
-});
-
-test('color-copy runAutoAction returns none for non-color input', async () => {
-  const { createColorAction } = require(path.resolve(root, 'src/features/color-swatch/action.ts'));
-  const action = createColorAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: 'hello' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'none', 'non-color → resultKind none');
-});
-
-test('color-copy resolveSession returns expected shape', async () => {
-  const { createColorAction } = require(path.resolve(root, 'src/features/color-swatch/action.ts'));
-  const action = createColorAction();
-  const result = await action.resolveSession({
-    item: sampleItem,
-    content: { kind: 'text', text: '' },
-    attachments: [],
-  });
-  assert.ok(Array.isArray(result.buttons), 'buttons should be an array');
-  assert.ok('initialDraft' in result, 'initialDraft should be present');
-});

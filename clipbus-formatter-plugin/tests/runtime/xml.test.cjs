@@ -16,10 +16,9 @@ function textInput(text) {
 
 // ── Manifest contract ─────────────────────────────────────────────────────────
 
-test("manifest declares xml-detector / xml-renderer / xml-copy", () => {
+test("manifest declares xml-detector / xml-renderer", () => {
   assert.ok(manifest.detectors.map((d) => d.id).includes("xml-detector"));
   assert.ok(manifest.attachmentRenderers.map((r) => r.id).includes("xml-renderer"));
-  assert.ok(manifest.actions.map((a) => a.id).includes("xml-copy"));
 });
 
 test("xml-renderer uiEntry references renderers/ path", () => {
@@ -149,24 +148,3 @@ test("renderer returns displayName for valid payload", async () => {
   assert.notEqual(result.shouldDisplay, false);
 });
 
-// ── Action ────────────────────────────────────────────────────────────────────
-
-test("xml-copy runAutoAction returns formatted XML as text", async () => {
-  const { createXmlCopyAction } = require(path.resolve(root, "src/features/xml-renderer/action.ts"));
-  const result = await createXmlCopyAction().runAutoAction(textInput("<root><child/></root>"));
-  assert.equal(result.result.resultKind, "text");
-  assert.ok(result.result.text.includes("<root>"), "text should contain root tag");
-});
-
-test("xml-copy runAutoAction returns none for non-XML input", async () => {
-  const { createXmlCopyAction } = require(path.resolve(root, "src/features/xml-renderer/action.ts"));
-  const result = await createXmlCopyAction().runAutoAction(textInput("just some plain text"));
-  assert.equal(result.result.resultKind, "none");
-});
-
-test("xml-copy resolveSession returns expected shape", async () => {
-  const { createXmlCopyAction } = require(path.resolve(root, "src/features/xml-renderer/action.ts"));
-  const result = await createXmlCopyAction().resolveSession(textInput(""));
-  assert.ok(Array.isArray(result.buttons));
-  assert.ok("initialDraft" in result);
-});

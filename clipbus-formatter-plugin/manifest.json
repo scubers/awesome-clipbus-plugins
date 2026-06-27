@@ -58,27 +58,5 @@
       "uiEntry": "renderers/sql-renderer/index.html"
     }
   ],
-  "actions": [
-    {
-      "id": "json-copy",
-      "title": "Copy Formatted JSON",
-      "supportedItemTypes": ["text"],
-      "lifecycle": "auto-run",
-      "keywords": ["json", "format", "beautify", "pretty"]
-    },
-    {
-      "id": "xml-copy",
-      "title": "Copy Formatted XML",
-      "supportedItemTypes": ["text"],
-      "lifecycle": "auto-run",
-      "keywords": ["xml", "html", "format", "copy"]
-    },
-    {
-      "id": "sql-copy",
-      "title": "Copy Formatted SQL",
-      "supportedItemTypes": ["text"],
-      "lifecycle": "auto-run",
-      "keywords": ["sql", "query", "format", "copy"]
-    }
-  ]
+  "actions": []
 }

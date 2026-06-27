@@ -16,10 +16,9 @@ function textInput(text) {
 
 // ── Manifest contract ──────────────────────────────────────────────────────────
 
-test("manifest declares radix-detector / radix-renderer / radix-copy", () => {
+test("manifest declares radix-detector / radix-renderer", () => {
   assert.ok(manifest.detectors.map((d) => d.id).includes("radix-detector"));
   assert.ok(manifest.attachmentRenderers.map((r) => r.id).includes("radix-renderer"));
-  assert.ok(manifest.actions.map((a) => a.id).includes("radix-copy"));
 });
 
 test("radix-renderer uiEntry references renderers/ path", () => {
@@ -140,27 +139,3 @@ test("renderer returns displayName for valid payload", async () => {
   assert.notEqual(result.shouldDisplay, false);
 });
 
-// ── Action ────────────────────────────────────────────────────────────────────
-
-test("radix-copy returns text for '255'", async () => {
-  const { createRadixCopyAction } = require(path.resolve(root, "src/features/radix-renderer/action.ts"));
-  const result = await createRadixCopyAction().runAutoAction(textInput("255"));
-  assert.equal(result.result.resultKind, "text");
-  assert.match(result.result.text, /DEC: 255/);
-  assert.match(result.result.text, /HEX: 0xff/);
-  assert.match(result.result.text, /OCT: 0o377/);
-  assert.match(result.result.text, /BIN: 0b11111111/);
-});
-
-test("radix-copy returns none for 'abc'", async () => {
-  const { createRadixCopyAction } = require(path.resolve(root, "src/features/radix-renderer/action.ts"));
-  const result = await createRadixCopyAction().runAutoAction(textInput("abc"));
-  assert.equal(result.result.resultKind, "none");
-});
-
-test("radix-copy resolveSession returns expected shape", async () => {
-  const { createRadixCopyAction } = require(path.resolve(root, "src/features/radix-renderer/action.ts"));
-  const result = await createRadixCopyAction().resolveSession(textInput(""));
-  assert.ok(Array.isArray(result.buttons));
-  assert.ok("initialDraft" in result);
-});

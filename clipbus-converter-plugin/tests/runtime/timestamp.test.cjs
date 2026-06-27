@@ -29,11 +29,6 @@ test('manifest has timestamp-renderer', () => {
   assert.ok(ids.includes('timestamp-renderer'), 'missing timestamp-renderer');
 });
 
-test('manifest has timestamp-copy action', () => {
-  const ids = manifest.actions.map((a) => a.id);
-  assert.ok(ids.includes('timestamp-copy'), 'missing timestamp-copy');
-});
-
 test('timestamp-renderer uiEntry references renderers/ path', () => {
   const renderer = manifest.attachmentRenderers.find((r) => r.id === 'timestamp-renderer');
   assert.ok(renderer.uiEntry.startsWith('renderers/'), `unexpected uiEntry: ${renderer.uiEntry}`);
@@ -128,41 +123,3 @@ test('renderer resolveAttachment returns displayName for valid payload', async (
   assert.notEqual(result.shouldDisplay, false, 'valid payload should display');
 });
 
-// ---------------------------------------------------------------------------
-// Action
-// ---------------------------------------------------------------------------
-
-test('timestamp-copy runAutoAction returns text result (iso) for valid timestamp', async () => {
-  const { createTimestampCopyAction } = require(path.resolve(root, 'src/features/timestamp-renderer/action.ts'));
-  const action = createTimestampCopyAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: '1700000000' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'text');
-  assert.equal(result.result.text, '2023-11-14T22:13:20.000Z');
-});
-
-test('timestamp-copy runAutoAction returns none for non-timestamp input', async () => {
-  const { createTimestampCopyAction } = require(path.resolve(root, 'src/features/timestamp-renderer/action.ts'));
-  const action = createTimestampCopyAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: 'not a timestamp' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'none');
-});
-
-test('timestamp-copy resolveSession returns expected shape', async () => {
-  const { createTimestampCopyAction } = require(path.resolve(root, 'src/features/timestamp-renderer/action.ts'));
-  const action = createTimestampCopyAction();
-  const result = await action.resolveSession({
-    item: sampleItem,
-    content: { kind: 'text', text: '' },
-    attachments: [],
-  });
-  assert.ok(Array.isArray(result.buttons), 'buttons should be an array');
-  assert.ok('initialDraft' in result, 'initialDraft should be present');
-});

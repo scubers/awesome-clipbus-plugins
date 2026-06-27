@@ -29,11 +29,6 @@ test('manifest has json-renderer', () => {
   assert.ok(ids.includes('json-renderer'), 'missing json-renderer');
 });
 
-test('manifest has json-copy action', () => {
-  const ids = manifest.actions.map((a) => a.id);
-  assert.ok(ids.includes('json-copy'), 'missing json-copy');
-});
-
 test('json-renderer uiEntry references renderers/ path', () => {
   const renderer = manifest.attachmentRenderers.find((r) => r.id === 'json-renderer');
   assert.ok(renderer.uiEntry.startsWith('renderers/'), `unexpected uiEntry: ${renderer.uiEntry}`);
@@ -159,41 +154,3 @@ test('renderer resolveAttachment returns displayName for valid payload', async (
   assert.notEqual(result.shouldDisplay, false, 'valid payload should display');
 });
 
-// ---------------------------------------------------------------------------
-// Action
-// ---------------------------------------------------------------------------
-
-test('json-copy runAutoAction formats and returns text result', async () => {
-  const { createJsonCopyAction } = require(path.resolve(root, 'src/features/json-renderer/action.ts'));
-  const action = createJsonCopyAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: '{"a":1,"b":2}' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'text');
-  assert.ok(result.result.text.includes('  "a"'), 'result should be formatted JSON');
-});
-
-test('json-copy runAutoAction returns none for non-JSON input', async () => {
-  const { createJsonCopyAction } = require(path.resolve(root, 'src/features/json-renderer/action.ts'));
-  const action = createJsonCopyAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: 'not json at all' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'none');
-});
-
-test('json-copy resolveSession returns expected shape', async () => {
-  const { createJsonCopyAction } = require(path.resolve(root, 'src/features/json-renderer/action.ts'));
-  const action = createJsonCopyAction();
-  const result = await action.resolveSession({
-    item: sampleItem,
-    content: { kind: 'text', text: '' },
-    attachments: [],
-  });
-  assert.ok(Array.isArray(result.buttons), 'buttons should be an array');
-  assert.ok('initialDraft' in result, 'initialDraft should be present');
-});

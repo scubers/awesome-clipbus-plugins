@@ -6,10 +6,8 @@ Clipbus plugin that integrates three conversion capabilities: Unix timestamp dis
 
 - **Unix Timestamp Detector** (`timestamp-detector`): Recognises 10-digit (seconds) and 13-digit (milliseconds) Unix timestamps in clipboard text. Rejects values that fall outside the year range 2001–2099.
 - **Unix Timestamp Renderer** (`timestamp-renderer`): Displays the detected timestamp as local time, UTC, ISO 8601, weekday, and a human-readable relative time (e.g. "3h ago"). Includes a "Copy ISO 8601" button.
-- **Copy ISO 8601 Timestamp** (`timestamp-copy`): Auto-run action that copies the ISO 8601 representation of the detected timestamp to the clipboard.
 - **Radix Detector** (`radix-detector`): Recognises integers written in decimal, hexadecimal (`0x`), binary (`0b`), or octal (`0o`) notation. Rejects floats and non-numeric text.
 - **Radix Converter** (`radix-renderer`): Shows the detected integer in all four bases (DEC / HEX / OCT / BIN) with per-row copy buttons. Also displays bit count, ASCII character (printable range 32–126), and a "Negative" badge for signed values. Includes a "Copy all radix" button.
-- **Copy All Radix Formats** (`radix-copy`): Auto-run action that copies all four radix representations as a multi-line string.
 - **Case Converter** (`case-tool`): Draft action that converts clipboard text into eight naming conventions — camelCase, snake_case, kebab-case, PascalCase, CONSTANT_CASE, Title Case, Sentence case, dot.case — and lets you copy any variant or submit the camelCase result.
 
 ## Development

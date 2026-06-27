@@ -46,20 +46,6 @@
   ],
   "actions": [
     {
-      "id": "timestamp-copy",
-      "title": "Copy ISO 8601 Timestamp",
-      "supportedItemTypes": ["text"],
-      "lifecycle": "auto-run",
-      "keywords": ["timestamp", "unix", "time"]
-    },
-    {
-      "id": "radix-copy",
-      "title": "Copy All Radix Formats",
-      "supportedItemTypes": ["text"],
-      "lifecycle": "auto-run",
-      "keywords": ["radix", "hex", "binary", "octal", "decimal", "convert"]
-    },
-    {
       "id": "case-tool",
       "title": "Case Converter",
       "supportedItemTypes": ["text"],

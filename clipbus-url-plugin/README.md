@@ -16,14 +16,6 @@ Displays a content-driven card (height `"auto"`) with:
 - **Query params table**: Key/value table with zebra-striped rows for all query parameters; shows "No query params" when none are present.
 - **Host button**: "Copy query params (JSON)" copies all query parameters as a formatted JSON object (or the full href when there are no query params).
 
-### Auto-run Action: `url-copy`
-
-Triggered for text items matching keywords `url`, `link`, `query`, `param`. Behaviour:
-
-- URL with query parameters → returns a formatted JSON object of key/value pairs with message "Copied query params".
-- URL without query parameters → returns the full href with message "Copied URL".
-- Non-URL content → returns `none` with message "Not a URL".
-
 ## Getting started
 
 ```sh

@@ -16,10 +16,9 @@ function textInput(text) {
 
 // ── Manifest contract ─────────────────────────────────────────────────────────
 
-test("manifest declares sql-detector / sql-renderer / sql-copy", () => {
+test("manifest declares sql-detector / sql-renderer", () => {
   assert.ok(manifest.detectors.map((d) => d.id).includes("sql-detector"));
   assert.ok(manifest.attachmentRenderers.map((r) => r.id).includes("sql-renderer"));
-  assert.ok(manifest.actions.map((a) => a.id).includes("sql-copy"));
 });
 
 test("sql-renderer uiEntry references renderers/ path", () => {
@@ -142,28 +141,3 @@ test("renderer returns a displayName for a valid payload", async () => {
   assert.notEqual(result.shouldDisplay, false);
 });
 
-// ── Action ────────────────────────────────────────────────────────────────────
-
-test("sql-copy runAutoAction returns formatted text for a SQL input", async () => {
-  const { createSqlCopyAction } = require(path.resolve(root, "src/features/sql-renderer/action.ts"));
-  const result = await createSqlCopyAction().runAutoAction(
-    textInput("SELECT id, name FROM users WHERE id = 1")
-  );
-  assert.equal(result.result.resultKind, "text");
-  assert.ok(result.result.text.includes("SELECT"));
-});
-
-test("sql-copy runAutoAction returns none for prose input", async () => {
-  const { createSqlCopyAction } = require(path.resolve(root, "src/features/sql-renderer/action.ts"));
-  const result = await createSqlCopyAction().runAutoAction(
-    textInput("select the best option from the menu")
-  );
-  assert.equal(result.result.resultKind, "none");
-});
-
-test("sql-copy resolveSession returns expected shape", async () => {
-  const { createSqlCopyAction } = require(path.resolve(root, "src/features/sql-renderer/action.ts"));
-  const result = await createSqlCopyAction().resolveSession(textInput(""));
-  assert.ok(Array.isArray(result.buttons));
-  assert.ok("initialDraft" in result);
-});

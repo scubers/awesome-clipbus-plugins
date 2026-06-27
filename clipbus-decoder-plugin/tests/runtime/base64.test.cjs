@@ -29,11 +29,6 @@ test('manifest has base64-renderer', () => {
   assert.ok(ids.includes('base64-renderer'), 'missing base64-renderer');
 });
 
-test('manifest has base64-copy action', () => {
-  const ids = manifest.actions.map((a) => a.id);
-  assert.ok(ids.includes('base64-copy'), 'missing base64-copy');
-});
-
 test('base64-renderer uiEntry references renderers/ path', () => {
   const renderer = manifest.attachmentRenderers.find((r) => r.id === 'base64-renderer');
   assert.ok(renderer.uiEntry.startsWith('renderers/'), `unexpected uiEntry: ${renderer.uiEntry}`);
@@ -135,41 +130,3 @@ test('renderer resolveAttachment returns displayName for valid payload', async (
   assert.notEqual(result.shouldDisplay, false, 'valid payload should display');
 });
 
-// ---------------------------------------------------------------------------
-// Action
-// ---------------------------------------------------------------------------
-
-test('base64-copy runAutoAction decodes and returns text result', async () => {
-  const { createBase64CopyAction } = require(path.resolve(root, 'src/features/base64-renderer/action.ts'));
-  const action = createBase64CopyAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: 'SGVsbG8sIFdvcmxkIQ==' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'text');
-  assert.equal(result.result.text, 'Hello, World!');
-});
-
-test('base64-copy runAutoAction returns none for non-base64 input', async () => {
-  const { createBase64CopyAction } = require(path.resolve(root, 'src/features/base64-renderer/action.ts'));
-  const action = createBase64CopyAction();
-  const result = await action.runAutoAction({
-    item: sampleItem,
-    content: { kind: 'text', text: 'not base64 at all' },
-    attachments: [],
-  });
-  assert.equal(result.result.resultKind, 'none');
-});
-
-test('base64-copy resolveSession returns expected shape', async () => {
-  const { createBase64CopyAction } = require(path.resolve(root, 'src/features/base64-renderer/action.ts'));
-  const action = createBase64CopyAction();
-  const result = await action.resolveSession({
-    item: sampleItem,
-    content: { kind: 'text', text: '' },
-    attachments: [],
-  });
-  assert.ok(Array.isArray(result.buttons), 'buttons should be an array');
-  assert.ok('initialDraft' in result, 'initialDraft should be present');
-});
