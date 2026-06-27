@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "plugin": {
     "id": "plugin.formatter",
-    "title": "Code Formatter",
+    "title": "Formatter",
     "version": "0.1.0"
   },
   "install": {
@@ -32,6 +32,12 @@
       "title": "SQL Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.formatter.sql"]
+    },
+    {
+      "id": "csv-detector",
+      "title": "CSV Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.formatter.csv"]
     }
   ],
   "attachmentRenderers": [
@@ -56,6 +62,13 @@
       "height": { "min": 140, "max": 460 },
       "tint": "#0369A1",
       "uiEntry": "renderers/sql-renderer/index.html"
+    },
+    {
+      "id": "csv-table",
+      "title": "CSV Table",
+      "attachmentType": "plugin.formatter.csv",
+      "height": "auto",
+      "uiEntry": "renderers/csv-table/index.html"
     }
   ],
   "actions": []

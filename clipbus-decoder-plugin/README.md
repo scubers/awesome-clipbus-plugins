@@ -1,4 +1,4 @@
-# clipbus-decoder-plugin
+# Decoder
 
 Clipbus plugin that detects and decodes encoded strings on the clipboard. Supports Base64 and JWT out of the box, plus a multi-format escape/encode draft tool.
 

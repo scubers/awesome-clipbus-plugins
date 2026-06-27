@@ -1,4 +1,4 @@
-# clipbus-converter-plugin
+# Converter
 
 Clipbus plugin that integrates three conversion capabilities: Unix timestamp display, integer radix conversion, and text case transformation.
 

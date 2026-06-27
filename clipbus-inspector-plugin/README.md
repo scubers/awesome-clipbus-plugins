@@ -1,4 +1,4 @@
-# clipbus-inspector-plugin
+# Inspector
 
 A Clipbus plugin that combines text statistics with unified diff viewing in a single package.
 

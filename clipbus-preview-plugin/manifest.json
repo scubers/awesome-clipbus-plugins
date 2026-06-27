@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.preview",
+    "title": "Preview",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": ["setAttachment"],
+  "detectors": [
+    {
+      "id": "color-detector",
+      "title": "Color Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.preview.color"]
+    },
+    {
+      "id": "markdown-detector",
+      "title": "Markdown Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.preview.markdown"]
+    }
+  ],
+  "attachmentRenderers": [
+    {
+      "id": "color-swatch",
+      "title": "Color Swatch",
+      "attachmentType": "plugin.preview.color",
+      "height": 260,
+      "uiEntry": "renderers/color-swatch/index.html"
+    },
+    {
+      "id": "markdown-renderer",
+      "title": "Markdown Preview",
+      "attachmentType": "plugin.preview.markdown",
+      "height": { "min": 120, "max": 480 },
+      "uiEntry": "renderers/markdown-renderer/index.html"
+    }
+  ],
+  "actions": []
+}

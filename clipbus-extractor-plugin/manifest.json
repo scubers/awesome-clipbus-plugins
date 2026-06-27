@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "plugin": {
     "id": "plugin.extractor",
-    "title": "Extractor & Regex",
+    "title": "Extractor",
     "version": "0.1.0"
   },
   "install": {
@@ -17,9 +17,15 @@
   "detectors": [
     {
       "id": "entities-detector",
-      "title": "URL / Email / IP Detection",
+      "title": "URL / Email / IP Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.extractor.entities"]
+    },
+    {
+      "id": "url-detector",
+      "title": "URL Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.extractor.url"]
     }
   ],
   "attachmentRenderers": [
@@ -29,6 +35,13 @@
       "attachmentType": "plugin.extractor.entities",
       "height": { "min": 140, "max": 420 },
       "uiEntry": "renderers/entities-renderer/index.html"
+    },
+    {
+      "id": "url-parsed",
+      "title": "URL Details",
+      "attachmentType": "plugin.extractor.url",
+      "height": "auto",
+      "uiEntry": "renderers/url-parsed/index.html"
     }
   ],
   "actions": [

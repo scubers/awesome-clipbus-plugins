@@ -5,6 +5,8 @@ import { createXmlDetector } from "./features/xml-renderer/detector.ts";
 import { createXmlRenderer } from "./features/xml-renderer/renderer.ts";
 import { createSqlDetector } from "./features/sql-renderer/detector.ts";
 import { createSqlRenderer } from "./features/sql-renderer/renderer.ts";
+import { createCsvDetector } from "./features/csv-table/detector.ts";
+import { createCsvRenderer } from "./features/csv-table/renderer.ts";
 
 export default definePlugin({
   setup() {
@@ -13,11 +15,13 @@ export default definePlugin({
         "json-renderer": createJsonRenderer(),
         "xml-renderer": createXmlRenderer(),
         "sql-renderer": createSqlRenderer(),
+        "csv-table": createCsvRenderer(),
       },
       detectors: {
         "json-detector": createJsonDetector(),
         "xml-detector": createXmlDetector(),
         "sql-detector": createSqlDetector(),
+        "csv-detector": createCsvDetector(),
       },
       actions: {},
       messageHandlers: {},

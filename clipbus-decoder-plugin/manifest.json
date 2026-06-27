@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "plugin": {
     "id": "plugin.decoder",
-    "title": "Decode & Encode",
+    "title": "Decoder",
     "version": "0.1.0"
   },
   "install": {
@@ -17,13 +17,13 @@
   "detectors": [
     {
       "id": "base64-detector",
-      "title": "Base64 Detection",
+      "title": "Base64 Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.decoder.base64"]
     },
     {
       "id": "jwt-detector",
-      "title": "JWT Detection",
+      "title": "JWT Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.decoder.jwt"]
     }

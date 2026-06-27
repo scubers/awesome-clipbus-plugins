@@ -1,4 +1,4 @@
-# clipbus-text-plugin — Text Tools
+# Text Tools
 
 Three auto-run text transform actions for [Clipbus](https://clipbus.app).
 

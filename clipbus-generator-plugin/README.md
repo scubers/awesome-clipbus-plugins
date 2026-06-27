@@ -1,4 +1,4 @@
-# clipbus-generator-plugin
+# Generator
 
 A Clipbus plugin that generates UUIDs (v4) and strong passwords via a draft action form.
 

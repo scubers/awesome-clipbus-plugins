@@ -41,6 +41,28 @@ const jsonArrayPayload = JSON.stringify({
   },
 });
 
+const csvTablePayload = JSON.stringify({
+  kind: "csv_table",
+  version: 1,
+  delimiter: ",",
+  headers: ["name", "age"],
+  rows: [
+    ["Alice", "30"],
+    ["Bob", "25"],
+  ],
+  rowCount: 2,
+  colCount: 2,
+  display: {
+    typeLabel: "CSV Table",
+    headline: "2 columns × 2 rows",
+    facts: [
+      { label: "Rows", value: "2" },
+      { label: "Columns", value: "2" },
+      { label: "Delimiter", value: "comma" },
+    ],
+  },
+});
+
 export const attachmentScenarios: AttachmentScenario[] = [
   {
     id: "json-renderer-object",
@@ -71,6 +93,22 @@ export const attachmentScenarios: AttachmentScenario[] = [
         attachmentType: "plugin.formatter.json",
         attachmentKey: "primary",
         payloadJson: jsonArrayPayload,
+      },
+    },
+  },
+  {
+    id: "csv-table-basic",
+    label: "CSV Table",
+    rendererComponent: "expanded",
+    searchTerms: ["csv", "table"],
+    accentHex: "#0F766E",
+    bootstrap: {
+      attachment: {
+        historyID: "preview-csv",
+        owner: "plugin.formatter",
+        attachmentType: "plugin.formatter.csv",
+        attachmentKey: "primary",
+        payloadJson: csvTablePayload,
       },
     },
   },
