@@ -62,6 +62,29 @@ export const attachmentScenarios: AttachmentScenario[] = [
     },
   },
   {
+    id: "char-info-renderer-sample",
+    label: "Character: 😀 Grinning Face (U+1F600)",
+    rendererComponent: "compact",
+    searchTerms: ["emoji", "unicode", "character"],
+    accentHex: "#7c3aed",
+    bootstrap: {
+      attachment: {
+        payloadJson: JSON.stringify({
+          kind: "char_info",
+          version: 1,
+          glyph: "😀",
+          codePoints: ["U+1F600"],
+          primaryDecimal: 128512,
+          utf8: "F0 9F 98 80",
+          utf16: "D83D DE00",
+          htmlEntity: "&#x1F600;",
+          category: "Emoji",
+          isInvisible: false,
+        }),
+      },
+    },
+  },
+  {
     id: "diff-sample",
     label: "Unified Diff Sample",
     rendererComponent: "expanded",

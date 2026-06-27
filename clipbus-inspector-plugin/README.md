@@ -48,6 +48,22 @@ Trigger condition: text contains `---`/`+++` headers plus at least two change li
 | Attachment Renderer | `diff-renderer` |
 | Attachment Type | `plugin.inspector.diff` |
 
+## Character Unicode Inspector (`char-info-*`)
+
+Detects a single non-ASCII grapheme cluster (or a `U+XXXX` code point notation) and displays a Unicode fact card with:
+
+- The glyph rendered large, with an "(zero-width / invisible)" hint for invisible characters
+- Code point(s) in `U+XXXX` form, UTF-8 hex bytes, UTF-16 hex units, and HTML entity
+- Unicode category (Emoji, Letter, Number, Punctuation, Symbol, Mark, Separator, Other/Control)
+
+Trigger condition: text whose trimmed content is exactly one grapheme cluster containing at least one non-ASCII code point (e.g. `é`, `©`, `中`, `😀`, `👨‍👩‍👧`, `​` U+200B), or matches `/^U\+[0-9A-Fa-f]{1,6}$/i`.
+
+| Extension point | ID |
+|---|---|
+| Detector | `char-info-detector` |
+| Attachment Renderer | `char-info-renderer` |
+| Attachment Type | `plugin.inspector.char-info` |
+
 ## Development
 
 ```sh
