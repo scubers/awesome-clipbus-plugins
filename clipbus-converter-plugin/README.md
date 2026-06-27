@@ -1,36 +1,18 @@
-# clipbus-converter-plugin
+# 转换工具
 
-Unix 时间戳转换器 Clipbus 插件。自动识别剪贴板中的 Unix 时间戳，展示多格式时间信息并支持一键复制 ISO 8601。
+Clipbus 转换工具插件，集成三类转换能力：
 
-## Feature 清单
+## Unix 时间戳转换
 
-| 能力 | id | 类型 |
-|---|---|---|
-| 时间戳识别 | `timestamp-detector` | detector |
-| 时间戳渲染卡片 | `timestamp-renderer` | attachmentRenderer |
-| 复制 ISO 8601 | `timestamp-copy` | action (auto-run) |
+自动识别剪贴板中的 10 位（秒）或 13 位（毫秒）Unix 时间戳，展示本地时间、UTC 时间及 ISO 8601 格式，支持一键复制。
 
-attachmentType: `plugin.converter.timestamp`
+## 整数进制对照（radix-*）
 
-## 检测规则
+自动识别十进制、十六进制（`0x`）、二进制（`0b`）、八进制（`0o`）整数，转换并展示四种进制表示及对应 ASCII 字符，支持一键复制各进制格式。
 
-- 输入必须为 `text` kind，trim 后符合以下格式之一：
-  - 恰好 10 位纯数字 → 解读为**秒**（Unix seconds）
-  - 恰好 13 位纯数字 → 解读为**毫秒**（Unix milliseconds）
-- 归一化为 epochMs 后构造 `Date`，UTC 年份必须在 **[2001, 2099]** 区间内，否则忽略（避免随机数字串误触发）
+## 命名风格转换（case-tool）
 
-## 卡片展示
-
-- 徽章 "Unix 时间戳" + 单位 chip（秒 / 毫秒）
-- 大标题：本地时间（`date.toLocaleString()`，依赖宿主时区）
-- 事实列表：ISO 8601、UTC、星期、相对时间（实时计算）
-- 宿主按钮 "复制 ISO 8601"：点击后将 ISO 字符串写入剪贴板
-
-## 用法
-
-在 Clipbus 中复制任意 10 位或 13 位纯数字（如 `1700000000`），插件自动挂载转换卡片。
-
-auto-run action 关键词：`timestamp`、`unix`、`time`、`时间戳`
+Draft action，将剪贴板文本转换为 camelCase、snake_case、kebab-case、PascalCase、CONSTANT_CASE、Title Case、Sentence case、dot.case 等八种命名风格，在交互表单中选择后提交。
 
 ## 开发
 

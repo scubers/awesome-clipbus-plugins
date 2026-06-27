@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "plugin": {
     "id": "plugin.converter",
-    "title": "Timestamp Converter",
+    "title": "Converter",
     "version": "0.1.0"
   },
   "install": {
@@ -20,6 +20,12 @@
       "title": "Unix 时间戳识别",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.converter.timestamp"]
+    },
+    {
+      "id": "radix-detector",
+      "title": "进制识别",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.radix.number"]
     }
   ],
   "attachmentRenderers": [
@@ -29,6 +35,13 @@
       "attachmentType": "plugin.converter.timestamp",
       "height": { "min": 140, "max": 300 },
       "uiEntry": "renderers/timestamp-renderer/index.html"
+    },
+    {
+      "id": "radix-renderer",
+      "title": "进制转换",
+      "attachmentType": "plugin.radix.number",
+      "height": { "min": 120, "max": 300 },
+      "uiEntry": "renderers/radix-renderer/index.html"
     }
   ],
   "actions": [
@@ -38,6 +51,21 @@
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
       "keywords": ["timestamp", "unix", "time", "时间戳"]
+    },
+    {
+      "id": "radix-copy",
+      "title": "复制各进制",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["radix", "hex", "binary", "octal", "decimal", "进制", "转换"]
+    },
+    {
+      "id": "case-tool",
+      "title": "Case Converter",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "draft",
+      "uiEntry": "actions/case-tool/index.html",
+      "keywords": ["case", "camel", "snake", "kebab", "pascal", "转换", "命名"]
     }
   ]
 }
