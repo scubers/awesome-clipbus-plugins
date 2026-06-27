@@ -23,3 +23,4 @@
 | [clipbus-radix-plugin](./clipbus-radix-plugin/README.md) | 识别整数（十进制 / 0x 十六 / 0b 二 / 0o 八），BigInt 任意精度对照四种进制 + 位数 + ASCII，逐行复制 |
 | [clipbus-sql-plugin](./clipbus-sql-plugin/README.md) | 识别 SQL 语句，关键字大写并按子句换行重排，monospace 卡片展示并一键复制（仅做可读性重排）|
 | [clipbus-xml-plugin](./clipbus-xml-plugin/README.md) | 识别 XML / HTML 片段，按层缩进美化并统计元素 / 属性 / 最大深度，一键复制格式化结果 |
+| [clipbus-case-plugin](./clipbus-case-plugin/README.md) | 命名风格转换 draft 工具：把剪贴板文本实时转为 camel / Pascal / snake / CONSTANT / kebab / Title / Sentence / dot 共 8 种，逐条复制 |
