@@ -18,6 +18,13 @@ Detects a single HTTP/HTTPS URL on the clipboard and renders a structured breakd
 - **Detector** (`url-detector`): input kind `text`, attachment type `plugin.extractor.url`
 - **Renderer** (`url-parsed`): displays scheme, host, pathname, query parameters (as a key/value table), and fragment in separate rows; height adapts automatically to fit the content
 
+### IP Address Details (`ip-*`)
+
+Detects when the clipboard contains a single IPv4, IPv4 CIDR, IPv6, or IPv6 CIDR address (no surrounding prose) and renders a rich info card.
+
+- **Detector** (`ip-detector`): input kind `text`, attachment type `plugin.extractor.ip`
+- **Renderer** (`ip-details`): for a plain IPv4 shows integer, hex, binary, reverse-DNS pointer, scope (Private / Public / Loopback / …), and legacy class; for a CIDR adds netmask, wildcard mask, network/broadcast addresses, first/last usable host, and total/usable counts; for IPv6 shows expanded and compressed forms plus scope
+
 ### Regex Tester (`regex-tool`)
 
 A draft action providing an interactive regex debugger inside Clipbus.

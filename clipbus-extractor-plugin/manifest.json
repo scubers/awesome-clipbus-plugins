@@ -26,6 +26,12 @@
       "title": "URL Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.extractor.url"]
+    },
+    {
+      "id": "ip-detector",
+      "title": "IP Address Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.extractor.ip"]
     }
   ],
   "attachmentRenderers": [
@@ -42,6 +48,13 @@
       "attachmentType": "plugin.extractor.url",
       "height": "auto",
       "uiEntry": "renderers/url-parsed/index.html"
+    },
+    {
+      "id": "ip-details",
+      "title": "IP Address",
+      "attachmentType": "plugin.extractor.ip",
+      "height": "auto",
+      "uiEntry": "renderers/ip-details/index.html"
     }
   ],
   "actions": [
