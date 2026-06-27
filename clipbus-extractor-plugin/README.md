@@ -39,6 +39,13 @@ Detects when the clipboard contains a single MAC-48 / EUI-48 address in colon (`
 - **Detector** (`mac-detector`): input kind `text`, attachment type `plugin.extractor.mac`; requires an explicit separator — bare 12-hex strings and prose are rejected
 - **Renderer** (`mac-address`): displays all five normalized forms (colon-lower, colon-upper, hyphen, Cisco-dot, bare) with copy buttons; shows OUI / NIC split, cast (Unicast / Multicast), administration (Universal / Locally administered), and a special note for broadcast (`FF:FF:FF:FF:FF:FF`) and null-address (`00:00:00:00:00:00`) inputs
 
+### UUID Inspector (`uuid-*`)
+
+Detects when the clipboard contains a single UUID in any standard form — plain (`8-4-4-4-12` hex), braced (`{…}`), or URN (`urn:uuid:…`) — and renders a structured breakdown.
+
+- **Detector** (`uuid-detector`): input kind `text`, attachment type `plugin.extractor.uuid`; normalises to lowercase canonical form; rejects bare 32-hex blobs and prose
+- **Renderer** (`uuid-details`): displays canonical form and URN with copy buttons; version number with description (v1 Time-based through v8 Custom); RFC 4122/9562 variant classification; embedded timestamp (ISO 8601) decoded from v1 (60-bit Gregorian) and v7 (48-bit Unix ms) UUIDs; node address (v1 only) formatted as `XX:XX:XX:XX:XX:XX`; Nil and Max UUID special labels
+
 ### Regex Tester (`regex-tool`)
 
 A draft action providing an interactive regex debugger inside Clipbus.

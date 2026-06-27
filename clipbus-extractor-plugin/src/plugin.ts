@@ -10,6 +10,8 @@ import { createMacRenderer } from "./features/mac-address/renderer.ts";
 import { createRegexAction } from "./features/regex-tool/action.ts";
 import { createUrlDetector } from "./features/url-parsed/detector.ts";
 import { createUrlRenderer } from "./features/url-parsed/renderer.ts";
+import { createUuidDetector } from "./features/uuid-details/detector.ts";
+import { createUuidRenderer } from "./features/uuid-details/renderer.ts";
 
 export default definePlugin({
   setup() {
@@ -20,6 +22,7 @@ export default definePlugin({
         "ip-details": createIpRenderer(),
         "geo-coordinates": createGeoRenderer(),
         "mac-address": createMacRenderer(),
+        "uuid-details": createUuidRenderer(),
       },
       detectors: {
         "entities-detector": createEntitiesDetector(),
@@ -27,6 +30,7 @@ export default definePlugin({
         "ip-detector": createIpDetector(),
         "geo-detector": createGeoDetector(),
         "mac-detector": createMacDetector(),
+        "uuid-detector": createUuidDetector(),
       },
       actions: {
         "regex-tool": createRegexAction(),

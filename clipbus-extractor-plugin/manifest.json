@@ -44,6 +44,12 @@
       "title": "MAC Address Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.extractor.mac"]
+    },
+    {
+      "id": "uuid-detector",
+      "title": "UUID Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.extractor.uuid"]
     }
   ],
   "attachmentRenderers": [
@@ -81,6 +87,13 @@
       "attachmentType": "plugin.extractor.mac",
       "height": "auto",
       "uiEntry": "renderers/mac-address/index.html"
+    },
+    {
+      "id": "uuid-details",
+      "title": "UUID",
+      "attachmentType": "plugin.extractor.uuid",
+      "height": "auto",
+      "uiEntry": "renderers/uuid-details/index.html"
     }
   ],
   "actions": [

@@ -100,6 +100,20 @@ const macAddressPayload = JSON.stringify({
   special: null,
 });
 
+const uuidDetailsPayload = JSON.stringify({
+  kind: "uuid_details",
+  version: 1,
+  input: "550e8400-e29b-41d4-a716-446655440000",
+  canonical: "550e8400-e29b-41d4-a716-446655440000",
+  urn: "urn:uuid:550e8400-e29b-41d4-a716-446655440000",
+  uuidVersion: 4,
+  versionLabel: "Random (v4)",
+  special: null,
+  variant: "RFC 4122/9562",
+  timestamp: null,
+  node: null,
+});
+
 const geoCoordinatesPayload = JSON.stringify({
   kind: "geo_coordinates",
   version: 1,
@@ -227,6 +241,22 @@ export const attachmentScenarios: AttachmentScenario[] = [
         attachmentType: "plugin.extractor.geo",
         attachmentKey: "primary",
         payloadJson: geoCoordinatesPayload,
+      },
+    },
+  },
+  {
+    id: "uuid-details-v4",
+    label: "UUID: random v4",
+    rendererComponent: "compact",
+    searchTerms: ["uuid", "guid", "random", "identifier"],
+    accentHex: "#7C3AED",
+    bootstrap: {
+      attachment: {
+        historyID: "preview-uuid-v4",
+        owner: "plugin.extractor",
+        attachmentType: "plugin.extractor.uuid",
+        attachmentKey: "primary",
+        payloadJson: uuidDetailsPayload,
       },
     },
   },
