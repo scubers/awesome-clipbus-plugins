@@ -1,42 +1,19 @@
-# Link & Contact Extractor Plugin
+# 提取与正则
 
-A Clipbus plugin that extracts URLs, email addresses, and IPv4 addresses from clipboard text, deduplicates them, and presents them in a grouped list with one-click copy.
+一个 Clipbus 插件，提供两块独立能力：URL/邮箱/IP 提取，以及正则测试草稿工具。
 
-## Features
+## URL/邮箱/IP 提取（entities-*）
 
-- **Detector** — scans text clipboard items and produces an `entities_preview` attachment when 2 or more entities are found
-- **Attachment renderer** — displays extracted entities in grouped sections (Links / Emails / IP Addresses) with a "复制全部" host button
-- **Auto-run action** — immediately copies all extracted entities (newline-separated) to the clipboard
+自动识别剪贴板文本中的链接（http/https）、电子邮件地址和 IPv4 地址，提取结果在附件卡片中展示，并支持一键复制所有条目。
 
-## Detection rules
+- 检测器：`entities-detector`，输入类型 `text`，产出附件类型 `plugin.extractor.entities`
+- 渲染器：`entities-renderer`，展示分类列表（URL / 邮箱 / IP）
+- 动作：`entities-copy`（auto-run），提取并将全部条目合并复制到剪贴板
 
-| Entity | Pattern |
-|---|---|
-| URL | `https?://…` — trailing punctuation (`. , ; : ! ?`) stripped |
-| Email | Standard RFC-style address (`user@domain.tld`) |
-| IPv4 | Four-octet dotted-decimal (`0–255` per octet) |
+## 正则测试草稿工具（regex-tool）
 
-**Deduplication**: each entity type is deduplicated by first-occurrence order. IPs that appear as part of a URL host are excluded from the IP list to avoid double-counting.
+一个 draft 动作，在 Clipbus 内提供交互式正则表达式调试界面。输入正则模式与标志位，实时展示所有匹配项、捕获组及位置索引。
 
-**Trigger condition**: `totalCount >= 2` — at least two distinct entities across all three types must be found, otherwise the detector returns nothing and the action returns `none`.
-
-## Usage
-
-1. Copy any text containing links, email addresses, or IP addresses.
-2. The extractor attachment card appears automatically in Clipbus.
-3. Click **复制全部** to copy every extracted entity as a newline-separated list.
-4. The auto-run action also fires immediately and copies the same list.
-
-## Commands
-
-```sh
-npm install       # install dependencies
-npm run dev       # Vite preview workbench
-npm test          # run tests
-npm run build     # production build to dist/
-npm run verify    # typecheck + lint + build + test (pre-commit gate)
-```
-
-## Attachment type
-
-`plugin.extractor.entities`
+- 动作：`regex-tool`（draft），UI 驱动，支持 flags `g` / `i` / `m` 等
+- 剪贴板文本自动填入测试输入框
+- 最多显示 200 条匹配，输入超 20,000 字符自动截断以防卡顿

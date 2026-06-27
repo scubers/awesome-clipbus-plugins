@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "plugin": {
     "id": "plugin.extractor",
-    "title": "Link & Contact Extractor",
+    "title": "Extractor & Regex",
     "version": "0.1.0"
   },
   "install": {
@@ -38,6 +38,14 @@
       "supportedItemTypes": ["text"],
       "lifecycle": "auto-run",
       "keywords": ["extract", "url", "email", "ip", "提取"]
+    },
+    {
+      "id": "regex-tool",
+      "title": "Regex Tester",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "draft",
+      "uiEntry": "actions/regex-tool/index.html",
+      "keywords": ["regex", "regexp", "正则", "匹配", "pattern"]
     }
   ]
 }
