@@ -1,6 +1,11 @@
-# 插件索引
+# Clipbus 插件合集
 
-本仓库收录的 Clipbus 剪贴板插件列表。每个插件独立目录，独立 `npm install` 与构建。
+[English](./README.md) | 中文
+
+剪贴板（**Clipbus**）插件合集——**一个插件一个顶层目录**。每个插件完全自包含：各自 `npm install`、各自构建。仓库根目录**没有** `package.json`、没有 workspace、没有统一构建编排；所有命令都在**某个插件目录内**运行。
+
+- **`template-plugin/`** 是官方脚手架 + 全能力参考，用于被**复制**而非引用——新插件从复制它开始。
+- 新插件由 **`clipbus-plugin-generator`** skill（位于 `.claude/skills/`）生成：它先勘察现有插件，把选题归入某个 canonical 类别，并**扩展命中的插件**，而不是另起一个近重复插件。
 
 ## 插件列表
 
@@ -15,6 +20,20 @@
 | [clipbus-url-plugin](./clipbus-url-plugin/README.md) | 识别单个 URL，拆解 scheme / host / port / path / hash 与查询参数表格，一键复制查询参数 JSON |
 | [clipbus-csv-plugin](./clipbus-csv-plugin/README.md) | 识别 CSV/TSV（逗号/制表符/分号分隔，支持引号转义），渲染为表格预览，一键复制为 Markdown 表格 |
 | [clipbus-text-plugin](./clipbus-text-plugin/README.md) | 文本行处理工具——排序行 / 去重行 / 整理空白，三个一键 auto-run 动作 |
-| [clipbus-generator-plugin](./clipbus-generator-plugin/README.md) | 生成 UUID v4 或强随机密码（可配置长度 / 大小写 / 数字 / 符号 / 数量），draft 表单实时预览并复制（Web Crypto） |
+| [clipbus-generator-plugin](./clipbus-generator-plugin/README.md) | 生成 UUID v4 或强随机密码（可配置长度 / 大小写 / 数字 / 符号 / 数量），draft 表单实时预览并复制（Web Crypto）|
 | [clipbus-markdown-plugin](./clipbus-markdown-plugin/README.md) | 识别 Markdown 文本（≥2 种语法信号才触发），本地安全渲染为格式化 HTML 预览卡片（HTML 转义 + 链接协议白名单，不执行脚本）|
 | [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | 识别 5 段 cron 表达式，逐字段中文释义表 + 一句执行概述（带护栏避免误判普通数字行）|
+
+## 开发
+
+每个插件由两侧构成——Node **Runtime**（`src/plugin.ts` → esbuild → `dist/plugin.cjs`）与 Vue **UI**（WebView，Vite → `dist/ui/`）。架构、四个扩展点（detector / renderer / action / messageHandlers）、接线不变量与新增插件流程详见 **[CLAUDE.md](./CLAUDE.md)**。
+
+常用命令——在**某个插件目录内**运行：
+
+```sh
+npm install     # 拉取 @clipbus/plugin-sdk（及其权威文档）
+npm run dev      # Vite 预览工作台（?view=renderer / ?view=action）
+npm run build    # typecheck → lint → 构建 runtime + UI → 校验产物
+npm test         # Node test runner，跑 tests/
+npm run verify   # build + test，提交前完整门禁
+```
