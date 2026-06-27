@@ -64,6 +64,7 @@ description: >-
 - 关键约定 **feature 目录名 === manifest 能力 id**（UI 承载能力即 renderer / draft action 各自一个同名目录，含 `main.ts`+`index.html`）。
 - 每个 feature：`payload.ts`（单一真相源）→ detector/renderer/action 运行时 → `app.vue`（renderer/draft 才有）→ 一个 preview scenario。
 - 同步三处：`manifest.json` 能力条目、`src/plugin.ts` 的 `setup()` 注册、目录名。
+- **attachmentType 用本插件命名空间** `plugin.<本插件>.<feat>`；扩展进已有插件时改用**宿主**插件命名空间，别沿用 feature 的旧 topic 名（宿主加载期会拒越界，`npm run verify` 查不出——详见铁律）。
 - 视觉只用 `var(--clipbus-*, 回退)` 主题 token，适配明暗，版式干净（详见 authoring-guide 的视觉规范）。
 - 写**精简冒烟测试**（范式见 authoring-guide）。
 
@@ -89,6 +90,7 @@ description: >-
 
 - **三处 id 对齐**：manifest 能力 `id` === `src/plugin.ts` 注册 key === `src/features/<dir>` 目录名（也即 UI 产物目录）。
 - **detector ⇒ renderer**：声明 detector 必有 renderer 展示其 artifact。
+- **attachmentType 必须在插件命名空间内**：每个 detector/renderer 的 `attachmentType` 必须以 `plugin.id + "."` 为前缀（即 `plugin.<本插件>.<feat>`）。**宿主在加载期强制校验**，越界直接拒载并报 `Detector attachment type is outside plugin namespace: <detector> -> <type>`——而 `npm run verify` **不校验此项**（本地构建/测试全绿，仍可能在 Clipbus 里加载失败，是隐蔽坑）。**合并/扩展插件时最易踩**：把某 feature 并入 `clipbus-<宿主>-plugin` 时，必须把它的 attachmentType 从旧的 `plugin.<原topic>.*` 改成宿主命名空间 `plugin.<宿主>.*`，且 manifest 的 detector `attachmentTypes[]` 与 renderer `attachmentType`、`payload.ts` 的 `ATTACHMENT_TYPE` 常量、测试与 scenario 里的全部引用（含测试 mock 的 `owner`）**同步改**。
 - **输入仅三种 kind**：`text` / `image` / `path_reference`（snake_case）；content envelope 扁平。
 - **能力签名以 API.md 为准**；不改 `node_modules/@clipbus/plugin-sdk/` 内 SDK 源码。
 - UI 禁裸 hex，一律 `var(--clipbus-*, 回退)`。

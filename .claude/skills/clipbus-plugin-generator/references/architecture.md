@@ -47,6 +47,7 @@
 4. UI CSS 只用 `var(--clipbus-*, 回退)` 主题 token。
 5. 不改 node_modules 内 SDK；签名以 API.md 为准。
 6. **相对 `.ts` import 带 `.ts` 扩展名**：`.ts` 运行时文件间的相对 import 用 `.ts`（冒烟测试用 Node 直接 require）；`.vue` 文件内可不带。
+7. **attachmentType 在插件命名空间内**：detector/renderer 的 `attachmentType` 必须 `plugin.id + "."` 前缀（`plugin.<topic>.<feat>`）。**宿主加载期强制**，越界拒载报 `... outside plugin namespace ...`；`npm run verify` **不校验**。合并/扩展插件时把 feature 的 attachmentType 改到**宿主**命名空间（manifest detector+renderer、`payload.ts` 常量、测试与 scenario 全部同步）。
 
 ## manifest 骨架
 
@@ -58,7 +59,7 @@
   "runtime": { "nodeEntry": "dist/plugin.cjs", "uiRoot": "dist/ui" },
   "permissions": [],                 // 按需：setAttachment/setSearchExtension/setTags/setPinned
   "attachmentRenderers": [
-    { "id": "<id>", "title": "...", "attachmentType": "plugin.<topic>.<feat>",
+    { "id": "<id>", "title": "...", "attachmentType": "plugin.<topic>.<feat>",  // 必须 plugin.id 前缀（宿主加载期强制）
       "height": 220, "uiEntry": "renderers/<id>/index.html" }
   ],
   "detectors": [

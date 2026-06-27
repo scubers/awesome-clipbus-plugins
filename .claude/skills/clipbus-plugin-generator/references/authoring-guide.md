@@ -99,7 +99,7 @@ export function buildXArtifact(input: unknown): PluginDetectorArtifact | null {
   const payload = createXPayload(input);
   if (!payload) return null;
   return {
-    attachmentType: "plugin.<topic>.<feat>",
+    attachmentType: "plugin.<topic>.<feat>",   // 必须以 plugin.id 为前缀；宿主加载期强制，越界拒载（verify 查不出）
     attachmentKey: "primary",
     payloadJson: JSON.stringify(payload),
     // 可选：让内容进搜索
