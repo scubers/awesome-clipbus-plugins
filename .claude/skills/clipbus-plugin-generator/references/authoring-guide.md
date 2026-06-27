@@ -282,6 +282,8 @@ watch(draftTopic, (d) => Object.assign(draft, d ?? {}), { immediate: true });
 
 UI↔Node 自定义 RPC（如让 Node 干重活/生图）：Runtime 用 `defineMessage<Req,Resp>("<topic>.key").handle(fn)` 注册进 `messageHandlers`；UI `await clipbus.runtime.invoke({ key: "<topic>.key", payload })`。生成图片：Node 写临时 PNG → `host.asset.registerImage({ path })` 得 `clipbus-asset://` URL → UI `<img :src>`。
 
+> **视觉要贴合宿主**：draft action 的根 `<main>` 透明、无 `padding`，且**顶层 section 水平内距清零、内容贴边**（宿主 action 面板已自带 padding，否则双层内距）。详见 [§11 视觉规范](#11-视觉规范)。
+
 ## 8. 高度形态与 autoFit
 
 manifest renderer 的 `height`：
@@ -327,7 +329,8 @@ export default definePlugin({
 - **只用主题 token**：`var(--clipbus-text-primary, #0f172a)`、`--clipbus-surface`、`--clipbus-surface-elevated`、`--clipbus-border`、`--clipbus-accent`、`--clipbus-text-secondary/tertiary` 等，**裸 hex 仅作 `var()` 回退**。自动适配明暗。
 - 版式：留白舒展、层级清晰（eyebrow/title/facts）、长文本省略号、空态有友好提示。
 - 实用为先但别将就：卡片要"能看"，与系统观感一致。
-- **根容器不要再加 padding**：宿主 native 卡片已自带内距。renderer 根元素（`.shell` / `<main>`）若再设 `padding` 会形成**双层内距**、显得过满。根容器一律 `padding: 0`，让内容贴合 native 卡片内距；只有**内部块**（facts / code-block / stat-tile 等内嵌盒子）才用各自的 `padding`。`base.css` 已对 `html/body/#app` 设 `margin:0` 无 padding，故根容器是唯一的内距来源。
+- **根容器透明 + 贴边（renderer 与 draft action 同此）**：宿主**已给 renderer 卡片和 action 面板都留了 native 内距**（实测：满宽分隔线与面板边之间留的就是这段宿主 padding）。所以 UI 根元素（`.shell` / `<main>`）**既不写 `background`**（保持透明、露出宿主底色，避免"卡中卡"色块割裂），**也不加 `padding`**（一律 `padding: 0`，否则双层内距、显得过满）。`base.css` 已对 `html/body/#app` 设 `margin:0` 且 `background:transparent`。
+- **双层内距会下沉到 section 层（最易漏）**：根设成 `padding:0` 还不够——若**顶层布局 section**（根的直接子块、承载第一行内容的 controls/inputs/results/preview 等）自己又加水平 `padding`，内容照样比 native 多缩进一截（draft action 最常见的回归）。正确模型：**顶层 section 水平内距也清零、内容贴边**（垂直内距可留）；只有**有独立边框/底色的内部子盒**（结果 `<pre>`、输入框、match chip、facts / code-block / stat-tile 等）才用各自 `padding`。注意 `border-bottom` 分隔线无论 padding 都满宽，真正影响观感的是**内容**的水平 padding。工作样例见 `clipbus-decoder-plugin` 的 `base64-renderer`：`.shell{padding:0}`、`.content` 不写 padding、只有 `.decoded-block` 才 `padding:10px 12px`。
 
 ## 12. 冒烟测试
 

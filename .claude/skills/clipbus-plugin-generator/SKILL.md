@@ -14,6 +14,10 @@ description: >-
 
 完整设计见同目录 `DESIGN.md`。本文件是执行手册。
 
+## 自我迭代（遇到插件问题就回写本 skill）
+
+这个 skill 是**活文档**：只要在本合集里**踩到或解决了一个此前没记录的 clipbus 插件问题**——bug、隐蔽坑、构建/测试/调试陷阱、UI 或接线约定——就在**同一次会话里顺手把根因 + 可执行规则沉淀回本 skill**：接线/约定类进「铁律」或对应 `references/`，视觉类进 `references/authoring-guide.md` §11，工作流类进对应阶段。让 skill 随每次实战复利增厚，下次不再重复踩同一个坑。skill 本身在 git 里，改完按需提交。
+
 ## 何时用 / 何时不用
 
 - **用**：用户想在本仓库新建/生成/扩展剪贴板插件，或给了选题让你实现，或说"自动来一个"。
@@ -89,6 +93,8 @@ description: >-
 
 遇到失败别绕过：用 systematic-debugging 的思路定位根因再改。
 
+**在 Clipbus 里目测视觉改动时（坑）**：每个插件的 `dist/` 是 **gitignore 的构建产物**，宿主实际加载的就是它。① 改完要 `npm run build`（或 verify）**刷新 `dist/`**，否则 Clipbus 重载看到的还是旧 UI；② 在 **git worktree** 里改时，要么让用户把 Clipbus Developer Plugin **指向 worktree 目录**，要么直接在用户实际加载的路径重建；③ **把源码合并回 main 不会重建 main 的 `dist/`**——合并后须对受影响插件**重跑 `npm run build`**，否则用户在 main 路径重载仍是旧产物（真实踩过：用户一直在测 main 的陈旧 dist，误判成"改了没生效"，白绕一圈）。
+
 ### 6 · 更新目录索引（中英双写，强制）
 
 - 更新目标插件 `README.md`：写清它**覆盖了哪些功能**（feature 清单），**用英文写**（见「铁律 · 文案语言」）。
@@ -108,6 +114,7 @@ description: >-
 - **输入仅三种 kind**：`text` / `image` / `path_reference`（snake_case）；content envelope 扁平。
 - **能力签名以 API.md 为准**；不改 `node_modules/@clipbus/plugin-sdk/` 内 SDK 源码。
 - UI 禁裸 hex，一律 `var(--clipbus-*, 回退)`。
+- **UI 贴合宿主（透明 + 贴边）**：renderer 与 draft action 的根 `<main>` **不写 `background`**（透明、露出宿主底色）、**`padding:0`**；且**顶层布局 section 的水平 padding 也要清零、内容贴边**——宿主已给卡片/面板留了 native 内距，再加就是双层内距（draft action 最易在 section 层漏掉这层，根 `padding:0` 还不够）。只有**有独立边框/底色的内部子盒**才用各自 padding。详见 `references/authoring-guide.md` §11。
 - **文案语言（面向用户文字一律英文）**：后续生产的插件 / 新 feature，所有**面向用户**的文案——`manifest.json` 的 `title` / `description`、UI（`app.vue` 等）里可见的字符串与按钮标题、插件自身 `README.md`——**必须用英文**。根索引按 `README.md`（英文）+ `README_zh.md`（中文）双写。代码注释、本仓库内部说明、commit message 不受此限。
 - **文案风格统一（命名一致性）**：`plugin.title` 用简洁的**类别名或功能名**（如 `Formatter` / `Extractor` / `Cron Explainer`），不要用裸目录名；**README 的 H1 必须是人类标题**，禁止 `# clipbus-xxx-plugin` 裸 slug；detector 的 `title` 统一 `<X> Detector`（不要 `Detection`）；renderer 的 `title` 用**内容名词**（`Color Swatch` / `CSV Table` / `URL Details`），避免过去分词（如 `URL Parsed`）。同插件其余条目也对齐这套风格，跨插件保持一致。
 - **`.ts` 扩展名**：运行时 `.ts` 文件间相对 import 带 `.ts`（冒烟测试用 Node 直接 require，不会自动补扩展名）；`.vue` 文件内可不带。
