@@ -147,7 +147,7 @@ function minimalAttachmentScenariosTs() {
 export interface AttachmentScenario {
   id: string;
   label: string;
-  rendererComponent: "compact" | "expanded";
+  component: string; // === renderer feature dir name; PreviewShellApp maps it to the component
   searchTerms: string[];
   accentHex: string;
   bootstrap: Record<string, unknown>;
@@ -165,6 +165,7 @@ function minimalActionScenariosTs() {
 export interface ActionScenario {
   id: string;
   label: string;
+  component: string; // === draft-action feature dir name; PreviewShellApp maps it to the component
   bootstrap: Record<string, unknown>;
 }
 
@@ -173,10 +174,9 @@ export const actionScenarios: ActionScenario[] = [];
 }
 
 function minimalPreviewShellApp(pluginId) {
-  // Returns a minimal PreviewShellApp.vue that:
-  // - imports no deleted feature components
-  // - handles empty scenario arrays safely
-  // - still provides the workbench chrome with theme / view controls
+  // Returns a WIRE-READY PreviewShellApp.vue: empty RENDERERS/ACTIONS registries +
+  // mock host bridge + topic-seeding, so an author only adds one import + one registry
+  // line per feature to see it render live in `npm run dev`. Safe with empty scenarios.
   return `<template>
   <main class="workbench" :data-theme="selectedTheme">
     <section class="workbench__controls">
@@ -216,15 +216,15 @@ function minimalPreviewShellApp(pluginId) {
           <span>{{ selectedView === "renderer" ? "Attachment Renderer" : "Draft Action" }}</span>
         </div>
         <div class="host-frame__surface">
-          <!-- Replace this placeholder with real feature component imports once implemented. -->
-          <div class="host-frame__placeholder">
-            <template v-if="activeScenarioOptions.length === 0">
-              No scenarios yet — implement features and register scenarios in
-              <code>src/preview/scenarios/</code>.
-            </template>
-            <template v-else>
-              Scenario "{{ activeScenario?.label }}" — wire component in PreviewShellApp.vue.
-            </template>
+          <component
+            :is="activeComponent"
+            v-if="activeComponent"
+            :key="selectedView + ':' + selectedScenarioID"
+          />
+          <div v-else class="host-frame__placeholder">
+            No previewable component yet — add a feature, register a scenario in
+            <code>src/preview/scenarios/</code> with a <code>component</code> field, and
+            map it in the RENDERERS / ACTIONS registry inside this file.
           </div>
         </div>
       </div>
@@ -246,29 +246,72 @@ function minimalPreviewShellApp(pluginId) {
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { attachmentScenarios } from "./scenarios/attachmentScenarios";
 import { actionScenarios } from "./scenarios/actionScenarios";
+
+/* ── PER-PLUGIN: import each feature's app.vue, then register it below ──────
+   import MyRenderer from "../features/<renderer-dir>/app.vue";
+   import MyAction   from "../features/<action-dir>/app.vue";                  */
+const RENDERERS: Record<string, unknown> = {
+  // "<renderer-dir>": MyRenderer,   // key === AttachmentScenario.component
+};
+const ACTIONS: Record<string, unknown> = {
+  // "<action-dir>": MyAction,       // key === ActionScenario.component
+};
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+// Mock host bridge so SDK host verbs (setButtons / complete / window.setHeight /
+// autoFit) resolve instead of throwing in the browser (read at call time, not import).
+const g = globalThis as unknown as { webkit?: { messageHandlers?: Record<string, unknown> } };
+if (!g.webkit?.messageHandlers?.clipbusPluginCall) {
+  g.webkit = { messageHandlers: { clipbusPluginCall: { postMessage: async () => ({ response: {} }) } } };
+}
 
 type ViewKey = "renderer" | "action";
 type ThemeKey = "light" | "dark";
 
 const query = new URLSearchParams(window.location.search);
-const initialView: ViewKey = query.get("view") === "action" ? "action" : "renderer";
-const selectedView = ref<ViewKey>(initialView);
+const selectedView = ref<ViewKey>(query.get("view") === "action" ? "action" : "renderer");
 const selectedTheme = ref<ThemeKey>(query.get("theme") === "light" ? "light" : "dark");
-const statusMessage = ref<string>("Ready. Implement features to start previewing.");
+const statusMessage = ref<string>("Import each feature's app.vue and register it in RENDERERS / ACTIONS.");
 
 const activeScenarioOptions = computed(() =>
   selectedView.value === "renderer" ? attachmentScenarios : actionScenarios
 );
-
 const selectedScenarioID = ref<string>(activeScenarioOptions.value[0]?.id ?? "");
+watch(activeScenarioOptions, (list) => {
+  if (!list.some((s) => s.id === selectedScenarioID.value)) selectedScenarioID.value = list[0]?.id ?? "";
+});
+const activeScenario = computed(
+  () =>
+    activeScenarioOptions.value.find((s) => s.id === selectedScenarioID.value) ??
+    activeScenarioOptions.value[0] ??
+    null
+);
+const activeComponent = computed(() => {
+  const s = activeScenario.value as { component?: string } | null;
+  if (!s?.component) return null;
+  return ((selectedView.value === "renderer" ? RENDERERS : ACTIONS)[s.component] as unknown) ?? null;
+});
 
-const activeScenario = computed(() =>
-  activeScenarioOptions.value.find((s) => s.id === selectedScenarioID.value) ??
-  activeScenarioOptions.value[0] ??
-  null
+// Seed SDK topics BEFORE the child renders (sync + immediate). The mounted renderer/action
+// reads topic.current() in setup; :key forces a remount (and re-seed) per scenario.
+watch(
+  [activeScenario, selectedView],
+  () => {
+    const s = activeScenario.value as { bootstrap?: unknown } | null;
+    if (!s) return;
+    const mode = selectedView.value === "renderer" ? "attachmentRenderer" : "action";
+    window.dispatchEvent(new CustomEvent("clipbus-plugin-context", { detail: { mode } }));
+    window.dispatchEvent(
+      new CustomEvent(
+        selectedView.value === "renderer" ? "clipbus-plugin-attachment" : "clipbus-plugin-draft",
+        { detail: s.bootstrap },
+      ),
+    );
+  },
+  { immediate: true, flush: "sync" },
 );
 </script>
 

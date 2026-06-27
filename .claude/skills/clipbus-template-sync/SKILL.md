@@ -95,7 +95,7 @@ description: >-
 - **added 文件不在 `git diff` 里**：上游新增文件是 untracked，必须从 `pull-template.mjs` 清单取，否则会漏传播。
 - **dist 在真实路径重建**：dist 是 gitignore 产物、宿主实际加载它；在当前分支重建（别跑去 worktree）。
 - **全新 Agent 并行**：不复用 idle executor；orchestrator 独占根索引等共享物；自己复跑 verify 复核。
-- **template 自有永不传播**：`src/features/*`、`src/preview/*`、template 的 `manifest.json`/`README*`/`GUIDE*`、`tests/**/*.test.cjs`（demo 测试）——这些是 template 的演示内容，各插件有自己的。`tests/setup.cjs` 是共享 harness，**是**例外（要同步）。
+- **template 自有永不传播**：`src/features/*`、`src/preview/*`、template 的 `manifest.json`/`README*`/`GUIDE*`、`tests/**/*.test.cjs`（demo 测试）——这些是 template 的演示内容，各插件有自己的。**特别注意 `src/preview/PreviewShellApp.vue` 与 `scenarios/*`：各插件的是「已 wire」的真实预览（import 自己的 `app.vue`、scenario 带 `component` 字段），绝不能用 template 版本覆盖**，否则把插件 preview 打回未接线的死占位（参见 generator skill 的「preview 工作台必须 wire」铁律）。`tests/setup.cjs` 是共享 harness，**是**例外（要同步）。
 - **判断驱动不等于无依据**：每次都读真实 diff，但用 `references/propagation-analysis.md` 的类别表加速；遇到表里没有的"新未分类"改动，保守处理并在阶段 2 显式交用户拍板，绝不静默丢弃。
 
 ## 参考文件
