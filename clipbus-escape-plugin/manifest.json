@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.escape",
+    "title": "Escape & Encode",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": [],
+  "detectors": [],
+  "attachmentRenderers": [],
+  "actions": [
+    {
+      "id": "escape-tool",
+      "title": "Escape & Encode",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "draft",
+      "uiEntry": "actions/escape-tool/index.html",
+      "keywords": ["escape", "encode", "decode", "url", "html", "base64", "unicode", "json", "转义"]
+    }
+  ]
+}

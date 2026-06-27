@@ -25,3 +25,4 @@
 | [clipbus-xml-plugin](./clipbus-xml-plugin/README.md) | 识别 XML / HTML 片段，按层缩进美化并统计元素 / 属性 / 最大深度，一键复制格式化结果 |
 | [clipbus-case-plugin](./clipbus-case-plugin/README.md) | 命名风格转换 draft 工具：把剪贴板文本实时转为 camel / Pascal / snake / CONSTANT / kebab / Title / Sentence / dot 共 8 种，逐条复制 |
 | [clipbus-regex-plugin](./clipbus-regex-plugin/README.md) | 正则测试 draft 工具：输入 pattern + flags + 测试文本，实时显示匹配数、匹配项与捕获组，一键复制匹配 |
+| [clipbus-escape-plugin](./clipbus-escape-plugin/README.md) | 编解码 draft 工具：URL / HTML 实体 / Base64（UTF-8 安全）/ Unicode / JSON 字符串 五种，实时双向、逐项复制 |
