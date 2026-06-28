@@ -36,6 +36,7 @@ const DENY_EXACT = new Set([
   "manifest.json",
   "src/plugin.ts",
   "package.json", // handled by check #2
+  "package-lock.json", // per-plugin derived lockfile; legitimately differs (template no longer ships one)
   "README.md",
   "README_zh.md",
   "GUIDE.md",
