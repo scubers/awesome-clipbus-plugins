@@ -1,14 +1,12 @@
 // Attachment preview scenarios for the dev workbench.
-// Each entry here feeds the scenario selector in PreviewShellApp.vue.
+// Consumed by createPreviewWorkbench (preview-host/main.ts); `view` selects the
+// feature component to mount. Add one entry per attachment renderer feature.
 
-export interface AttachmentScenario {
-  id: string;
-  label: string;
-  component: string;
-  searchTerms: string[];
-  accentHex: string;
-  bootstrap: Record<string, unknown>;
-}
+import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
+
+const PLUGIN_ID = "plugin.preview";
+const ITEM_TAGS = ["preview"];
+const SOURCE_APP = "com.preview.editor";
 
 // Pre-computed ColorPayload for #3366FF (blue, r=51 g=102 b=255)
 const colorSwatchBootstrapPayload = JSON.stringify({
@@ -60,35 +58,70 @@ const markdownPreviewPayload = JSON.stringify({
   headingCount: 1,
 });
 
-export const attachmentScenarios: AttachmentScenario[] = [
-  {
+/** Build an attachmentRenderer scenario; `view` routes to the feature component. */
+function renderer(opts: {
+  id: string;
+  label: string;
+  view: string;
+  accentHex: string;
+  attachmentType: string;
+  payloadJson: string;
+  viewport: PreviewScenario["viewport"];
+}): PreviewScenario {
+  const item = {
+    id: `item-${opts.id}`,
+    type: "text",
+    tags: ITEM_TAGS,
+    sourceAppID: SOURCE_APP,
+  };
+  return {
+    id: opts.id,
+    label: opts.label,
+    mode: "attachmentRenderer",
+    pluginID: PLUGIN_ID,
+    accentHex: opts.accentHex,
+    view: opts.view,
+    viewport: opts.viewport,
+    item,
+    attachment: {
+      item,
+      attachment: {
+        historyID: `preview-${opts.id}`,
+        owner: PLUGIN_ID,
+        attachmentType: opts.attachmentType,
+        attachmentKey: "primary",
+        payloadJson: opts.payloadJson,
+      },
+    },
+  };
+}
+
+export const attachmentScenarios: PreviewScenario[] = [
+  renderer({
     id: "color-swatch-blue",
     label: "Blue #3366FF",
-    component: "color-swatch",
-    searchTerms: ["#3366FF", "blue"],
+    view: "color-swatch",
     accentHex: "#3366FF",
-    bootstrap: {
-      attachment: { payloadJson: colorSwatchBootstrapPayload },
-    },
-  },
-  {
+    attachmentType: "plugin.preview.color",
+    viewport: { heightPolicy: "fixed", height: 260 },
+    payloadJson: colorSwatchBootstrapPayload,
+  }),
+  renderer({
     id: "gradient-swatch-linear",
     label: "Gradient: Blue→Purple",
-    component: "gradient-swatch",
-    searchTerms: ["gradient", "linear"],
+    view: "gradient-swatch",
     accentHex: "#8b5cf6",
-    bootstrap: {
-      attachment: { payloadJson: gradientSwatchBootstrapPayload },
-    },
-  },
-  {
+    attachmentType: "plugin.preview.gradient",
+    viewport: { heightPolicy: "fixed", height: 260 },
+    payloadJson: gradientSwatchBootstrapPayload,
+  }),
+  renderer({
     id: "markdown-renderer-sample",
     label: "Markdown: Combined Example",
-    component: "markdown-renderer",
-    searchTerms: ["markdown", "preview"],
+    view: "markdown-renderer",
     accentHex: "#0EA5E9",
-    bootstrap: {
-      attachment: { payloadJson: markdownPreviewPayload },
-    },
-  },
+    attachmentType: "plugin.preview.markdown",
+    viewport: { heightPolicy: "bounded", min: 120, max: 480 },
+    payloadJson: markdownPreviewPayload,
+  }),
 ];

@@ -1,26 +1,33 @@
 // Action preview scenarios for the dev workbench.
-// Add entries here as you implement draft action features.
-// Each entry must import its feature's app.vue and be referenced in PreviewShellApp.vue.
+// Consumed by createPreviewWorkbench (preview-host/main.ts); `view` selects the
+// feature component to mount. Add one entry per draft action feature.
 
+import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
 import { INITIAL_DRAFT } from "../../features/regex-tool/payload";
 
-export interface ActionScenario {
-  id: string;
-  label: string;
-  component: string;
-  bootstrap: Record<string, unknown>;
-}
+const PLUGIN_ID = "plugin.extractor";
 
-export const actionScenarios: ActionScenario[] = [
+export const actionScenarios: PreviewScenario[] = [
   {
     id: "regex-tool",
     label: "Regex Tester",
-    component: "regex-tool",
-    bootstrap: {
+    mode: "action",
+    pluginID: PLUGIN_ID,
+    view: "regex-tool",
+    viewport: { heightPolicy: "fixed", height: 360 },
+    item: {
+      id: "action-item-regex-tool",
+      type: "text",
+      tags: ["extractor"],
+      sourceAppID: "com.preview.editor",
+    },
+    draft: {
       ...INITIAL_DRAFT,
       pattern: "\\d+",
       flags: "g",
       text: "Price: $99, discounted $49, save $10",
-    } as Record<string, unknown>,
+    },
+    buttons: [{ id: "submit", title: "Copy Matches", isEnabled: true }],
+    defaultButtonID: "submit",
   },
 ];

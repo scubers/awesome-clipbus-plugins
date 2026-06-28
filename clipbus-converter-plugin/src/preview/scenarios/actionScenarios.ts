@@ -1,24 +1,31 @@
 // Action preview scenarios for the dev workbench.
-// Add entries here as you implement draft action features.
-// Each entry must import its feature's app.vue and be referenced in PreviewShellApp.vue.
+// Consumed by createPreviewWorkbench (preview-host/main.ts); `view` selects the
+// feature component to mount. Add one entry per draft action feature.
 
+import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
 import { INITIAL_DRAFT } from "../../features/case-tool/payload";
 
-export interface ActionScenario {
-  id: string;
-  label: string;
-  component: string;
-  bootstrap: Record<string, unknown>;
-}
+const PLUGIN_ID = "plugin.converter";
 
-export const actionScenarios: ActionScenario[] = [
+export const actionScenarios: PreviewScenario[] = [
   {
     id: "case-tool",
     label: "Case Converter",
-    component: "case-tool",
-    bootstrap: {
+    mode: "action",
+    pluginID: PLUGIN_ID,
+    view: "case-tool",
+    viewport: { heightPolicy: "fixed", height: 320 },
+    item: {
+      id: "action-item-case-tool",
+      type: "text",
+      tags: ["converter"],
+      sourceAppID: "com.preview.editor",
+    },
+    draft: {
       ...INITIAL_DRAFT,
       input: "helloWorldFooBar",
-    } as Record<string, unknown>,
+    },
+    buttons: [{ id: "submit", title: "Copy camelCase", isEnabled: true }],
+    defaultButtonID: "submit",
   },
 ];

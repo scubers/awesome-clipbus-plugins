@@ -6,6 +6,11 @@ import { useTopicRef } from "../../shared/composables/useTopicRef";
 import { decodeGeoPayload } from "./payload";
 import type { GeoPayload } from "./payload";
 
+// autoFit must observe this renderer's own root (content-sized), not document.body —
+// in the dev preview workbench document.body is the whole page, so without a target
+// autoFit never converges and spams setHeight every frame.
+const rootEl = ref<HTMLElement | null>(null);
+
 const attachmentPayload = useTopicRef(clipbus.item.attachment);
 const payload = computed<GeoPayload | null>(() =>
   decodeGeoPayload(attachmentPayload.value?.attachment?.payloadJson)
@@ -31,7 +36,7 @@ let unsub: (() => void) | null = null;
 let stopAutoFit: (() => void) | null = null;
 
 onMounted(async () => {
-  stopAutoFit = autoFit({ min: 120, max: 340 });
+  stopAutoFit = autoFit({ min: 120, max: 340, target: rootEl.value ?? undefined });
   try {
     await clipbus.attachmentRenderer.setButtons({
       buttons: [{ id: "copy-decimal", title: "Copy Coordinates" }],
@@ -55,7 +60,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <main class="shell">
+  <main ref="rootEl" class="shell">
     <section v-if="payload" class="content">
 
       <!-- ── Header badge ──────────────────────────────────────────────────── -->

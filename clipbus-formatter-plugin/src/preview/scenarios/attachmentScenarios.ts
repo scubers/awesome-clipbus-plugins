@@ -1,15 +1,12 @@
 // Attachment preview scenarios for the dev workbench.
-// Add entries here as you implement attachment renderer features.
-// Each entry must import its feature's app.vue and be referenced in PreviewShellApp.vue.
+// Consumed by createPreviewWorkbench (preview-host/main.ts); `view` selects the
+// feature component to mount. Add one entry per attachment renderer feature.
 
-export interface AttachmentScenario {
-  id: string;
-  label: string;
-  component: string;
-  searchTerms: string[];
-  accentHex: string;
-  bootstrap: Record<string, unknown>;
-}
+import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
+
+const PLUGIN_ID = "plugin.formatter";
+const ITEM_TAGS = ["formatter"];
+const SOURCE_APP = "com.preview.editor";
 
 const jsonObjectPayload = JSON.stringify({
   kind: "json_formatter_preview",
@@ -100,101 +97,104 @@ const sqlPayload = JSON.stringify({
     "SELECT u.id, u.name, o.total FROM users u INNER JOIN orders o ON u.id = o.user_id WHERE o.total > 100 ORDER BY o.total DESC LIMIT 20",
 });
 
-export const attachmentScenarios: AttachmentScenario[] = [
-  {
+/** Build an attachmentRenderer scenario; `view` routes to the feature component. */
+function renderer(opts: {
+  id: string;
+  label: string;
+  view: string;
+  accentHex: string;
+  attachmentType: string;
+  payloadJson: string;
+  min: number;
+  max: number;
+}): PreviewScenario {
+  const item = {
+    id: `item-${opts.id}`,
+    type: "text",
+    tags: ITEM_TAGS,
+    sourceAppID: SOURCE_APP,
+  };
+  return {
+    id: opts.id,
+    label: opts.label,
+    mode: "attachmentRenderer",
+    pluginID: PLUGIN_ID,
+    accentHex: opts.accentHex,
+    view: opts.view,
+    viewport: { heightPolicy: "bounded", min: opts.min, max: opts.max },
+    item,
+    attachment: {
+      item,
+      attachment: {
+        historyID: `preview-${opts.id}`,
+        owner: PLUGIN_ID,
+        attachmentType: opts.attachmentType,
+        attachmentKey: "primary",
+        payloadJson: opts.payloadJson,
+      },
+    },
+  };
+}
+
+export const attachmentScenarios: PreviewScenario[] = [
+  renderer({
     id: "json-renderer-object",
     label: "JSON Object",
-    component: "json-renderer",
-    searchTerms: ["json", "object", "format"],
+    view: "json-renderer",
     accentHex: "#7C3AED",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-1",
-        owner: "plugin.formatter",
-        attachmentType: "plugin.formatter.json",
-        attachmentKey: "primary",
-        payloadJson: jsonObjectPayload,
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.formatter.json",
+    min: 160,
+    max: 480,
+    payloadJson: jsonObjectPayload,
+  }),
+  renderer({
     id: "json-renderer-array",
     label: "JSON Array",
-    component: "json-renderer",
-    searchTerms: ["json", "array", "formatter"],
+    view: "json-renderer",
     accentHex: "#7C3AED",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-2",
-        owner: "plugin.formatter",
-        attachmentType: "plugin.formatter.json",
-        attachmentKey: "primary",
-        payloadJson: jsonArrayPayload,
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.formatter.json",
+    min: 160,
+    max: 480,
+    payloadJson: jsonArrayPayload,
+  }),
+  renderer({
     id: "xml-renderer-catalog",
     label: "XML: book catalog",
-    component: "xml-renderer",
-    searchTerms: ["xml", "markup", "format"],
+    view: "xml-renderer",
     accentHex: "#7C3AED",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-xml",
-        owner: "plugin.formatter",
-        attachmentType: "plugin.formatter.xml",
-        attachmentKey: "primary",
-        payloadJson: xmlPayload,
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.formatter.xml",
+    min: 140,
+    max: 480,
+    payloadJson: xmlPayload,
+  }),
+  renderer({
     id: "sql-renderer-select",
     label: "SQL: SELECT with JOIN",
-    component: "sql-renderer",
-    searchTerms: ["sql", "select", "query"],
+    view: "sql-renderer",
     accentHex: "#0369A1",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-sql",
-        owner: "plugin.formatter",
-        attachmentType: "plugin.formatter.sql",
-        attachmentKey: "primary",
-        payloadJson: sqlPayload,
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.formatter.sql",
+    min: 140,
+    max: 460,
+    payloadJson: sqlPayload,
+  }),
+  renderer({
     id: "csv-table-basic",
     label: "CSV Table",
-    component: "csv-table",
-    searchTerms: ["csv", "table"],
+    view: "csv-table",
     accentHex: "#0F766E",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-csv",
-        owner: "plugin.formatter",
-        attachmentType: "plugin.formatter.csv",
-        attachmentKey: "primary",
-        payloadJson: csvTablePayload,
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.formatter.csv",
+    min: 160,
+    max: 460,
+    payloadJson: csvTablePayload,
+  }),
+  renderer({
     id: "query-table-basic",
     label: "Query String",
-    component: "query-table",
-    searchTerms: ["query", "url", "params"],
+    view: "query-table",
     accentHex: "#0F766E",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-query",
-        owner: "plugin.formatter",
-        attachmentType: "plugin.formatter.query",
-        attachmentKey: "primary",
-        payloadJson: queryTablePayload,
-      },
-    },
-  },
+    attachmentType: "plugin.formatter.query",
+    min: 140,
+    max: 420,
+    payloadJson: queryTablePayload,
+  }),
 ];

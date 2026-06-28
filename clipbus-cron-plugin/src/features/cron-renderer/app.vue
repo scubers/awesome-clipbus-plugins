@@ -5,6 +5,11 @@ import { autoFit } from "@clipbus/plugin-sdk/dom";
 import { useTopicRef } from "../../shared/composables/useTopicRef";
 import { decodeCronPayload, computeNextRuns } from "./payload";
 
+// autoFit must observe this renderer's own root (content-sized), not document.body —
+// in the dev preview workbench document.body is the whole page, so without a target
+// autoFit never converges and spams setHeight every frame.
+const rootEl = ref<HTMLElement | null>(null);
+
 const attachmentPayload = useTopicRef(clipbus.item.attachment);
 const payload = computed(() =>
   decodeCronPayload(attachmentPayload.value?.attachment?.payloadJson)
@@ -16,7 +21,7 @@ let refreshTimer: ReturnType<typeof setInterval> | null = null;
 let stopAutoFit: (() => void) | null = null;
 
 onMounted(() => {
-  stopAutoFit = autoFit({ min: 120, max: 560 });
+  stopAutoFit = autoFit({ min: 120, max: 560, target: rootEl.value ?? undefined });
   refreshTimer = setInterval(() => { now.value = Date.now(); }, 30_000);
 });
 
@@ -45,7 +50,7 @@ function formatRunTime(ms: number): string {
 </script>
 
 <template>
-  <main class="shell">
+  <main ref="rootEl" class="shell">
     <section v-if="payload" class="content">
       <div class="expression">{{ payload.expression }}</div>
 

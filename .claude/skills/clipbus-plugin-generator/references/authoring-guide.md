@@ -291,16 +291,21 @@ manifest renderer 的 `height` 三形态：
 - `"auto"`：内容驱动（默认区间 [80,800]）。
 - `{ min: 120, max: 480 }`：有界自适应。
 
-**铁律：`"auto"` 与 `{min,max}` 两种都要求 UI 在 `onMounted` 显式调 `clipbus.window.autoFit()`——SDK 不自动启动，不调就停在最小高度、内容被截断**（真实踩过：一批 renderer 声明 `"auto"` 却没调 autoFit，卡片全挤成一条、内容看不全）。推荐 `{min,max}`，调用值与 manifest 一致：
+**铁律：`"auto"` 与 `{min,max}` 两种都要求 UI 在 `onMounted` 显式调 `clipbus.window.autoFit()`，且**必须传 `target` = 自己的根元素**——SDK 不自动启动，不调就停在最小高度、内容被截断**（真实踩过：一批 renderer 声明 `"auto"` 却没调 autoFit，卡片全挤成一条、内容看不全）。推荐 `{min,max}`，调用值与 manifest 一致：
 
 ```ts
+import { ref, onMounted, onUnmounted } from "vue";
 import { autoFit } from "@clipbus/plugin-sdk/dom";
+
+const rootEl = ref<HTMLElement | null>(null); // 模板根元素加 ref="rootEl"（如 <main class="shell">）
 let stopAutoFit: (() => void) | null = null;
-onMounted(() => { stopAutoFit = autoFit({ min: 120, max: 480 }); }); // 与 manifest 一致
+onMounted(() => {
+  stopAutoFit = autoFit({ min: 120, max: 480, target: rootEl.value ?? undefined }); // 与 manifest 一致
+});
 onUnmounted(() => { stopAutoFit?.(); });
 ```
 
-`autoFit` 量 `document.body.scrollHeight`，clamp 到 `[min,max]` 后 `setHeight`（无宿主时 `.catch` 掉，dev 安全）。**内容超过 `max` 仍被截断**——可变长度的列表/表格要再套一个内部滚动容器：
+**务必传 `target`（内容尺寸的根元素，无 `height:100%`）。** autoFit 观察 `target` 的高度，clamp 到 `[min,max]` 后 `setHeight`（无宿主时 `.catch` 掉，dev 安全）。**不传 `target` 则量 `document.body`**——native 里恰好 = 插件内容（碰巧能用），但 dev 预览工作台里 `document.body` 是整个工作台页（`.cbp-wb` 为 `min-height:100%` 填满视口），autoFit 永不收敛、**每帧狂调 `setHeight` 死循环**（真实踩过，靠浏览器取证定位）。**内容超过 `max` 仍被截断**——可变长度的列表/表格要再套一个内部滚动容器：
 
 ```html
 <div class="scroll-region"><!-- 长列表 / 宽表格 --></div>
@@ -331,16 +336,17 @@ export default definePlugin({
 });
 ```
 
-## 10. 预览 scenario + 接线 PreviewShellApp（必做，不是可选）
+## 10. 预览 scenario + preview-host 接线（必做，不是可选）
 
-每个 renderer / draft action 都要在 `src/preview/scenarios/` 加一条样例 scenario，**并接进 `PreviewShellApp.vue` 让它真正挂载**——`npm run dev` 必须能看到真实组件渲染，留占位符 = 没做完（真实踩过：把这步当"可选打磨"，导致整批插件 preview 全是死占位）。scaffold 现产出的是 **wire-ready** 壳（含 mock host bridge + topic 注入 + `<component :is>`），每个 feature 只需补两处：
+每个 renderer / draft action 都要在 `src/preview/scenarios/` 加一条 `PreviewScenario`，**并在 `preview-host/main.ts` 的 `COMPONENTS` 里映射到组件**——`npm run dev` 必须能看到真实组件渲染，缺这步 = 没做完（真实踩过：把这步当"可选打磨"，导致整批插件 preview 全是死占位）。SDK 0.8.5 起 `createPreviewWorkbench`（`@clipbus/plugin-sdk/preview`）接管整套工作台（scenario 选择器 / 4 主题 / native 卡片壳 / 宽度滑杆 / 按钮条 / fake host / wire 注入 / `--clipbus-*` 镜像 / 挂载-cleanup）。**不要再手写 `PreviewShellApp.vue`**（已废除）。每个 feature 只需补两处：
 
-1. **scenario**（`scenarios/attachmentScenarios.ts` 或 `actionScenarios.ts`）加一条：
-   - `component: "<feature-dir>"`（= 该 renderer/action 目录名）。
-   - renderer 的 `bootstrap: { attachment: { payloadJson: JSON.stringify(createXPayload(...)) } }`；draft 的 `bootstrap` 是扁平初始 draft（spread 该 feature 的 `INITIAL_DRAFT`）。
-2. **PreviewShellApp.vue**：顶部 `import X from "../features/<feature-dir>/app.vue"`，登记进 `RENDERERS`（renderer）或 `ACTIONS`（draft action）注册表，key = `<feature-dir>`（与 `scenario.component` 一致）。
+1. **scenario**（`scenarios/attachmentScenarios.ts` 或 `actionScenarios.ts`）加一条 `PreviewScenario`：
+   - `mode: "attachmentRenderer"`（renderer）或 `"action"`（draft）；`pluginID: "<plugin.id>"`；`view: "<feature-dir>"`（路由用，= 目录名）。
+   - `viewport` 取自 manifest height：`{min,max}`→`{ heightPolicy:'bounded', min, max }`、定值→`{ heightPolicy:'fixed', height }`、`"auto"`→`{ heightPolicy:'auto' }`。
+   - renderer 的 `attachment` 嵌套为 `{ item, attachment: { historyID, owner:"<plugin.id>", attachmentType:"<manifest>", attachmentKey:"primary", payloadJson: JSON.stringify(createXPayload(...)) } }`（组件读 `attachmentPayload.value?.attachment?.payloadJson`）；draft 的 `draft` 是扁平初始 draft（spread 该 feature 的 `INITIAL_DRAFT`），配 `buttons` + `defaultButtonID`。
+2. **preview-host/main.ts**：顶部 `import X from "../../features/<feature-dir>/app.vue"`，登记进 `COMPONENTS`，key = `<feature-dir>`（与 `scenario.view` 一致）。`mount` 适配器按 `scenario.view` 选组件。
 
-数据怎么进组件（wire-ready 壳已处理，知其所以然即可）：组件用 `useTopicRef(clipbus.item.attachment | clipbus.action.draft)` 在 **setup 同步读 `topic.current()`**；壳用 `flush:'sync'` 的 watch 在子组件渲染前 `window.dispatchEvent` 派发 `clipbus-plugin-attachment`/`clipbus-plugin-draft`/`clipbus-plugin-context`，把 scenario 喂进 SDK topic，`:key` 按场景重挂载；mock `webkit.messageHandlers.clipbusPluginCall` 让 host verb 在浏览器里 resolve 不抛错。纯 auto-run action（无 app.vue）无可挂载，壳显示空态即可。真实视觉验收仍以宿主 Clipbus 内为准。
+数据怎么进组件（`createPreviewWorkbench` 已处理，知其所以然即可）：组件用 `useTopicRef(clipbus.item.attachment | clipbus.action.draft)` 读 SDK topic；harness 按 scenario 字段生成 wire payload 注入（与真实宿主同源），并把所有 `clipbus.*` native 调用记到「调用日志」、`window.setHeight` 驱动视口高度。纯 auto-run action（无 app.vue）无可预览 UI：**不调 `createPreviewWorkbench`**（它要求 ≥1 scenario），`main.ts` 渲染一句静态说明即可（见 text 插件）。权威文档：`node_modules/@clipbus/plugin-sdk/docs/preview.md`。真实视觉验收仍以宿主 Clipbus 内为准。
 
 ## 11. 视觉规范（优先级 #2）
 

@@ -1,25 +1,32 @@
 // Action preview scenarios for the dev workbench.
-// Add entries here as you implement draft action features.
-// Each entry must import its feature's app.vue and be referenced in PreviewShellApp.vue.
+// Consumed by createPreviewWorkbench (preview-host/main.ts); `view` selects the
+// feature component to mount. Add one entry per draft action feature.
 
+import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
 import { INITIAL_DRAFT } from "../../features/escape-tool/payload";
 
-export interface ActionScenario {
-  id: string;
-  label: string;
-  component: string;
-  bootstrap: Record<string, unknown>;
-}
+const PLUGIN_ID = "plugin.decoder";
 
-export const actionScenarios: ActionScenario[] = [
+export const actionScenarios: PreviewScenario[] = [
   {
     id: "escape-tool-url",
     label: "Escape Tool: URL encode",
-    component: "escape-tool",
-    bootstrap: {
+    mode: "action",
+    pluginID: PLUGIN_ID,
+    view: "escape-tool",
+    viewport: { heightPolicy: "fixed", height: 360 },
+    item: {
+      id: "action-item-escape-tool-url",
+      type: "text",
+      tags: ["decoder"],
+      sourceAppID: "com.preview.editor",
+    },
+    draft: {
       ...INITIAL_DRAFT,
       mode: "url",
       input: "hello world & more",
-    } as Record<string, unknown>,
+    },
+    buttons: [{ id: "submit", title: "Copy Encoded Result", isEnabled: true }],
+    defaultButtonID: "submit",
   },
 ];

@@ -26,10 +26,15 @@ async function copyText(key: string, text: string) {
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
+// autoFit must observe this renderer's own root (content-sized), not document.body —
+// in the preview workbench document.body is the whole page, so without a target
+// autoFit never converges and spams setHeight every frame.
+const rootEl = ref<HTMLElement | null>(null);
+
 let stopAutoFit: (() => void) | null = null;
 
 onMounted(() => {
-  stopAutoFit = autoFit({ min: 160, max: 360 });
+  stopAutoFit = autoFit({ min: 160, max: 360, target: rootEl.value ?? undefined });
 });
 
 onUnmounted(() => {
@@ -53,7 +58,7 @@ const fileSizeRaw = computed(() =>
 </script>
 
 <template>
-  <main class="shell">
+  <main ref="rootEl" class="shell">
     <section v-if="payload" class="content">
 
       <!-- ── Header badge ─────────────────────────────────────────────────── -->

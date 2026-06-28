@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { clipbus } from "@clipbus/plugin-sdk/ui";
 import { autoFit } from "@clipbus/plugin-sdk/dom";
 import { useTopicRef } from "../../shared/composables/useTopicRef";
 import { decodeTimestampPayload } from "./payload";
+
+// autoFit must observe this renderer's own root (content-sized), not document.body —
+// in the dev preview workbench document.body is the whole page, so without a target
+// autoFit never converges and spams setHeight every frame.
+const rootEl = ref<HTMLElement | null>(null);
 
 const attachmentPayload = useTopicRef(clipbus.item.attachment);
 const payload = computed(() =>
@@ -28,7 +33,7 @@ let unsub: (() => void) | null = null;
 let stopAutoFit: (() => void) | null = null;
 
 onMounted(async () => {
-  stopAutoFit = autoFit({ min: 140, max: 300 });
+  stopAutoFit = autoFit({ min: 140, max: 300, target: rootEl.value ?? undefined });
 
   try {
     await clipbus.attachmentRenderer.setButtons({
@@ -52,7 +57,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <main class="shell">
+  <main ref="rootEl" class="shell">
     <section v-if="payload" class="content">
       <div class="meta-row">
         <span class="badge">Unix Timestamp</span>

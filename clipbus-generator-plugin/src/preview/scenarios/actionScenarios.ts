@@ -1,27 +1,46 @@
 // Action preview scenarios for the dev workbench.
-// Each entry must import its feature's app.vue and be referenced in PreviewShellApp.vue.
+// Consumed by createPreviewWorkbench (preview-host/main.ts); `view` selects the
+// feature component to mount. Add one entry per draft action feature.
 
+import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
 import { INITIAL_DRAFT as GEN_INITIAL_DRAFT } from "../../features/gen-tool/payload";
 import { INITIAL_DRAFT as LOREM_INITIAL_DRAFT } from "../../features/lorem-tool/payload";
 
-export interface ActionScenario {
-  id: string;
-  label: string;
-  component: string;
-  bootstrap: Record<string, unknown>;
-}
+const PLUGIN_ID = "plugin.generator";
 
-export const actionScenarios: ActionScenario[] = [
+export const actionScenarios: PreviewScenario[] = [
   {
     id: "gen-tool",
     label: "Generator (UUID / Password)",
-    component: "gen-tool",
-    bootstrap: { ...GEN_INITIAL_DRAFT } as Record<string, unknown>,
+    mode: "action",
+    pluginID: PLUGIN_ID,
+    view: "gen-tool",
+    viewport: { heightPolicy: "fixed", height: 320 },
+    item: {
+      id: "action-item-gen-tool",
+      type: "text",
+      tags: ["generator"],
+      sourceAppID: "com.preview.editor",
+    },
+    draft: { ...GEN_INITIAL_DRAFT },
+    buttons: [{ id: "submit", title: "Generate & Copy", isEnabled: true }],
+    defaultButtonID: "submit",
   },
   {
     id: "lorem-tool",
     label: "Lorem Ipsum Generator",
-    component: "lorem-tool",
-    bootstrap: { ...LOREM_INITIAL_DRAFT } as Record<string, unknown>,
+    mode: "action",
+    pluginID: PLUGIN_ID,
+    view: "lorem-tool",
+    viewport: { heightPolicy: "fixed", height: 320 },
+    item: {
+      id: "action-item-lorem-tool",
+      type: "text",
+      tags: ["generator"],
+      sourceAppID: "com.preview.editor",
+    },
+    draft: { ...LOREM_INITIAL_DRAFT },
+    buttons: [{ id: "submit", title: "Insert", isEnabled: true }],
+    defaultButtonID: "submit",
   },
 ];

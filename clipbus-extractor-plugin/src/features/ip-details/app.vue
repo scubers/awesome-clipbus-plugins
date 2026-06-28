@@ -6,6 +6,11 @@ import { useTopicRef } from "../../shared/composables/useTopicRef";
 import { decodeIpPayload } from "./payload";
 import type { IpPayload } from "./payload";
 
+// autoFit must observe this renderer's own root (content-sized), not document.body —
+// in the dev preview workbench document.body is the whole page, so without a target
+// autoFit never converges and spams setHeight every frame.
+const rootEl = ref<HTMLElement | null>(null);
+
 const attachmentPayload = useTopicRef(clipbus.item.attachment);
 const payload = computed<IpPayload | null>(() =>
   decodeIpPayload(attachmentPayload.value?.attachment?.payloadJson)
@@ -31,7 +36,7 @@ let unsub: (() => void) | null = null;
 let stopAutoFit: (() => void) | null = null;
 
 onMounted(async () => {
-  stopAutoFit = autoFit({ min: 140, max: 380 });
+  stopAutoFit = autoFit({ min: 140, max: 380, target: rootEl.value ?? undefined });
   try {
     await clipbus.attachmentRenderer.setButtons({
       buttons: [{ id: "copy-input", title: "Copy IP" }],
@@ -68,7 +73,7 @@ const isCidr = computed(
 </script>
 
 <template>
-  <main class="shell">
+  <main ref="rootEl" class="shell">
     <section v-if="payload" class="content">
 
       <!-- ── Header badge ──────────────────────────────────────────────────── -->

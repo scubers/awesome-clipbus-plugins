@@ -140,339 +140,94 @@ export default definePlugin({
 }
 
 function minimalAttachmentScenariosTs() {
-  return `// Attachment preview scenarios for the dev workbench.
-// Add entries here as you implement attachment renderer features.
-// Each entry must import its feature's app.vue and be referenced in PreviewShellApp.vue.
+  return `// Attachment preview scenarios for the dev workbench (createPreviewWorkbench).
+// Add one PreviewScenario per attachment renderer feature, then import its app.vue
+// in preview-host/main.ts and map it in COMPONENTS by view (= feature dir name).
+//
+// Shape (authoritative: @clipbus/plugin-sdk docs/preview.md):
+//   { id, label, mode: "attachmentRenderer", pluginID: "<your plugin.id>",
+//     accentHex, view: "<feature-dir>",
+//     viewport: { heightPolicy: "bounded", min, max },   // match the manifest height
+//     item: { id, type: "text", tags: [], sourceAppID: "com.preview.editor" },
+//     attachment: { item, attachment: { historyID, owner: "<plugin.id>",
+//       attachmentType: "<from manifest>", attachmentKey: "primary", payloadJson } } }
 
-export interface AttachmentScenario {
-  id: string;
-  label: string;
-  component: string; // === renderer feature dir name; PreviewShellApp maps it to the component
-  searchTerms: string[];
-  accentHex: string;
-  bootstrap: Record<string, unknown>;
-}
+import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
 
-export const attachmentScenarios: AttachmentScenario[] = [];
+export const attachmentScenarios: PreviewScenario[] = [];
 `;
 }
 
 function minimalActionScenariosTs() {
-  return `// Action preview scenarios for the dev workbench.
-// Add entries here as you implement draft action features.
-// Each entry must import its feature's app.vue and be referenced in PreviewShellApp.vue.
+  return `// Action preview scenarios for the dev workbench (createPreviewWorkbench).
+// Add one PreviewScenario per draft action feature, then import its app.vue in
+// preview-host/main.ts and map it in COMPONENTS by view (= feature dir name).
+//
+// Shape (authoritative: @clipbus/plugin-sdk docs/preview.md):
+//   { id, label, mode: "action", pluginID: "<your plugin.id>", view: "<feature-dir>",
+//     viewport: { heightPolicy: "fixed", height: 320 },
+//     item: { id, type: "text", tags: [], sourceAppID: "com.preview.editor" },
+//     draft: { ...INITIAL_DRAFT },
+//     buttons: [{ id, title, isEnabled }], defaultButtonID: "<id>" }
 
-export interface ActionScenario {
-  id: string;
-  label: string;
-  component: string; // === draft-action feature dir name; PreviewShellApp maps it to the component
-  bootstrap: Record<string, unknown>;
-}
+import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
 
-export const actionScenarios: ActionScenario[] = [];
+export const actionScenarios: PreviewScenario[] = [];
 `;
 }
 
-function minimalPreviewShellApp(pluginId) {
-  // Returns a WIRE-READY PreviewShellApp.vue: empty RENDERERS/ACTIONS registries +
-  // mock host bridge + topic-seeding, so an author only adds one import + one registry
-  // line per feature to see it render live in `npm run dev`. Safe with empty scenarios.
-  return `<template>
-  <main class="workbench" :data-theme="selectedTheme">
-    <section class="workbench__controls">
-      <label class="workbench__control">
-        <span>View</span>
-        <select v-model="selectedView">
-          <option value="renderer">Renderer</option>
-          <option value="action">Action</option>
-        </select>
-      </label>
+function minimalPreviewHostMainTs() {
+  // Returns the dev preview entry. createPreviewWorkbench (SDK 0.8.5+) owns the whole
+  // workbench: scenario picker, themes, native card shell, fake host, wire injection.
+  // The author only imports each feature's app.vue and maps it by `view`. Works with
+  // zero features (shows a hint) so `npm run dev` never breaks on a fresh scaffold.
+  return `import { createPreviewWorkbench } from "@clipbus/plugin-sdk/preview";
+import { createApp, h, type Component } from "vue";
+import "../../shared/base.css";
+import { attachmentScenarios } from "../scenarios/attachmentScenarios";
+import { actionScenarios } from "../scenarios/actionScenarios";
 
-      <label v-if="activeScenarioOptions.length > 0" class="workbench__control">
-        <span>Scenario</span>
-        <select v-model="selectedScenarioID">
-          <option
-            v-for="scenario in activeScenarioOptions"
-            :key="scenario.id"
-            :value="scenario.id"
-          >
-            {{ scenario.label }}
-          </option>
-        </select>
-      </label>
-
-      <label class="workbench__control">
-        <span>Theme</span>
-        <select v-model="selectedTheme">
-          <option value="dark">Dark Host</option>
-          <option value="light">Light Host</option>
-        </select>
-      </label>
-    </section>
-
-    <section class="workbench__canvas">
-      <div class="host-frame">
-        <div class="host-frame__title">
-          <span>{{ selectedView === "renderer" ? "Attachment Renderer" : "Draft Action" }}</span>
-        </div>
-        <div class="host-frame__surface">
-          <component
-            :is="activeComponent"
-            v-if="activeComponent"
-            :key="selectedView + ':' + selectedScenarioID"
-          />
-          <div v-else class="host-frame__placeholder">
-            No previewable component yet — add a feature, register a scenario in
-            <code>src/preview/scenarios/</code> with a <code>component</code> field, and
-            map it in the RENDERERS / ACTIONS registry inside this file.
-          </div>
-        </div>
-      </div>
-
-      <aside class="workbench__notes">
-        <p class="workbench__notes-title">Preview Notes</p>
-        <p class="workbench__notes-body">
-          This workbench simulates host chrome and theme changes.
-        </p>
-        <p class="workbench__notes-body">
-          Once you add features: import each feature's <code>app.vue</code> here,
-          add scenarios to <code>src/preview/scenarios/</code>, and map them in
-          <code>activeComponent</code>.
-        </p>
-        <p class="workbench__notes-status">{{ statusMessage }}</p>
-      </aside>
-    </section>
-  </main>
-</template>
-
-<script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { attachmentScenarios } from "./scenarios/attachmentScenarios";
-import { actionScenarios } from "./scenarios/actionScenarios";
-
-/* ── PER-PLUGIN: import each feature's app.vue, then register it below ──────
-   import MyRenderer from "../features/<renderer-dir>/app.vue";
-   import MyAction   from "../features/<action-dir>/app.vue";                  */
-const RENDERERS: Record<string, unknown> = {
-  // "<renderer-dir>": MyRenderer,   // key === AttachmentScenario.component
+/* PER-PLUGIN: import each feature's app.vue, then map it below by feature dir.
+   import MyRenderer from "../../features/<renderer-dir>/app.vue";
+   import MyAction   from "../../features/<action-dir>/app.vue";                 */
+const COMPONENTS: Record<string, Component> = {
+  // "<feature-dir>": MyRenderer,   // key === PreviewScenario.view
 };
-const ACTIONS: Record<string, unknown> = {
-  // "<action-dir>": MyAction,       // key === ActionScenario.component
-};
-/* ─────────────────────────────────────────────────────────────────────────── */
 
-// Mock host bridge so SDK host verbs (setButtons / complete / window.setHeight /
-// autoFit) resolve instead of throwing in the browser (read at call time, not import).
-const g = globalThis as unknown as { webkit?: { messageHandlers?: Record<string, unknown> } };
-if (!g.webkit?.messageHandlers?.clipbusPluginCall) {
-  g.webkit = { messageHandlers: { clipbusPluginCall: { postMessage: async () => ({ response: {} }) } } };
-}
+const scenarios = [...attachmentScenarios, ...actionScenarios];
+const root = document.getElementById("app")!;
 
-type ViewKey = "renderer" | "action";
-type ThemeKey = "light" | "dark";
-
-const query = new URLSearchParams(window.location.search);
-const selectedView = ref<ViewKey>(query.get("view") === "action" ? "action" : "renderer");
-const selectedTheme = ref<ThemeKey>(query.get("theme") === "light" ? "light" : "dark");
-const statusMessage = ref<string>("Import each feature's app.vue and register it in RENDERERS / ACTIONS.");
-
-const activeScenarioOptions = computed(() =>
-  selectedView.value === "renderer" ? attachmentScenarios : actionScenarios
-);
-const selectedScenarioID = ref<string>(activeScenarioOptions.value[0]?.id ?? "");
-watch(activeScenarioOptions, (list) => {
-  if (!list.some((s) => s.id === selectedScenarioID.value)) selectedScenarioID.value = list[0]?.id ?? "";
-});
-const activeScenario = computed(
-  () =>
-    activeScenarioOptions.value.find((s) => s.id === selectedScenarioID.value) ??
-    activeScenarioOptions.value[0] ??
-    null
-);
-const activeComponent = computed(() => {
-  const s = activeScenario.value as { component?: string } | null;
-  if (!s?.component) return null;
-  return ((selectedView.value === "renderer" ? RENDERERS : ACTIONS)[s.component] as unknown) ?? null;
-});
-
-// Seed SDK topics BEFORE the child renders (sync + immediate). The mounted renderer/action
-// reads topic.current() in setup; :key forces a remount (and re-seed) per scenario.
-watch(
-  [activeScenario, selectedView],
-  () => {
-    const s = activeScenario.value as { bootstrap?: unknown } | null;
-    if (!s) return;
-    const mode = selectedView.value === "renderer" ? "attachmentRenderer" : "action";
-    window.dispatchEvent(new CustomEvent("clipbus-plugin-context", { detail: { mode } }));
-    window.dispatchEvent(
-      new CustomEvent(
-        selectedView.value === "renderer" ? "clipbus-plugin-attachment" : "clipbus-plugin-draft",
-        { detail: s.bootstrap },
+if (scenarios.length === 0) {
+  // No previewable features yet. Add one, register a scenario in
+  // src/preview/scenarios/, import its app.vue above, and map it in COMPONENTS.
+  createApp({
+    render: () =>
+      h(
+        "main",
+        { style: "padding:24px;font:13px/1.6 system-ui,sans-serif;color:var(--clipbus-text-secondary,#475569)" },
+        "No previewable features yet. Add one, register a scenario in src/preview/scenarios/, import its app.vue in preview-host/main.ts, and map it in COMPONENTS by its view (feature dir name).",
       ),
-    );
-  },
-  { immediate: true, flush: "sync" },
-);
-</script>
-
-<style scoped>
-.workbench {
-  min-height: 100%;
-  padding: 24px;
-  color: #e2e8f0;
-  background:
-    radial-gradient(circle at top left, rgba(15, 118, 110, 0.22), transparent 24%),
-    linear-gradient(180deg, #111827, #0f172a);
+  }).mount(root);
+} else {
+  createPreviewWorkbench(root, {
+    scenarios,
+    mount(slotEl, { scenario }) {
+      const Comp =
+        COMPONENTS[scenario.view ?? ""] ??
+        ({
+          render: () =>
+            h(
+              "div",
+              { style: "padding:16px;font:13px system-ui;color:var(--clipbus-text-secondary,#475569)" },
+              "No component mapped for view: " + (scenario.view ?? "") + ". Import its app.vue and add it to COMPONENTS.",
+            ),
+        } as Component);
+      const app = createApp(Comp);
+      app.mount(slotEl);
+      return () => app.unmount();
+    },
+  });
 }
-
-.workbench[data-theme="light"] {
-  color: #0f172a;
-  background:
-    radial-gradient(circle at top left, rgba(14, 165, 233, 0.18), transparent 24%),
-    linear-gradient(180deg, #e2e8f0, #cbd5e1);
-}
-
-.workbench__controls {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-}
-
-.workbench__control {
-  display: grid;
-  gap: 6px;
-}
-
-.workbench__control span {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(226, 232, 240, 0.72);
-}
-
-.workbench[data-theme="light"] .workbench__control span {
-  color: rgba(15, 23, 42, 0.62);
-}
-
-.workbench__control select {
-  min-width: 170px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.26);
-  background: rgba(15, 23, 42, 0.48);
-  color: inherit;
-}
-
-.workbench[data-theme="light"] .workbench__control select {
-  background: rgba(255, 255, 255, 0.82);
-}
-
-.workbench__canvas {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 260px;
-  gap: 20px;
-  align-items: start;
-}
-
-.host-frame {
-  padding: 18px;
-  border-radius: 22px;
-  background: rgba(15, 23, 42, 0.34);
-  border: 1px solid rgba(45, 212, 191, 0.2);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  overflow: auto;
-}
-
-.workbench[data-theme="light"] .host-frame {
-  background: rgba(248, 250, 252, 0.52);
-  border-color: rgba(148, 163, 184, 0.28);
-}
-
-.host-frame__title {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: rgba(226, 232, 240, 0.8);
-}
-
-.workbench[data-theme="light"] .host-frame__title {
-  color: rgba(15, 23, 42, 0.7);
-}
-
-.host-frame__surface {
-  display: grid;
-  gap: 12px;
-}
-
-.host-frame__placeholder {
-  min-height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  border-radius: 12px;
-  border: 1px dashed rgba(148, 163, 184, 0.3);
-  color: rgba(226, 232, 240, 0.55);
-  font-size: 13px;
-  text-align: center;
-  line-height: 1.6;
-}
-
-.workbench[data-theme="light"] .host-frame__placeholder {
-  color: rgba(15, 23, 42, 0.45);
-}
-
-.workbench__notes {
-  padding: 16px;
-  border-radius: 18px;
-  background: rgba(15, 23, 42, 0.42);
-  border: 1px solid rgba(148, 163, 184, 0.16);
-}
-
-.workbench[data-theme="light"] .workbench__notes {
-  background: rgba(255, 255, 255, 0.76);
-}
-
-.workbench__notes-title {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.workbench__notes-body,
-.workbench__notes-status {
-  margin: 10px 0 0;
-  font-size: 13px;
-  line-height: 1.5;
-  color: rgba(226, 232, 240, 0.78);
-}
-
-.workbench[data-theme="light"] .workbench__notes-body,
-.workbench[data-theme="light"] .workbench__notes-status {
-  color: rgba(15, 23, 42, 0.72);
-}
-
-.workbench__notes-status {
-  font-weight: 600;
-}
-
-@media (max-width: 980px) {
-  .workbench__canvas {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .workbench__notes {
-    order: -1;
-  }
-}
-</style>
 `;
 }
 
@@ -589,7 +344,9 @@ async function main() {
   await writeText(path.join(targetDir, "src", "plugin.ts"), minimalPluginTs());
   process.stderr.write(`scaffold: [6/8] rewrote src/plugin.ts\n`);
 
-  // ── Step 7: Replace preview scenarios and PreviewShellApp.vue ───────────────
+  // ── Step 7: Replace preview scenarios + preview-host entry ──────────────────
+  // The copied template main.ts imports template demo features (deleted in Step 2),
+  // so overwrite it with a clean createPreviewWorkbench host (empty COMPONENTS map).
   await writeText(
     path.join(targetDir, "src", "preview", "scenarios", "attachmentScenarios.ts"),
     minimalAttachmentScenariosTs()
@@ -599,10 +356,12 @@ async function main() {
     minimalActionScenariosTs()
   );
   await writeText(
-    path.join(targetDir, "src", "preview", "PreviewShellApp.vue"),
-    minimalPreviewShellApp(pluginId)
+    path.join(targetDir, "src", "preview", "preview-host", "main.ts"),
+    minimalPreviewHostMainTs()
   );
-  process.stderr.write(`scaffold: [7/8] replaced preview scenarios and PreviewShellApp.vue\n`);
+  // Defensive: drop any stale hand-rolled shell (pre-0.8.5 templates shipped one).
+  await rmDir(path.join(targetDir, "src", "preview", "PreviewShellApp.vue"));
+  process.stderr.write(`scaffold: [7/8] replaced preview scenarios + preview-host/main.ts\n`);
 
   // ── Step 8: Confirm preserved files ─────────────────────────────────────────
   // (src/shared/, tsconfig.json, vite.config.mjs, eslint.config.mjs, env.d.ts,

@@ -1,15 +1,21 @@
 // Attachment preview scenarios for the dev workbench.
-// Add entries here as you implement attachment renderer features.
-// Each entry must import its feature's app.vue and be referenced in PreviewShellApp.vue.
+// Consumed by createPreviewWorkbench (preview-host/main.ts); `view` selects the
+// feature component to mount. Add one entry per attachment renderer feature.
 
-export interface AttachmentScenario {
-  id: string;
-  label: string;
-  component: string;
-  searchTerms: string[];
-  accentHex: string;
-  bootstrap: Record<string, unknown>;
-}
+import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
+
+const PLUGIN_ID = "plugin.extractor";
+const ITEM_TAGS = ["extractor"];
+const SOURCE_APP = "com.preview.editor";
+
+const entitiesPayload = JSON.stringify({
+  kind: "entities_preview",
+  version: 1,
+  urls: ["https://example.com", "https://foo.org"],
+  emails: ["john@example.com"],
+  ips: ["192.168.1.1"],
+  totalCount: 4,
+});
 
 const urlParsedPayload = JSON.stringify({
   kind: "url_parsed",
@@ -128,136 +134,124 @@ const geoCoordinatesPayload = JSON.stringify({
   googleUrl: "https://maps.google.com/?q=37.7749,-122.4194",
 });
 
-export const attachmentScenarios: AttachmentScenario[] = [
-  {
+/** Build an attachmentRenderer scenario; `view` routes to the feature component. */
+function renderer(opts: {
+  id: string;
+  label: string;
+  view: string;
+  accentHex: string;
+  attachmentType: string;
+  payloadJson: string;
+  min: number;
+  max: number;
+}): PreviewScenario {
+  const item = {
+    id: `item-${opts.id}`,
+    type: "text",
+    tags: ITEM_TAGS,
+    sourceAppID: SOURCE_APP,
+  };
+  return {
+    id: opts.id,
+    label: opts.label,
+    mode: "attachmentRenderer",
+    pluginID: PLUGIN_ID,
+    accentHex: opts.accentHex,
+    view: opts.view,
+    viewport: { heightPolicy: "bounded", min: opts.min, max: opts.max },
+    item,
+    attachment: {
+      item,
+      attachment: {
+        historyID: `preview-${opts.id}`,
+        owner: PLUGIN_ID,
+        attachmentType: opts.attachmentType,
+        attachmentKey: "primary",
+        payloadJson: opts.payloadJson,
+      },
+    },
+  };
+}
+
+export const attachmentScenarios: PreviewScenario[] = [
+  renderer({
     id: "entities-renderer-mixed",
     label: "Extracted Entities: URL + Email + IP",
-    component: "entities-renderer",
-    searchTerms: ["extract", "url", "email", "ip"],
+    view: "entities-renderer",
     accentHex: "#2563EB",
-    bootstrap: {
-      attachment: {
-        payloadJson: JSON.stringify({
-          kind: "entities_preview",
-          version: 1,
-          urls: ["https://example.com", "https://foo.org"],
-          emails: ["john@example.com"],
-          ips: ["192.168.1.1"],
-          totalCount: 4,
-        }),
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.extractor.entities",
+    min: 140,
+    max: 420,
+    payloadJson: entitiesPayload,
+  }),
+  renderer({
     id: "url-parsed-basic",
     label: "URL: parsed structure",
-    component: "url-parsed",
-    searchTerms: ["url", "host", "query"],
+    view: "url-parsed",
     accentHex: "#2563EB",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-url",
-        owner: "plugin.extractor",
-        attachmentType: "plugin.extractor.url",
-        attachmentKey: "primary",
-        payloadJson: urlParsedPayload,
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.extractor.url",
+    min: 140,
+    max: 440,
+    payloadJson: urlParsedPayload,
+  }),
+  renderer({
     id: "ip-details-v4",
     label: "IP Address: IPv4 private host",
-    component: "ip-details",
-    searchTerms: ["ip", "ipv4", "private", "address"],
+    view: "ip-details",
     accentHex: "#0891B2",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-ip-v4",
-        owner: "plugin.extractor",
-        attachmentType: "plugin.extractor.ip",
-        attachmentKey: "primary",
-        payloadJson: ipDetailsPayloadV4,
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.extractor.ip",
+    min: 140,
+    max: 380,
+    payloadJson: ipDetailsPayloadV4,
+  }),
+  renderer({
     id: "ip-details-v4cidr",
     label: "IP Address: IPv4 CIDR /24",
-    component: "ip-details",
-    searchTerms: ["ip", "cidr", "subnet", "netmask"],
+    view: "ip-details",
     accentHex: "#0891B2",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-ip-v4cidr",
-        owner: "plugin.extractor",
-        attachmentType: "plugin.extractor.ip",
-        attachmentKey: "primary",
-        payloadJson: ipDetailsPayloadV4Cidr,
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.extractor.ip",
+    min: 140,
+    max: 380,
+    payloadJson: ipDetailsPayloadV4Cidr,
+  }),
+  renderer({
     id: "ip-details-v6",
     label: "IP Address: IPv6 global unicast",
-    component: "ip-details",
-    searchTerms: ["ip", "ipv6", "global", "unicast"],
+    view: "ip-details",
     accentHex: "#0891B2",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-ip-v6",
-        owner: "plugin.extractor",
-        attachmentType: "plugin.extractor.ip",
-        attachmentKey: "primary",
-        payloadJson: ipDetailsPayloadV6,
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.extractor.ip",
+    min: 140,
+    max: 380,
+    payloadJson: ipDetailsPayloadV6,
+  }),
+  renderer({
     id: "mac-address-unicast",
     label: "MAC Address: unicast universal",
-    component: "mac-address",
-    searchTerms: ["mac", "address", "ethernet", "oui"],
+    view: "mac-address",
     accentHex: "#7C3AED",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-mac",
-        owner: "plugin.extractor",
-        attachmentType: "plugin.extractor.mac",
-        attachmentKey: "primary",
-        payloadJson: macAddressPayload,
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.extractor.mac",
+    min: 120,
+    max: 320,
+    payloadJson: macAddressPayload,
+  }),
+  renderer({
     id: "geo-coordinates-sf",
     label: "Coordinates: San Francisco decimal",
-    component: "geo-coordinates",
-    searchTerms: ["geo", "coordinates", "latitude", "longitude"],
+    view: "geo-coordinates",
     accentHex: "#16A34A",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-geo-sf",
-        owner: "plugin.extractor",
-        attachmentType: "plugin.extractor.geo",
-        attachmentKey: "primary",
-        payloadJson: geoCoordinatesPayload,
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.extractor.geo",
+    min: 120,
+    max: 340,
+    payloadJson: geoCoordinatesPayload,
+  }),
+  renderer({
     id: "uuid-details-v4",
     label: "UUID: random v4",
-    component: "uuid-details",
-    searchTerms: ["uuid", "guid", "random", "identifier"],
+    view: "uuid-details",
     accentHex: "#7C3AED",
-    bootstrap: {
-      attachment: {
-        historyID: "preview-uuid-v4",
-        owner: "plugin.extractor",
-        attachmentType: "plugin.extractor.uuid",
-        attachmentKey: "primary",
-        payloadJson: uuidDetailsPayload,
-      },
-    },
-  },
+    attachmentType: "plugin.extractor.uuid",
+    min: 120,
+    max: 360,
+    payloadJson: uuidDetailsPayload,
+  }),
 ];

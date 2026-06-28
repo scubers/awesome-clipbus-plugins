@@ -1,101 +1,137 @@
 // Attachment preview scenarios for the dev workbench.
-// Add entries here as you implement attachment renderer features.
-// Each entry must import its feature's app.vue and be referenced in PreviewShellApp.vue.
+// Consumed by createPreviewWorkbench (preview-host/main.ts); `view` selects the
+// feature component to mount. Add one entry per attachment renderer feature.
 
-export interface AttachmentScenario {
+import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
+
+const PLUGIN_ID = "plugin.converter";
+const ITEM_TAGS = ["converter"];
+const SOURCE_APP = "com.preview.editor";
+
+const timestampPayload = JSON.stringify({
+  kind: "timestamp_preview",
+  version: 1,
+  original: "1700000000",
+  unit: "seconds",
+  epochMs: 1700000000000,
+  iso: "2023-11-14T22:13:20.000Z",
+  utc: "Tue, 14 Nov 2023 22:13:20 GMT",
+  local: "2023/11/15 06:13:20",
+  weekday: "Tuesday",
+});
+
+const durationPayload = JSON.stringify({
+  kind: "duration_preview",
+  version: 1,
+  original: "P1Y2M10DT2H30M",
+  components: { years: 1, months: 2, days: 10, hours: 2, minutes: 30 },
+  humanBreakdown: "1 year, 2 months, 10 days, 2 hours, 30 minutes",
+  totalSeconds: 37690200,
+  approximate: true,
+});
+
+const temperaturePayload = JSON.stringify({
+  kind: "temperature_preview",
+  version: 1,
+  sourceScale: "C",
+  sourceValue: 37,
+  celsius: 37,
+  fahrenheit: 98.6,
+  kelvin: 310.15,
+  belowAbsoluteZero: false,
+});
+
+const radixPayload = JSON.stringify({
+  kind: "radix_preview",
+  version: 1,
+  inputBase: "dec",
+  decimal: "255",
+  hex: "0xff",
+  octal: "0o377",
+  binary: "0b11111111",
+  bits: 8,
+  asciiChar: null,
+  isNegative: false,
+});
+
+/** Build an attachmentRenderer scenario; `view` routes to the feature component. */
+function renderer(opts: {
   id: string;
   label: string;
-  component: string;
-  searchTerms: string[];
+  view: string;
   accentHex: string;
-  bootstrap: Record<string, unknown>;
+  attachmentType: string;
+  payloadJson: string;
+  min: number;
+  max: number;
+}): PreviewScenario {
+  const item = {
+    id: `item-${opts.id}`,
+    type: "text",
+    tags: ITEM_TAGS,
+    sourceAppID: SOURCE_APP,
+  };
+  return {
+    id: opts.id,
+    label: opts.label,
+    mode: "attachmentRenderer",
+    pluginID: PLUGIN_ID,
+    accentHex: opts.accentHex,
+    view: opts.view,
+    viewport: { heightPolicy: "bounded", min: opts.min, max: opts.max },
+    item,
+    attachment: {
+      item,
+      attachment: {
+        historyID: `preview-${opts.id}`,
+        owner: PLUGIN_ID,
+        attachmentType: opts.attachmentType,
+        attachmentKey: "primary",
+        payloadJson: opts.payloadJson,
+      },
+    },
+  };
 }
 
-export const attachmentScenarios: AttachmentScenario[] = [
-  {
+export const attachmentScenarios: PreviewScenario[] = [
+  renderer({
     id: "timestamp-renderer-seconds",
     label: "Unix Timestamp: 1700000000 (seconds)",
-    component: "timestamp-renderer",
-    searchTerms: ["timestamp", "unix"],
+    view: "timestamp-renderer",
     accentHex: "#0F766E",
-    bootstrap: {
-      attachment: {
-        payloadJson: JSON.stringify({
-          kind: "timestamp_preview",
-          version: 1,
-          original: "1700000000",
-          unit: "seconds",
-          epochMs: 1700000000000,
-          iso: "2023-11-14T22:13:20.000Z",
-          utc: "Tue, 14 Nov 2023 22:13:20 GMT",
-          local: "2023/11/15 06:13:20",
-          weekday: "Tuesday",
-        }),
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.converter.timestamp",
+    min: 140,
+    max: 300,
+    payloadJson: timestampPayload,
+  }),
+  renderer({
     id: "duration-sample",
     label: "ISO 8601 Duration: P1Y2M10DT2H30M",
-    component: "duration",
-    searchTerms: ["duration", "iso8601", "P1Y2M10DT2H30M"],
+    view: "duration",
     accentHex: "#7C3AED",
-    bootstrap: {
-      attachment: {
-        payloadJson: JSON.stringify({
-          kind: "duration_preview",
-          version: 1,
-          original: "P1Y2M10DT2H30M",
-          components: { years: 1, months: 2, days: 10, hours: 2, minutes: 30 },
-          humanBreakdown: "1 year, 2 months, 10 days, 2 hours, 30 minutes",
-          totalSeconds: 37690200,
-          approximate: true,
-        }),
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.converter.duration",
+    min: 140,
+    max: 300,
+    payloadJson: durationPayload,
+  }),
+  renderer({
     id: "temperature-sample",
     label: "Temperature: 37°C (body temperature)",
-    component: "temperature",
-    searchTerms: ["temperature", "celsius", "37°C"],
+    view: "temperature",
     accentHex: "#EF4444",
-    bootstrap: {
-      attachment: {
-        payloadJson: JSON.stringify({
-          kind: "temperature_preview",
-          version: 1,
-          sourceScale: "C",
-          sourceValue: 37,
-          celsius: 37,
-          fahrenheit: 98.6,
-          kelvin: 310.15,
-          belowAbsoluteZero: false,
-        }),
-      },
-    },
-  },
-  {
+    attachmentType: "plugin.converter.temperature",
+    min: 140,
+    max: 300,
+    payloadJson: temperaturePayload,
+  }),
+  renderer({
     id: "radix-renderer-sample",
     label: "Radix: 255 decimal",
-    component: "radix-renderer",
-    searchTerms: ["radix", "hex", "binary", "octal", "decimal"],
+    view: "radix-renderer",
     accentHex: "#4F46E5",
-    bootstrap: {
-      attachment: {
-        payloadJson: JSON.stringify({
-          kind: "radix_preview",
-          version: 1,
-          inputBase: "dec",
-          decimal: "255",
-          hex: "0xff",
-          octal: "0o377",
-          binary: "0b11111111",
-          bits: 8,
-          asciiChar: null,
-          isNegative: false,
-        }),
-      },
-    },
-  },
+    attachmentType: "plugin.converter.radix",
+    min: 120,
+    max: 300,
+    payloadJson: radixPayload,
+  }),
 ];

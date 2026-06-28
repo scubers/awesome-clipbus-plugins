@@ -1,14 +1,8 @@
 // Attachment preview scenarios for the dev workbench.
-// Add entries here as you implement attachment renderer features.
-// Each entry must import its feature's app.vue and be referenced in PreviewShellApp.vue.
+// Consumed by createPreviewWorkbench (preview-host/main.ts); `view` selects the
+// feature component to mount. Add one entry per attachment renderer feature.
 
-export interface AttachmentScenario {
-  id: string;
-  label: string;
-  component: string;
-  searchTerms: string[];
-  accentHex: string;
-  bootstrap: Record<string, unknown>;
-}
+import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
 
-export const attachmentScenarios: AttachmentScenario[] = [];
+// plugin.generator has no attachment renderers.
+export const attachmentScenarios: PreviewScenario[] = [];

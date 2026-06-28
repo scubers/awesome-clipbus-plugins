@@ -1,5 +1,29 @@
-import { createApp } from "vue";
+import { createPreviewWorkbench } from "@clipbus/plugin-sdk/preview";
+import { createApp, type Component } from "vue";
 import "../../shared/base.css";
-import PreviewShellApp from "../PreviewShellApp.vue";
+import { attachmentScenarios } from "../scenarios/attachmentScenarios";
+import { actionScenarios } from "../scenarios/actionScenarios";
 
-createApp(PreviewShellApp).mount("#app");
+// PER-PLUGIN: import every renderer + draft-action feature component.
+import Base64Renderer from "../../features/base64-renderer/app.vue";
+import DataUri from "../../features/data-uri/app.vue";
+import JwtRenderer from "../../features/jwt-renderer/app.vue";
+import EscapeTool from "../../features/escape-tool/app.vue";
+
+// PER-PLUGIN: map scenario.view (feature id) → its component.
+const COMPONENTS: Record<string, Component> = {
+  "base64-renderer": Base64Renderer,
+  "data-uri": DataUri,
+  "jwt-renderer": JwtRenderer,
+  "escape-tool": EscapeTool,
+};
+
+createPreviewWorkbench(document.getElementById("app")!, {
+  scenarios: [...attachmentScenarios, ...actionScenarios],
+  mount(slotEl, { scenario }) {
+    const Comp = COMPONENTS[scenario.view ?? ""] ?? Base64Renderer;
+    const app = createApp(Comp);
+    app.mount(slotEl);
+    return () => app.unmount();
+  },
+});
