@@ -46,7 +46,7 @@ description: >-
 
 ### 0 · 勘察现状
 
-- 枚举派生插件：所有 `clipbus-*-plugin/` 目录（排除 `template-plugin`）。
+- 枚举派生插件：所有 `clipbus-*-plugin/` 目录（排除 `template-plugin`）。**只算"真插件"**：必须 git-tracked（`git ls-files <dir>` 非空）且含 `manifest.json` + `package.json`。**未追踪/残缺的半成品目录要排除**（真实踩过：`clipbus-vibe-plugin` 是某次会话生成到一半的未入库草稿——0 个 tracked 文件、无 `package.json`/`manifest.json`、`scripts/` 空，根本无法 `npm install`/`verify`；误纳入会让传播在它身上空转报错）。一句话体检：`for d in clipbus-*-plugin; do echo "$d tracked=$(git ls-files "$d"|wc -l) $([ -f "$d/package.json" ]&&echo pkg) $([ -f "$d/manifest.json" ]&&echo mf)"; done`。
 - `git status` 确认工作树干净（见前置）。
 
 ### 1 · 拉取并替换 template
@@ -95,6 +95,7 @@ description: >-
 - **added 文件不在 `git diff` 里**：上游新增文件是 untracked，必须从 `pull-template.mjs` 清单取，否则会漏传播。
 - **dist 在真实路径重建**：dist 是 gitignore 产物、宿主实际加载它；在当前分支重建（别跑去 worktree）。
 - **全新 Agent 并行**：不复用 idle executor；orchestrator 独占根索引等共享物；自己复跑 verify 复核。
+- **template-plugin 自身 `npm run verify` 在本环境会 test 阶段红，别误判成同步出错**：它的 `tests/integration/wire-roundtrip.test.cjs` 是 E2E 契约测试，硬编码依赖一个 **sibling 仓库** `path.resolve(__dirname,'../../../../protocol/plugin')`（＝`<repoRoot>/../protocol/plugin`，SDK 作者本机的 codegen monorepo：`codegen/`、`src/catalog.ts`、`node_modules/.bin/tsx`）。本合集环境没有它 → `execSync` 的 `cwd` 不存在 → `spawnSync /bin/sh ENOENT`，test 阶段红（**build 链 typecheck/lint/build/verify:build 本身全绿**）。这是 **pre-existing 环境性 + template-only**（9 个真实派生插件不含此测试，`grep -rl 'git-repo/protocol' clipbus-*-plugin` 应为空）、**与 SDK bump / 本次同步无关**——**别去修它**（修＝偏离上游 template）。判健康看的是**派生插件**的 verify，template-plugin 的红可忽略；如确需它全绿，须把 `protocol/plugin` 仓库 checkout 到 `<repoRoot>/../protocol/`。
 - **template 自有内容不传播，但 SDK 驱动的架构迁移要传播**：`src/features/*`、`src/preview/scenarios/*`、template 的 `manifest.json`/`README*`/`GUIDE*`、`tests/**/*.test.cjs`（demo 测试）是 template 的演示**内容**，各插件有自己的——**绝不用 template 版本覆盖**（会把插件 preview/feature 打回 demo 死占位）。**但当 SDK 改变 preview 的「架构」**（如 0.8.5 把整套工作台收进 `@clipbus/plugin-sdk/preview` 的 `createPreviewWorkbench`、删除 `PreviewShellApp.vue`），就要**逐插件迁移** `preview-host/main.ts` + `scenarios/*` 到新 harness 形状（`scenario` 改用 SDK `PreviewScenario` 类型、`component`→`view`、renderer 的 `attachment` 嵌套 `{item,attachment:{…payloadJson}}`、`mount` 适配器按 `view` 选组件、删 `PreviewShellApp.vue`），**保留各自的 payload/组件、只换接线方式**；别因「src/preview 不传播」漏掉它。区分：不 COPY template 的 preview 内容，但要 ADOPT 新的 SDK preview API。纯 auto-run 插件无 scenario：不调 `createPreviewWorkbench`（要 ≥1 scenario），给静态说明 `main.ts`。同步后还要更新 generator 资产（`scaffold.mjs`/authoring-guide/SKILL.md）让新插件也走新范式。`tests/setup.cjs` 是共享 harness，**是**例外（要同步）。
 - **判断驱动不等于无依据**：每次都读真实 diff，但用 `references/propagation-analysis.md` 的类别表加速；遇到表里没有的"新未分类"改动，保守处理并在阶段 2 显式交用户拍板，绝不静默丢弃。
 
