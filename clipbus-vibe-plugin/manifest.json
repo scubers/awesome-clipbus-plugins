@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "plugin": { "id": "plugin.vibe", "title": "Vibe", "version": "0.1.0" },
+  "install": { "runtime": "node", "entry": "scripts/install.mjs" },
+  "runtime": { "nodeEntry": "dist/plugin.cjs", "uiRoot": "dist/ui" },
+  "permissions": ["setAttachment"],
+  "attachmentRenderers": [
+    {
+      "id": "vibe-fallback",
+      "title": "Vibe",
+      "attachmentType": "plugin.vibe.fallback",
+      "height": 220,
+      "uiEntry": "renderers/vibe-fallback/index.html"
+    }
+  ],
+  "detectors": [
+    {
+      "id": "vibe-detector",
+      "title": "Vibe Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.vibe.fallback"]
+    }
+  ],
+  "actions": []
+}
