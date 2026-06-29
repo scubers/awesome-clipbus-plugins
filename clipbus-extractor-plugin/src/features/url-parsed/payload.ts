@@ -12,11 +12,59 @@ export interface UrlPayload {
   path: string;
   query: { key: string; value: string }[];
   hash: string;
+  cleanHref: string;
+  trackingParams: { key: string; value: string }[];
   display: {
     typeLabel: string;
     headline: string;
     facts: { label: string; value: string }[];
   };
+}
+
+/** Known tracking query parameter keys (exact match, lowercased). */
+const TRACKING_EXACT = new Set([
+  "fbclid",
+  "fb_action_ids",
+  "fb_action_types",
+  "fb_source",
+  "fb_ref",
+  "gclid",
+  "gclsrc",
+  "dclid",
+  "gbraid",
+  "wbraid",
+  "gad_source",
+  "msclkid",
+  "mc_cid",
+  "mc_eid",
+  "_hsenc",
+  "_hsmi",
+  "__hssc",
+  "__hstc",
+  "__hsfp",
+  "igshid",
+  "igsh",
+  "yclid",
+  "_openstat",
+  "vero_id",
+  "vero_conv",
+  "oly_anon_id",
+  "oly_enc_id",
+  "wickedid",
+  "twclid",
+  "ttclid",
+  "scid",
+  "mkt_tok",
+  "_branch_match_id",
+  "s_cid",
+  "ncid",
+  "cmpid",
+  "spm",
+]);
+
+function isTracking(key: string): boolean {
+  const lower = key.toLowerCase();
+  return lower.startsWith("utm_") || TRACKING_EXACT.has(lower);
 }
 
 /**
@@ -59,6 +107,16 @@ export function createUrlPayload(input: unknown): UrlPayload | null {
   const username = u.username;
   const query = [...u.searchParams].map(([key, value]) => ({ key, value }));
 
+  const trackingParams = query.filter((q) => isTracking(q.key));
+  let cleanHref: string;
+  if (trackingParams.length > 0) {
+    const cu = new URL(u.href);
+    for (const { key } of trackingParams) cu.searchParams.delete(key);
+    cleanHref = cu.href;
+  } else {
+    cleanHref = u.href;
+  }
+
   const facts: { label: string; value: string }[] = [
     { label: "Scheme", value: scheme },
     { label: "Host", value: host },
@@ -79,6 +137,8 @@ export function createUrlPayload(input: unknown): UrlPayload | null {
     path,
     query,
     hash,
+    cleanHref,
+    trackingParams,
     display: {
       typeLabel: "URL",
       headline: host,
@@ -96,7 +156,12 @@ export function decodeUrlPayload(
   try {
     const p = JSON.parse(payloadJson ?? "{}") as { kind?: string };
     if (p.kind !== "url_parsed") return null;
-    return p as UrlPayload;
+    const withDefaults: unknown = {
+      trackingParams: [],
+      cleanHref: (p as { href?: string }).href ?? "",
+      ...(p as object),
+    };
+    return withDefaults as UrlPayload;
   } catch {
     return null;
   }

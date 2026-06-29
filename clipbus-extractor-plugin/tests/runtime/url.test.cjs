@@ -118,6 +118,54 @@ test('decodeUrlPayload returns null for bad payloads', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Tracking param detection
+// ---------------------------------------------------------------------------
+
+test('createUrlPayload strips utm_* and fbclid from cleanHref, keeps legit params', () => {
+  const { buildUrlArtifact } = require(path.resolve(root, 'src/features/url-parsed/payload.ts'));
+  const artifact = buildUrlArtifact({
+    item: sampleItem,
+    content: {
+      kind: 'text',
+      text: 'https://example.com/article?utm_source=newsletter&utm_medium=email&fbclid=AbC123&id=42',
+    },
+    attachments: [],
+  });
+  assert.ok(artifact, 'artifact should not be null');
+  const payload = JSON.parse(artifact.payloadJson);
+  // trackingParams lists only the trackers
+  assert.equal(payload.trackingParams.length, 3);
+  const trackerKeys = payload.trackingParams.map((p) => p.key);
+  assert.ok(trackerKeys.includes('utm_source'), 'utm_source should be tracked');
+  assert.ok(trackerKeys.includes('utm_medium'), 'utm_medium should be tracked');
+  assert.ok(trackerKeys.includes('fbclid'), 'fbclid should be tracked');
+  // cleanHref keeps the legit param and path, strips the trackers
+  const clean = new URL(payload.cleanHref);
+  assert.equal(clean.searchParams.get('id'), '42', 'legit param id=42 must survive');
+  assert.equal(clean.searchParams.get('utm_source'), null, 'utm_source must be removed');
+  assert.equal(clean.searchParams.get('fbclid'), null, 'fbclid must be removed');
+  assert.equal(clean.pathname, '/article', 'path must be preserved');
+  // query array still has all four params (unchanged)
+  assert.equal(payload.query.length, 4);
+});
+
+test('createUrlPayload with no tracking params: trackingParams empty, cleanHref === href', () => {
+  const { buildUrlArtifact } = require(path.resolve(root, 'src/features/url-parsed/payload.ts'));
+  const artifact = buildUrlArtifact({
+    item: sampleItem,
+    content: {
+      kind: 'text',
+      text: 'https://example.com/p?page=2&lang=en',
+    },
+    attachments: [],
+  });
+  assert.ok(artifact, 'artifact should not be null');
+  const payload = JSON.parse(artifact.payloadJson);
+  assert.deepEqual(payload.trackingParams, [], 'trackingParams should be empty');
+  assert.equal(payload.cleanHref, payload.href, 'cleanHref should equal href when no trackers');
+});
+
+// ---------------------------------------------------------------------------
 // Renderer
 // ---------------------------------------------------------------------------
 

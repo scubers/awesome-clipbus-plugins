@@ -17,6 +17,7 @@ Detects a single HTTP/HTTPS URL on the clipboard and renders a structured breakd
 
 - **Detector** (`url-detector`): input kind `text`, attachment type `plugin.extractor.url`
 - **Renderer** (`url-parsed`): displays scheme, host, pathname, query parameters (as a key/value table), and fragment in separate rows; height adapts automatically to fit the content
+- **Tracking cleaner**: when the URL contains known tracking parameters (`utm_*`, `fbclid`, `gclid`, `msclkid`, and [30+ others](src/features/url-parsed/payload.ts)), a highlighted banner shows how many were found and displays the clean URL with those params stripped. Tracker rows in the query table are visually flagged. A "Copy clean URL" button appears alongside the existing "Copy query params (JSON)" button.
 
 ### IP Address Details (`ip-*`)
 

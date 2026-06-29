@@ -64,7 +64,7 @@
       "id": "url-parsed",
       "title": "URL Details",
       "attachmentType": "plugin.extractor.url",
-      "height": { "min": 140, "max": 440 },
+      "height": { "min": 140, "max": 500 },
       "uiEntry": "renderers/url-parsed/index.html"
     },
     {

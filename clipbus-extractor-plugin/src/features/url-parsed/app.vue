@@ -23,24 +23,38 @@ const queryJson = computed(() => {
   return JSON.stringify(obj, null, 2);
 });
 
+const trackingKeySet = computed(() => {
+  if (!payload.value) return new Set<string>();
+  return new Set(payload.value.trackingParams.map((p) => p.key));
+});
+
+const hasTracking = computed(
+  () => (payload.value?.trackingParams.length ?? 0) > 0
+);
+
 let unsub: (() => void) | null = null;
 let stopAutoFit: (() => void) | null = null;
 
 onMounted(async () => {
-  stopAutoFit = autoFit({ min: 140, max: 440, target: rootEl.value ?? undefined });
+  stopAutoFit = autoFit({ min: 140, max: 500, target: rootEl.value ?? undefined });
   try {
-    await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy", title: "Copy query params (JSON)" }],
-    });
+    const buttons = hasTracking.value
+      ? [
+          { id: "copy-clean", title: "Copy clean URL" },
+          { id: "copy", title: "Copy query params (JSON)" },
+        ]
+      : [{ id: "copy", title: "Copy query params (JSON)" }];
+    await clipbus.attachmentRenderer.setButtons({ buttons });
   } catch {
     /* not in attachment renderer context */
   }
 
   unsub = clipbus.attachmentRenderer.onHostInvoke.on(async (d) => {
-    if (d?.buttonID === "copy" && payload.value) {
-      const text =
-        queryJson.value ??
-        payload.value.href;
+    if (!payload.value) return;
+    if (d?.buttonID === "copy-clean") {
+      await clipbus.clipboard.copyText({ text: payload.value.cleanHref });
+    } else if (d?.buttonID === "copy") {
+      const text = queryJson.value ?? payload.value.href;
       await clipbus.clipboard.copyText({ text });
     }
   });
@@ -55,6 +69,19 @@ onUnmounted(() => {
 <template>
   <main ref="rootEl" class="shell">
     <section v-if="payload" class="content">
+      <!-- Tracking cleaner banner -->
+      <div v-if="hasTracking" class="tracking-banner">
+        <span class="tracking-icon">🛡</span>
+        <div class="tracking-body">
+          <span class="tracking-title"
+            >{{ payload.trackingParams.length }} tracking parameter{{
+              payload.trackingParams.length === 1 ? "" : "s"
+            }} removed</span
+          >
+          <span class="tracking-clean-url">{{ payload.cleanHref }}</span>
+        </div>
+      </div>
+
       <!-- Facts grid: Scheme / Host / Port / Path / Hash -->
       <div class="facts-grid">
         <template v-for="fact in payload.display.facts" :key="fact.label">
@@ -78,9 +105,17 @@ onUnmounted(() => {
               <tr
                 v-for="(q, i) in payload.query"
                 :key="i"
-                :class="i % 2 === 0 ? 'row-even' : 'row-odd'"
+                :class="[
+                  i % 2 === 0 ? 'row-even' : 'row-odd',
+                  trackingKeySet.has(q.key) ? 'row-tracker' : '',
+                ]"
               >
-                <td class="cell cell-key">{{ q.key }}</td>
+                <td class="cell cell-key">
+                  {{ q.key }}
+                  <span v-if="trackingKeySet.has(q.key)" class="tracker-badge"
+                    >tracker</span
+                  >
+                </td>
                 <td class="cell cell-value">{{ q.value }}</td>
               </tr>
             </tbody>
@@ -218,5 +253,60 @@ onUnmounted(() => {
   text-align: center;
   color: var(--clipbus-text-tertiary, #94a3b8);
   font-size: 13px;
+}
+
+.tracking-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--clipbus-accent-tint, #eff6ff);
+  border: 1px solid var(--clipbus-accent-border, #bfdbfe);
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.tracking-icon {
+  font-size: 14px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.tracking-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.tracking-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--clipbus-accent, #2563eb);
+}
+
+.tracking-clean-url {
+  font-family: "SF Mono", "Menlo", "Monaco", "Cascadia Code", monospace;
+  font-size: 11px;
+  color: var(--clipbus-text-secondary, #64748b);
+  word-break: break-all;
+}
+
+.row-tracker {
+  opacity: 0.6;
+}
+
+.tracker-badge {
+  display: inline-block;
+  margin-left: 5px;
+  padding: 1px 4px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--clipbus-accent-tint, #eff6ff);
+  color: var(--clipbus-accent, #2563eb);
+  border: 1px solid var(--clipbus-accent-border, #bfdbfe);
+  border-radius: 3px;
+  vertical-align: middle;
 }
 </style>
