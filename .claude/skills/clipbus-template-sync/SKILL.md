@@ -48,6 +48,8 @@ description: >-
 
 - 枚举派生插件：所有 `clipbus-*-plugin/` 目录（排除 `template-plugin`）。**只算"真插件"**：必须 git-tracked（`git ls-files <dir>` 非空）且含 `manifest.json` + `package.json`。**未追踪/残缺的半成品目录要排除**（真实踩过：`clipbus-vibe-plugin` 是某次会话生成到一半的未入库草稿——0 个 tracked 文件、无 `package.json`/`manifest.json`、`scripts/` 空，根本无法 `npm install`/`verify`；误纳入会让传播在它身上空转报错）。一句话体检：`for d in clipbus-*-plugin; do echo "$d tracked=$(git ls-files "$d"|wc -l) $([ -f "$d/package.json" ]&&echo pkg) $([ -f "$d/manifest.json" ]&&echo mf)"; done`。
 - `git status` 确认工作树干净（见前置）。
+- **变体：用户「copy 进来一个旧插件」要你把它追平**——这不是 upstream-pull→扩散，而是「单插件追平当前标准」：`template-plugin` 已是标准、其余插件已收敛，唯一落后的是新拷进来的那个。六阶段照走，但**阶段 1 不拉上游**（template 已是标准），**增量 =「该插件存量共享基建 ↔ 当前标准」的差异**（直接 diff 它 vs `template-plugin` 的逐字共享集、vs 某收敛 sibling 的 forked 脚本、vs template 的 package.json scripts/SDK）。SDK bump 仍**必跑 `sdk-api-diff`**——旧插件常差好几个 minor（真实踩过 0.7.0→0.8.7：零破坏、唯一 additive 是 `locale`，但 docs 新增 `preview.md` ⇒ preview 架构必须从手写 `PreviewShellApp.vue` 迁到 `createPreviewWorkbench`，见铁律「架构迁移要传播」）。试点=全量（只有这一个插件，无并行扩散）。
+- **坑：拷进来的插件常自带嵌套 `.git`**（连原仓库一起 copy）。于是 `git status` 把它显示成单个 `?? <dir>/`、`git ls-files <dir>` 返回 0、`git add -n` 警告「正在添加嵌入式 git 仓库」、`check-consistency` 也**枚举不到它**（它按 `git ls-files -- */manifest.json` 列插件）。**这种目录不是阶段 0 该排除的半成品草稿（那种是 0 文件无 pkg/mf），而是结构完整、要 ADOPT 的真插件**——别误排除。但在 `rm -rf <dir>/.git` 去掉嵌套仓库前，它无法被外层仓库 track、也进不了 consistency 枚举。去 `.git` 会丢弃被拷插件的独立历史 ⇒ **是用户决策，别擅自删**：先做完迁移 + verify，再把「去嵌套 .git 以正式纳入合集」作为收尾决策交用户。它的收敛证据可**手工补**：diff 逐字共享 vs template、forked 脚本 vs sibling、package.json scripts/SDK vs template（即 `check-consistency` 三项检查的手工版）。
 
 ### 1 · 拉取并替换 template
 
