@@ -3,11 +3,13 @@
 // feature component to mount. Add one entry per attachment renderer feature.
 
 import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
+import { buildWorldClockZones } from "../../features/timestamp-renderer/payload.ts";
 
 const PLUGIN_ID = "plugin.converter";
 const ITEM_TAGS = ["converter"];
 const SOURCE_APP = "com.preview.editor";
 
+const timestampDate = new Date(1700000000000);
 const timestampPayload = JSON.stringify({
   kind: "timestamp_preview",
   version: 1,
@@ -18,6 +20,7 @@ const timestampPayload = JSON.stringify({
   utc: "Tue, 14 Nov 2023 22:13:20 GMT",
   local: "2023/11/15 06:13:20",
   weekday: "Tuesday",
+  zones: buildWorldClockZones(timestampDate),
 });
 
 const durationPayload = JSON.stringify({
@@ -101,7 +104,7 @@ export const attachmentScenarios: PreviewScenario[] = [
     accentHex: "#0F766E",
     attachmentType: "plugin.converter.timestamp",
     min: 140,
-    max: 300,
+    max: 460,
     payloadJson: timestampPayload,
   }),
   renderer({

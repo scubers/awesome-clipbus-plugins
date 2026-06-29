@@ -45,7 +45,7 @@
       "id": "timestamp-renderer",
       "title": "Unix Timestamp Converter",
       "attachmentType": "plugin.converter.timestamp",
-      "height": { "min": 140, "max": 300 },
+      "height": { "min": 140, "max": 460 },
       "uiEntry": "renderers/timestamp-renderer/index.html"
     },
     {

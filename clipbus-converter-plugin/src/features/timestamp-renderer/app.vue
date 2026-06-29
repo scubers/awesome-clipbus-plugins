@@ -33,7 +33,7 @@ let unsub: (() => void) | null = null;
 let stopAutoFit: (() => void) | null = null;
 
 onMounted(async () => {
-  stopAutoFit = autoFit({ min: 140, max: 300, target: rootEl.value ?? undefined });
+  stopAutoFit = autoFit({ min: 140, max: 460, target: rootEl.value ?? undefined });
 
   try {
     await clipbus.attachmentRenderer.setButtons({
@@ -80,6 +80,16 @@ onUnmounted(() => {
         <div class="fact-row">
           <span class="fact-label">Relative</span>
           <span class="fact-value">{{ relativeTime }}</span>
+        </div>
+      </div>
+      <div v-if="payload.zones && payload.zones.length > 0" class="world-clock">
+        <div class="wc-header">World clock</div>
+        <div class="wc-list">
+          <div v-for="zone in payload.zones" :key="zone.label" class="wc-row">
+            <span class="wc-label">{{ zone.label }}</span>
+            <span class="wc-time mono">{{ zone.time }}</span>
+            <span class="wc-offset mono">{{ zone.offset }}</span>
+          </div>
         </div>
       </div>
     </section>
@@ -176,5 +186,53 @@ onUnmounted(() => {
   text-align: center;
   color: var(--clipbus-text-tertiary, #94a3b8);
   font-size: 13px;
+}
+
+.world-clock {
+  background: var(--clipbus-surface-elevated, #f8fafc);
+  border: 1px solid var(--clipbus-border, #e2e8f0);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.wc-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--clipbus-text-tertiary, #94a3b8);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 12px 4px;
+}
+
+.wc-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.wc-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 12px;
+  border-top: 1px solid var(--clipbus-border, #e2e8f0);
+}
+
+.wc-label {
+  font-size: 11px;
+  color: var(--clipbus-text-secondary, #64748b);
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.wc-time {
+  font-size: 11px;
+  color: var(--clipbus-text-primary, #0f172a);
+  flex: 1;
+}
+
+.wc-offset {
+  font-size: 11px;
+  color: var(--clipbus-text-tertiary, #94a3b8);
+  flex-shrink: 0;
 }
 </style>

@@ -80,6 +80,81 @@ test('decodeTimestampPayload returns null for invalid inputs', () => {
   assert.equal(decodeTimestampPayload(undefined), null);
 });
 
+test('decodeTimestampPayload provides empty zones array for legacy payloads without zones', () => {
+  const { decodeTimestampPayload } = require(path.resolve(root, 'src/features/timestamp-renderer/payload.ts'));
+  const legacyJson = JSON.stringify({
+    kind: 'timestamp_preview',
+    version: 1,
+    original: '1700000000',
+    unit: 'seconds',
+    epochMs: 1700000000000,
+    iso: '2023-11-14T22:13:20.000Z',
+    utc: 'Tue, 14 Nov 2023 22:13:20 GMT',
+    local: '2023/11/15 06:13:20',
+    weekday: 'Tuesday',
+    // no zones field
+  });
+  const payload = decodeTimestampPayload(legacyJson);
+  assert.ok(payload, 'should decode legacy payload');
+  assert.deepEqual(payload.zones, [], 'missing zones should default to []');
+});
+
+// ---------------------------------------------------------------------------
+// World clock zones (tested with epoch 0 — bypasses year-range check by
+// calling buildWorldClockZones directly, not via buildTimestampArtifact)
+// ---------------------------------------------------------------------------
+
+test('buildWorldClockZones returns 9 zones in the correct label order', () => {
+  const { buildWorldClockZones } = require(path.resolve(root, 'src/features/timestamp-renderer/payload.ts'));
+  const zones = buildWorldClockZones(new Date(0));
+  assert.equal(zones.length, 9, 'should have 9 zones');
+  const expectedLabels = ['UTC', 'Los Angeles', 'New York', 'London', 'Paris', 'Kolkata', 'Shanghai', 'Tokyo', 'Sydney'];
+  assert.deepEqual(zones.map((z) => z.label), expectedLabels, 'zone labels must match in order');
+});
+
+test('buildWorldClockZones UTC zone shows 00:00 for epoch 0', () => {
+  const { buildWorldClockZones } = require(path.resolve(root, 'src/features/timestamp-renderer/payload.ts'));
+  const zones = buildWorldClockZones(new Date(0));
+  const utc = zones.find((z) => z.label === 'UTC');
+  assert.ok(utc, 'UTC zone must exist');
+  assert.ok(utc.time.includes('00:00'), `UTC time should contain 00:00, got: ${utc.time}`);
+});
+
+test('buildWorldClockZones Tokyo zone shows 09:00 for epoch 0 (UTC+9)', () => {
+  const { buildWorldClockZones } = require(path.resolve(root, 'src/features/timestamp-renderer/payload.ts'));
+  const zones = buildWorldClockZones(new Date(0));
+  const tokyo = zones.find((z) => z.label === 'Tokyo');
+  assert.ok(tokyo, 'Tokyo zone must exist');
+  assert.ok(tokyo.time.includes('09:00'), `Tokyo time should contain 09:00, got: ${tokyo.time}`);
+});
+
+test('buildWorldClockZones Kolkata zone shows 05:30 for epoch 0 (UTC+5:30)', () => {
+  const { buildWorldClockZones } = require(path.resolve(root, 'src/features/timestamp-renderer/payload.ts'));
+  const zones = buildWorldClockZones(new Date(0));
+  const kolkata = zones.find((z) => z.label === 'Kolkata');
+  assert.ok(kolkata, 'Kolkata zone must exist');
+  assert.ok(kolkata.time.includes('05:30'), `Kolkata time should contain 05:30, got: ${kolkata.time}`);
+});
+
+test('buildWorldClockZones every zone has a non-empty offset string', () => {
+  const { buildWorldClockZones } = require(path.resolve(root, 'src/features/timestamp-renderer/payload.ts'));
+  const zones = buildWorldClockZones(new Date(1700000000000));
+  for (const zone of zones) {
+    assert.ok(zone.offset.length > 0, `zone ${zone.label} has empty offset`);
+    assert.ok(zone.offset.startsWith('GMT'), `zone ${zone.label} offset should start with GMT, got: ${zone.offset}`);
+  }
+});
+
+test('buildTimestampArtifact payload includes 9 zones for valid timestamp', () => {
+  const { buildTimestampArtifact } = require(path.resolve(root, 'src/features/timestamp-renderer/payload.ts'));
+  const input = { item: sampleItem, content: { kind: 'text', text: '1700000000' }, attachments: [] };
+  const artifact = buildTimestampArtifact(input);
+  assert.ok(artifact, 'artifact should not be null');
+  const payload = JSON.parse(artifact.payloadJson);
+  assert.ok(Array.isArray(payload.zones), 'payload.zones should be an array');
+  assert.equal(payload.zones.length, 9, 'payload.zones should have 9 entries');
+});
+
 // ---------------------------------------------------------------------------
 // Renderer
 // ---------------------------------------------------------------------------
