@@ -7,6 +7,8 @@ import { createImageInfoDetector } from "./features/image-info-renderer/detector
 import { createImageInfoRenderer } from "./features/image-info-renderer/renderer.ts";
 import { createCharInfoDetector } from "./features/char-info-renderer/detector.ts";
 import { createCharInfoRenderer } from "./features/char-info-renderer/renderer.ts";
+import { createSecretDetector } from "./features/secret-renderer/detector.ts";
+import { createSecretRenderer } from "./features/secret-renderer/renderer.ts";
 
 export default definePlugin({
   setup() {
@@ -16,12 +18,14 @@ export default definePlugin({
         "diff-renderer": createDiffRenderer(),
         "image-info-renderer": createImageInfoRenderer(),
         "char-info-renderer": createCharInfoRenderer(),
+        "secret-renderer": createSecretRenderer(),
       },
       detectors: {
         "text-stats-detector": createTextStatsDetector(),
         "diff-detector": createDiffDetector(),
         "image-info-detector": createImageInfoDetector(),
         "char-info-detector": createCharInfoDetector(),
+        "secret-detector": createSecretDetector(),
       },
       actions: {},
       messageHandlers: {},

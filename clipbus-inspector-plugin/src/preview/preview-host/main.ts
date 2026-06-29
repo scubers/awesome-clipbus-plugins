@@ -9,6 +9,7 @@ import TextStatsRenderer from "../../features/text-stats-renderer/app.vue";
 import DiffRenderer from "../../features/diff-renderer/app.vue";
 import ImageInfoRenderer from "../../features/image-info-renderer/app.vue";
 import CharInfoRenderer from "../../features/char-info-renderer/app.vue";
+import SecretRenderer from "../../features/secret-renderer/app.vue";
 
 // PER-PLUGIN: map scenario.view (feature id) → its component.
 const COMPONENTS: Record<string, Component> = {
@@ -16,6 +17,7 @@ const COMPONENTS: Record<string, Component> = {
   "diff-renderer": DiffRenderer,
   "image-info-renderer": ImageInfoRenderer,
   "char-info-renderer": CharInfoRenderer,
+  "secret-renderer": SecretRenderer,
 };
 
 createPreviewWorkbench(document.getElementById("app")!, {

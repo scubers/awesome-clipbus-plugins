@@ -69,6 +69,20 @@ const diffPayload = JSON.stringify({
   files: 1,
 });
 
+const secretPayload = JSON.stringify({
+  kind: "secret_scan",
+  version: 1,
+  matches: [
+    {
+      type: "aws-access-key",
+      label: "AWS Access Key ID",
+      masked: "AKI••••••••••••••PLE",
+      confidence: "high",
+    },
+  ],
+  display: { headline: "AWS Access Key ID detected" },
+});
+
 /** Build an attachmentRenderer scenario; `view` routes to the feature component. */
 function renderer(opts: {
   id: string;
@@ -148,5 +162,15 @@ export const attachmentScenarios: PreviewScenario[] = [
     min: 140,
     max: 480,
     payloadJson: diffPayload,
+  }),
+  renderer({
+    id: "secret-renderer-sample",
+    label: "Sensitive Data: AWS Key Detected",
+    view: "secret-renderer",
+    accentHex: "#dc2626",
+    attachmentType: "plugin.inspector.secret",
+    min: 120,
+    max: 360,
+    payloadJson: secretPayload,
   }),
 ];

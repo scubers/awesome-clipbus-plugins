@@ -15,7 +15,7 @@
 | [clipbus-formatter-plugin](./clipbus-formatter-plugin/README.md) | 格式美化：识别 JSON / XML / SQL 缩进或关键字大写，将 CSV/TSV 渲染为表格，并把 URL 查询串解析为键值表——格式化预览一键复制 |
 | [clipbus-converter-plugin](./clipbus-converter-plugin/README.md) | 转换工具：Unix 时间戳↔日期（本地 / ISO / UTC / 相对）、整数进制对照（dec/hex/oct/bin + ASCII）、ISO 8601 时长拆解（人类可读分量 + 总秒数）、温度三标换算（摄氏 / 华氏 / 开尔文）、命名风格转换 draft（camel/snake/kebab… 共 8 种）|
 | [clipbus-extractor-plugin](./clipbus-extractor-plugin/README.md) | 提取与解析：从文本提取去重 URL / Email / IPv4，拆解单个 URL 的 scheme / host / path / query 并剥离 utm_*/fbclid/gclid 等追踪参数生成一键复制的干净链接、单个 IP / CIDR 的版本 / 范围 / 网络段，经纬度坐标的 DMS 度分秒 + 地图链接，或 MAC 地址的 OUI/NIC 拆分 + 单播/多播·全局/本地位、UUID 的版本 / variant / 内嵌时间，并含正则测试 draft |
-| [clipbus-inspector-plugin](./clipbus-inspector-plugin/README.md) | 检视工具：文本字符/词/行/字节统计 + MD5/SHA-1/SHA-256 哈希；unified diff 查看（统计条 + 逐行着色）；图片详情（格式 / 尺寸 / 宽高比 / 像素数 / 大小）；以及单个字符/emoji 的 Unicode 检视（码位 / UTF-8 / UTF-16 / HTML 实体 / 类别）|
+| [clipbus-inspector-plugin](./clipbus-inspector-plugin/README.md) | 检视工具：文本字符/词/行/字节统计 + MD5/SHA-1/SHA-256 哈希；unified diff 查看（统计条 + 逐行着色）；图片详情（格式 / 尺寸 / 宽高比 / 像素数 / 大小）；以及单个字符/emoji 的 Unicode 检视（码位 / UTF-8 / UTF-16 / HTML 实体 / 类别）；以及密钥/凭证扫描器：识别粘贴的 API 密钥、令牌与私钥（AWS / GitHub / Google / Slack / Stripe / OpenAI / PEM…）打码告警，避免泄漏进聊天或提交 |
 | [clipbus-preview-plugin](./clipbus-preview-plugin/README.md) | 可视化预览：识别颜色值（HEX / RGB / HSL + CSS 名）展示色块与 WCAG 对比，将 CSS 渐变（linear / radial / conic）渲染为可视色卡，并将 Markdown 安全渲染为 HTML 预览卡片 |
 | [clipbus-text-plugin](./clipbus-text-plugin/README.md) | 文本行处理工具——排序行 / 去重行 / 整理空白 / 去除 ANSI 转义码，四个一键 auto-run 动作 |
 | [clipbus-generator-plugin](./clipbus-generator-plugin/README.md) | 生成 UUID v4 或强随机密码（可配置长度 / 大小写 / 数字 / 符号 / 数量，Web Crypto），以及 Lorem Ipsum 占位文本（段落 / 句子 / 单词）；draft 表单实时预览并复制 |

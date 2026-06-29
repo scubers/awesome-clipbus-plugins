@@ -38,6 +38,12 @@
       "title": "Character Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.inspector.char-info"]
+    },
+    {
+      "id": "secret-detector",
+      "title": "Secret Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.inspector.secret"]
     }
   ],
   "attachmentRenderers": [
@@ -68,6 +74,13 @@
       "attachmentType": "plugin.inspector.char-info",
       "height": { "min": 160, "max": 360 },
       "uiEntry": "renderers/char-info-renderer/index.html"
+    },
+    {
+      "id": "secret-renderer",
+      "title": "Sensitive Data",
+      "attachmentType": "plugin.inspector.secret",
+      "height": { "min": 120, "max": 360 },
+      "uiEntry": "renderers/secret-renderer/index.html"
     }
   ],
   "actions": []

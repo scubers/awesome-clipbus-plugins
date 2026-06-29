@@ -64,6 +64,20 @@ Trigger condition: text whose trimmed content is exactly one grapheme cluster co
 | Attachment Renderer | `char-info-renderer` |
 | Attachment Type | `plugin.inspector.char-info` |
 
+## Secret / Sensitive Data Detector (`secret-*`)
+
+Scans clipboard text for API keys, tokens, cloud credentials, and private keys, then shows a **warning card** with the credential type and a masked value — helping prevent accidental paste into chat, AI assistants, or untrusted apps.
+
+Detected credential types (high-confidence): AWS Access Key ID, GitHub Token (classic + fine-grained PAT), Google API Key, Slack Token & Webhook URL, Stripe Live Key, Anthropic API Key, SendGrid API Key, npm Token, PEM Private Key. Medium-confidence: OpenAI API Key, Twilio Account SID, generic `key=value` assignments.
+
+Masking: reveals at most the first 3 and last 3 characters; the middle is replaced with `•`. PEM keys store only the header line (`-----BEGIN ... PRIVATE KEY-----`), never the key body. The raw secret is **never** stored in the attachment payload and **never** indexed into Clipbus search.
+
+| Extension point | ID |
+|---|---|
+| Detector | `secret-detector` |
+| Attachment Renderer | `secret-renderer` |
+| Attachment Type | `plugin.inspector.secret` |
+
 ## Development
 
 ```sh
