@@ -2,7 +2,7 @@
 // NO node:* imports — this file is imported by both app.vue (browser) and action.ts (runtime).
 
 export interface GenDraft {
-  mode: "uuid" | "password";
+  mode: "uuid" | "password" | "ulid";
   count: number;
   length: number;
   useUppercase: boolean;
@@ -42,9 +42,49 @@ export function buildPassword(length: number, charset: string, randomBytes: numb
     .join("");
 }
 
-/** Join an array of UUID strings with newlines. */
+/** Join an array of ID strings with newlines. */
 export function formatUuids(uuids: string[]): string {
   return uuids.join("\n");
+}
+
+/**
+ * Crockford base32 alphabet (no I, L, O, U).
+ * Index 0-31 maps to the character at that position.
+ */
+const CROCKFORD = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+
+/**
+ * Construct a ULID string from a 48-bit timestamp and 10 random bytes.
+ * - First 10 chars = timeMs encoded big-endian in Crockford base32 (50 bits, top 2 are 0).
+ * - Last 16 chars = 80 bits of randomness from randomBytes encoded in Crockford base32.
+ * Pure function — caller supplies inputs (testable, works in any env).
+ */
+export function ulidFromParts(timeMs: number, randomBytes: Uint8Array | number[]): string {
+  // Encode 48-bit timestamp as 10 Crockford base-32 chars, MSB first
+  const timeChars: string[] = new Array(10);
+  let t = timeMs;
+  for (let i = 9; i >= 0; i--) {
+    timeChars[i] = CROCKFORD[t % 32];
+    t = Math.floor(t / 32);
+  }
+
+  // Encode 80 bits (10 bytes) of randomness as 16 Crockford base-32 chars
+  // Uses a sliding bit-buffer: accumulate 8 bits at a time, emit 5-bit groups
+  const rb = Array.from(randomBytes).slice(0, 10);
+  const randChars: string[] = new Array(16);
+  let bits = 0;
+  let bitCount = 0;
+  let charIdx = 0;
+  for (const byte of rb) {
+    bits = ((bits << 8) | byte) >>> 0; // keep unsigned 32-bit
+    bitCount += 8;
+    while (bitCount >= 5) {
+      bitCount -= 5;
+      randChars[charIdx++] = CROCKFORD[(bits >>> bitCount) & 31];
+    }
+  }
+
+  return timeChars.join("") + randChars.join("");
 }
 
 /**
@@ -67,7 +107,7 @@ export function decodeGenDraft(json: unknown): GenDraft | null {
     if (raw === null || raw === undefined || typeof raw !== "object") return null;
     const r = raw as Record<string, unknown>;
     return {
-      mode: r["mode"] === "password" ? "password" : "uuid",
+      mode: r["mode"] === "password" ? "password" : r["mode"] === "ulid" ? "ulid" : "uuid",
       count: typeof r["count"] === "number" ? Math.max(1, Math.min(20, r["count"])) : INITIAL_DRAFT.count,
       length: typeof r["length"] === "number" ? Math.max(8, Math.min(64, r["length"])) : INITIAL_DRAFT.length,
       useUppercase: typeof r["useUppercase"] === "boolean" ? r["useUppercase"] : INITIAL_DRAFT.useUppercase,

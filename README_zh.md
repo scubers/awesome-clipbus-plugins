@@ -18,7 +18,7 @@
 | [clipbus-inspector-plugin](./clipbus-inspector-plugin/README.md) | 检视工具：文本字符/词/行/字节统计 + MD5/SHA-1/SHA-256 哈希；unified diff 查看（统计条 + 逐行着色）；图片详情（格式 / 尺寸 / 宽高比 / 像素数 / 大小）；以及单个字符/emoji 的 Unicode 检视（码位 / UTF-8 / UTF-16 / HTML 实体 / 类别）；以及密钥/凭证扫描器：识别粘贴的 API 密钥、令牌与私钥（AWS / GitHub / Google / Slack / Stripe / OpenAI / PEM…）打码告警，避免泄漏进聊天或提交 |
 | [clipbus-preview-plugin](./clipbus-preview-plugin/README.md) | 可视化预览：识别颜色值（HEX / RGB / HSL + CSS 名）展示色块与 WCAG 对比，将 CSS 渐变（linear / radial / conic）渲染为可视色卡，将 Markdown 安全渲染为 HTML 预览卡片，并把复制的 URL 生成可扫描二维码 |
 | [clipbus-text-plugin](./clipbus-text-plugin/README.md) | 文本行处理工具——排序行 / 去重行 / 整理空白 / 去除 ANSI 转义码，四个一键 auto-run 动作 |
-| [clipbus-generator-plugin](./clipbus-generator-plugin/README.md) | 生成 UUID v4 或强随机密码（可配置长度 / 大小写 / 数字 / 符号 / 数量，Web Crypto），以及 Lorem Ipsum 占位文本（段落 / 句子 / 单词）；draft 表单实时预览并复制 |
+| [clipbus-generator-plugin](./clipbus-generator-plugin/README.md) | 生成 UUID v4、可排序 ULID 或强随机密码（可配置长度 / 大小写 / 数字 / 符号 / 数量，Web Crypto），以及 Lorem Ipsum 占位文本（段落 / 句子 / 单词）；draft 表单实时预览并复制 |
 | [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | 识别 5 段 cron 表达式，逐字段中文释义表、一句执行概述,以及接下来 5 次触发时刻（实时本地时间）（带护栏避免误判普通数字行）|
 | [clipbus-vibe-plugin](./clipbus-vibe-plugin/README.md) | 情绪兜底动画：当没有任何插件能展示某条纯文本时，提供三种可切换的 Three.js 粒子动画——①Particle Core：粒子自字形炸开、噪声漂移后重组为发光球体；②Text Reveal：文字完整可读（字号自适应卡片尺寸）→ 光扫描 → 边缘裂解 → 爆发 → 回收为多面体光核；③Text Loop：8 阶段无缝循环——文字→粒子化→爆发→漂浮能量云→旋涡回收成球→稳定悬浮→解构→重组文字（首尾完全衔接）；原生按钮栏切换，展示哪些动画及顺序可用 `plugin.vibe.animations` 设置项配置（默认全部三个） |
 | [clipbus-toolbox-plugin](./clipbus-toolbox-plugin/README.md) | 聚合工具箱：识别并解码字符串（JWT / 转义 JSON / URL / Unix 时间戳 / 日期 / Base64）为内联预览卡片（一键复制与展开）；六个一键命名风格 auto-run 动作（大写 / 小写 / camelCase / PascalCase / snake_case / kebab-case）；以及图片裁剪压缩 draft 动作 |

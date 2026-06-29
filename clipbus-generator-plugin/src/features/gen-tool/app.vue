@@ -17,6 +17,12 @@
             :class="{ 'gen-shell__seg-btn--active': draft.mode === 'password' }"
             @click="setMode('password')"
           >Password</button>
+          <button
+            type="button"
+            class="gen-shell__seg-btn"
+            :class="{ 'gen-shell__seg-btn--active': draft.mode === 'ulid' }"
+            @click="setMode('ulid')"
+          >ULID</button>
         </div>
       </div>
 
@@ -88,6 +94,7 @@ import {
   buildPassword,
   formatUuids,
   uuidFromBytes,
+  ulidFromParts,
 } from "./payload";
 
 const draftTopic = useTopicRef(clipbus.action.draft);
@@ -102,12 +109,14 @@ function randomBytes(n: number): Uint8Array {
 }
 
 function regenerate(): void {
+  const count = Math.max(1, Math.min(20, draft.count));
   if (draft.mode === "uuid") {
-    const count = Math.max(1, Math.min(20, draft.count));
     const uuids = Array.from({ length: count }, () => uuidFromBytes(randomBytes(16)));
     draft.result = formatUuids(uuids);
+  } else if (draft.mode === "ulid") {
+    const ulids = Array.from({ length: count }, () => ulidFromParts(Date.now(), randomBytes(10)));
+    draft.result = ulids.join("\n");
   } else {
-    const count = Math.max(1, Math.min(20, draft.count));
     const len = Math.max(8, Math.min(64, draft.length));
     const cs = passwordCharset(draft);
     const passwords = Array.from({ length: count }, () =>
@@ -117,7 +126,7 @@ function regenerate(): void {
   }
 }
 
-function setMode(mode: "uuid" | "password"): void {
+function setMode(mode: "uuid" | "password" | "ulid"): void {
   draft.mode = mode;
 }
 

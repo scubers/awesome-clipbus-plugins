@@ -79,3 +79,40 @@ test("uuidFromBytes works with Uint8Array input", () => {
   const v4re = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
   assert.match(uuid, v4re, `uuidFromBytes(Uint8Array) result "${uuid}" does not match UUID v4 pattern`);
 });
+
+// ── ULID pure logic ──────────────────────────────────────────────────────────
+
+const CROCKFORD_RE = /^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$/;
+
+test("ulidFromParts fixed input produces exact expected ULID", () => {
+  const { ulidFromParts } = require(path.resolve(root, "src/features/gen-tool/payload.ts"));
+  // timeMs=1469918176385, all-0xff random bytes → deterministic ULID
+  const result = ulidFromParts(1469918176385, new Uint8Array(10).fill(0xff));
+  assert.equal(result, "01ARYZ6S41ZZZZZZZZZZZZZZZZ",
+    `expected "01ARYZ6S41ZZZZZZZZZZZZZZZZ", got "${result}"`);
+});
+
+test("ulidFromParts output is exactly 26 chars and uses only Crockford alphabet", () => {
+  const { ulidFromParts } = require(path.resolve(root, "src/features/gen-tool/payload.ts"));
+  const result = ulidFromParts(Date.now(), new Uint8Array(10).fill(0xab));
+  assert.equal(result.length, 26, `ULID length should be 26, got ${result.length}`);
+  assert.match(result, CROCKFORD_RE, `ULID "${result}" contains chars outside Crockford alphabet`);
+});
+
+test("ulidFromParts is time-sortable: earlier timeMs < later timeMs lexicographically", () => {
+  const { ulidFromParts } = require(path.resolve(root, "src/features/gen-tool/payload.ts"));
+  const rand = new Uint8Array(10).fill(0x77);
+  const earlier = ulidFromParts(1000000000000, rand);
+  const later   = ulidFromParts(2000000000000, rand);
+  assert.ok(
+    earlier < later,
+    `Expected "${earlier}" < "${later}" (time-sortability)`
+  );
+});
+
+test("decodeGenDraft round-trips mode=ulid", () => {
+  const { decodeGenDraft } = require(path.resolve(root, "src/features/gen-tool/payload.ts"));
+  const result = decodeGenDraft({ mode: "ulid", count: 3, length: 16,
+    useUppercase: true, useNumbers: true, useSymbols: false, result: "" });
+  assert.equal(result?.mode, "ulid", `mode should round-trip as "ulid", got "${result?.mode}"`);
+});

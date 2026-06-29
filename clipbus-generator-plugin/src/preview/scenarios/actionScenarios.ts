@@ -11,7 +11,7 @@ const PLUGIN_ID = "plugin.generator";
 export const actionScenarios: PreviewScenario[] = [
   {
     id: "gen-tool",
-    label: "Generator (UUID / Password)",
+    label: "Generator (UUID / Password / ULID)",
     mode: "action",
     pluginID: PLUGIN_ID,
     view: "gen-tool",
@@ -23,6 +23,23 @@ export const actionScenarios: PreviewScenario[] = [
       sourceAppID: "com.preview.editor",
     },
     draft: { ...GEN_INITIAL_DRAFT },
+    buttons: [{ id: "submit", title: "Generate & Copy", isEnabled: true }],
+    defaultButtonID: "submit",
+  },
+  {
+    id: "gen-tool-ulid",
+    label: "Generator (ULID mode)",
+    mode: "action",
+    pluginID: PLUGIN_ID,
+    view: "gen-tool",
+    viewport: { heightPolicy: "fixed", height: 320 },
+    item: {
+      id: "action-item-gen-tool-ulid",
+      type: "text",
+      tags: ["generator"],
+      sourceAppID: "com.preview.editor",
+    },
+    draft: { ...GEN_INITIAL_DRAFT, mode: "ulid" },
     buttons: [{ id: "submit", title: "Generate & Copy", isEnabled: true }],
     defaultButtonID: "submit",
   },
