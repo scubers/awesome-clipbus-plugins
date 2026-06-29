@@ -12,7 +12,7 @@ This makes Vibe a true last-resort fallback: it shows up exactly when nothing el
 
 ### Three switchable animations
 
-Vibe ships with three animations. The bottom button cycles between them; the first is chosen at random on load.
+Vibe ships with three animations. A native button bar rendered by Clipbus below the card shows one button per animation **in the configured list**, in order. Clicking any button switches to that animation; clicking the current one replays it. The **first** animation in the list is shown on load. Which animations appear and their order is configurable via Settings (see below); unset shows all three in default order.
 
 #### Particle Core (`particle-core`) — 4.8 s
 
@@ -59,13 +59,36 @@ Seamless guarantee: P8 ends with every particle at `textPos` (= P1 start); P4 dr
 
 Palette: cyan `#7EE7FF`, purple `#A78BFA`, white `#FFFFFF`.
 
-### Animation switch button
+### Switching animations
 
-The bottom button shows the name of the currently playing animation (`Particle Core`, `Text Reveal`, or `Text Loop`). Click to switch to the next one. The first animation is chosen at random when the card loads.
+Switching is driven by the SDK's native renderer button API (`clipbus.attachmentRenderer.setButtons` + `onHostInvoke`) — there is no in-page button. On load, Vibe resolves the animation list from settings and calls `setButtons` with one **enabled** button per listed animation; the first is shown. Clicking any button switches to it; clicking the current one replays it.
+
+### Settings
+
+Vibe reads one read-only setting, **`plugin.vibe.animations`** — the list of animation ids to show, in order. The **first** entry is shown on load; each listed animation gets one button.
+
+| Value | Effect |
+|---|---|
+| JSON array of ids, e.g. `["text-loop","particle-core"]` | Shows exactly those animations in that order; first shown on load |
+| unset / empty / no valid ids | Shows all animations in default order (`particle-core`, `text-reveal`, `text-loop`); first shown on load |
+
+Valid ids: `particle-core`, `text-reveal`, `text-loop`. Unknown ids are ignored, duplicates collapsed. A comma/space-separated string (e.g. `"text-loop, particle-core"`) is also accepted.
+
+Plugins can only *read* settings (`clipbus.settings.get`) — no `settings.set`, no manifest schema. Settings are a flat shared JSON store owned by the Clipbus host, so the key is plugin-id-namespaced. To set it, edit the host file and reload the plugin:
+
+```
+~/Library/Application Support/Clipbus/ExternalSettings/settings.json   (…/ClipbusDebug/… for debug build)
+```
+
+```json
+{ "plugin.vibe.animations": ["text-loop", "particle-core"] }
+```
+
+Then reload Vibe (Settings → Plugins → Developer Plugins → Reload) or restart Clipbus. The in-card switch is per-session only and is not written back.
 
 ### Adding more animations
 
-The registry (`src/features/vibe-fallback/animations/index.ts`) accepts any object implementing `VibeAnimation`. Append it to the array — the switch button cycles through all registered animations automatically.
+The registry (`src/features/vibe-fallback/animations/index.ts`) accepts any object implementing `VibeAnimation`. Append it to the array — when `plugin.vibe.animations` is unset the button bar lists all registered animations automatically; otherwise only the ids in that setting are shown.
 
 ## Notes
 

@@ -6,46 +6,82 @@ import { useTopicRef } from "../../shared/composables/useTopicRef";
 import { decodeVibePayload } from "./payload";
 import { ANIMATIONS } from "./animations/index";
 import type { VibeAnimationInstance } from "./animations/types";
+import { resolveAnimationList, buildButtons, indexForButton, type AnimationMeta } from "./switching";
+
+// User-configurable animation list. Read-only setting (host writes, plugin reads).
+// Settings live in a flat, shared JSON store, so the key is namespaced with the
+// plugin id. Value = a JSON array of animation ids (or a comma/space-separated
+// string), e.g. ["text-loop","particle-core"]. Only the listed animations are
+// shown (one button each, in order) and the FIRST is displayed on load. Unset or
+// invalid -> all animations in default order.
+const ANIMATIONS_SETTING_KEY = "plugin.vibe.animations";
+const ALL_METAS: AnimationMeta[] = ANIMATIONS.map((a) => ({ id: a.id, label: a.label }));
 
 const attachmentPayload = useTopicRef(clipbus.item.attachment);
 const payload = computed(() =>
   decodeVibePayload((attachmentPayload.value as PluginAttachmentPayload | undefined)?.attachment?.payloadJson));
 
 const stageEl = ref<HTMLElement | null>(null);
+const activeList = ref<AnimationMeta[]>(ALL_METAS);
 const index = ref(0);
 let instance: VibeAnimationInstance | null = null;
+let unsubHostInvoke: (() => void) | null = null;
 
 function mount() {
   instance?.dispose(); instance = null;
   const host = stageEl.value;
-  if (!host) return;
-  instance = ANIMATIONS[index.value].create({ container: host, text: payload.value?.text ?? "" });
+  const id = activeList.value[index.value]?.id;
+  const anim = ANIMATIONS.find((a) => a.id === id);
+  if (!host || !anim) return;
+  instance = anim.create({ container: host, text: payload.value?.text ?? "" });
   instance.start();
 }
 
-function shuffle() {
-  if (ANIMATIONS.length <= 1) { instance?.replay(); return; }
-  index.value = (index.value + 1) % ANIMATIONS.length;
+// Push the native button bar once (one enabled button per listed animation).
+async function pushButtons() {
+  try {
+    await clipbus.attachmentRenderer.setButtons({ buttons: buildButtons(activeList.value) });
+  } catch {
+    /* not an attachmentRenderer context (e.g. dev preview) — ignore */
+  }
+}
+
+function switchTo(buttonID: string) {
+  const next = indexForButton(activeList.value, buttonID, index.value);
+  if (next === index.value) { instance?.replay(); return; }
+  index.value = next;
   mount();
 }
 
-onMounted(() => {
-  index.value = ANIMATIONS.length > 1 ? Math.floor(Math.random() * ANIMATIONS.length) : 0;
-  mount();
-});
-watch(payload, () => mount());   // 切换剪贴板项时重建
-onUnmounted(() => { instance?.dispose(); instance = null; });
+async function readAnimationsSetting(): Promise<unknown> {
+  try {
+    const { value } = await clipbus.settings.get({ key: ANIMATIONS_SETTING_KEY });
+    return value;
+  } catch {
+    return null;
+  }
+}
 
-const currentLabel = computed(() => ANIMATIONS[index.value]?.label ?? "");
-const btnLabel = computed(() => (ANIMATIONS.length > 1 ? currentLabel.value : "Replay"));
+async function init() {
+  const setting = await readAnimationsSetting();
+  activeList.value = resolveAnimationList(setting, ALL_METAS);
+  index.value = 0;                 // default shows the first listed animation
+  mount();
+  void pushButtons();
+  unsubHostInvoke = clipbus.attachmentRenderer.onHostInvoke.on(({ buttonID }) => switchTo(buttonID));
+}
+
+onMounted(() => { void init(); });
+watch(payload, () => mount());   // 切换剪贴板项时重建（保留当前选择的动画）
+onUnmounted(() => {
+  unsubHostInvoke?.(); unsubHostInvoke = null;
+  instance?.dispose(); instance = null;
+});
 </script>
 
 <template>
   <main class="shell">
     <div ref="stageEl" class="stage"></div>
-    <button class="switch" type="button" @click="shuffle">
-      <span class="ico" aria-hidden="true">⟳</span>{{ btnLabel }}
-    </button>
   </main>
 </template>
 
@@ -57,18 +93,4 @@ const btnLabel = computed(() => (ANIMATIONS.length > 1 ? currentLabel.value : "R
 }
 .stage { position: absolute; inset: 0; }
 .stage :deep(canvas) { display: block; width: 100% !important; height: 100% !important; }
-.switch {
-  position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 14px; border-radius: 999px; cursor: pointer;
-  font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
-  color: rgba(234, 246, 255, 0.92);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
-}
-.switch:hover { background: rgba(124, 92, 255, 0.22); border-color: rgba(124, 92, 255, 0.5); }
-.switch:active { transform: translateX(-50%) scale(0.96); }
-.ico { font-size: 13px; line-height: 1; }
 </style>

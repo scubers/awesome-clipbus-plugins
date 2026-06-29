@@ -22,7 +22,11 @@ export const attachmentScenarios: PreviewScenario[] = [
         payloadJson: JSON.stringify({ kind: "vibe_fallback", version: 1, text: "hello world", charCount: 11 }),
       },
     },
-    buttons: [],
+    buttons: [
+      { id: "particle-core", title: "Particle Core", isEnabled: true },
+      { id: "text-reveal", title: "Text Reveal", isEnabled: true },
+      { id: "text-loop", title: "Text Loop", isEnabled: true },
+    ],
   },
   {
     id: "fallback-short",
@@ -43,6 +47,10 @@ export const attachmentScenarios: PreviewScenario[] = [
         payloadJson: JSON.stringify({ kind: "vibe_fallback", version: 1, text: "Vibe", charCount: 4 }),
       },
     },
-    buttons: [],
+    buttons: [
+      { id: "particle-core", title: "Particle Core", isEnabled: true },
+      { id: "text-reveal", title: "Text Reveal", isEnabled: true },
+      { id: "text-loop", title: "Text Loop", isEnabled: true },
+    ],
   },
 ];
