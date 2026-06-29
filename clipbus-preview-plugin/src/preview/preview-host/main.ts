@@ -8,12 +8,14 @@ import { actionScenarios } from "../scenarios/actionScenarios";
 import ColorSwatch from "../../features/color-swatch/app.vue";
 import GradientSwatch from "../../features/gradient-swatch/app.vue";
 import MarkdownRenderer from "../../features/markdown-renderer/app.vue";
+import QrCode from "../../features/qr-code/app.vue";
 
 // PER-PLUGIN: map scenario.view (feature id) → its component.
 const COMPONENTS: Record<string, Component> = {
   "color-swatch": ColorSwatch,
   "gradient-swatch": GradientSwatch,
   "markdown-renderer": MarkdownRenderer,
+  "qr-code": QrCode,
 };
 
 createPreviewWorkbench(document.getElementById("app")!, {
