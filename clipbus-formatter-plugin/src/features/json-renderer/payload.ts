@@ -7,6 +7,7 @@ export interface JsonFormatterPayload {
   formatted: string;
   formattedLength: number;
   yaml: string;
+  minified: string;
   topLevelType: "object" | "array" | "other";
   topLevelCount: number;
   display: {
@@ -217,6 +218,12 @@ export function createJsonPayload(input: unknown): JsonFormatterPayload | null {
       ? yamlFull.slice(0, MAX_FORMATTED_CHARS) + "\n…"
       : yamlFull;
 
+  const minifiedFull = JSON.stringify(parsed);
+  const truncatedMinified =
+    minifiedFull.length > MAX_FORMATTED_CHARS
+      ? minifiedFull.slice(0, MAX_FORMATTED_CHARS) + "…"
+      : minifiedFull;
+
   const typeLabel = type === "array" ? "JSON Array" : "JSON Object";
   const countLabel = type === "array" ? `${count} items` : `${count} keys`;
   const headline = `${typeLabel} · ${countLabel}`;
@@ -232,6 +239,7 @@ export function createJsonPayload(input: unknown): JsonFormatterPayload | null {
     formatted: truncatedFormatted,
     formattedLength: formatted.length,
     yaml: truncatedYaml,
+    minified: truncatedMinified,
     topLevelType: type,
     topLevelCount: count,
     display: { typeLabel, headline, subheadline },
@@ -244,8 +252,9 @@ export function decodeJsonPayload(
   try {
     const p = JSON.parse(payloadJson ?? "{}") as Record<string, unknown>;
     if (p.kind !== "json_formatter_preview") return null;
-    // Backward-compatible default: payloads created before YAML support lack the field
+    // Backward-compatible defaults for fields added in later versions
     if (typeof p.yaml !== "string") p.yaml = "";
+    if (typeof p.minified !== "string") p.minified = "";
     return p as unknown as JsonFormatterPayload;
   } catch {
     return null;

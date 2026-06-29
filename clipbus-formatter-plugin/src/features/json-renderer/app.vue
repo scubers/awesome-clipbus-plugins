@@ -15,25 +15,29 @@ const payload = computed(() =>
   decodeJsonPayload(attachmentPayload.value?.attachment?.payloadJson),
 );
 
-type ViewMode = "json" | "yaml";
+type ViewMode = "json" | "min" | "yaml";
 const activeView = ref<ViewMode>("json");
 
-const displayText = computed(() =>
-  activeView.value === "yaml"
-    ? (payload.value?.yaml ?? "")
-    : (payload.value?.formatted ?? ""),
-);
+const displayText = computed(() => {
+  if (activeView.value === "yaml") return payload.value?.yaml ?? "";
+  if (activeView.value === "min") return payload.value?.minified ?? "";
+  return payload.value?.formatted ?? "";
+});
 
-const codeLabel = computed(() =>
-  activeView.value === "yaml" ? "YAML Output" : "Formatted Result",
-);
+const codeLabel = computed(() => {
+  if (activeView.value === "yaml") return "YAML Output";
+  if (activeView.value === "min") return "Minified JSON";
+  return "Formatted Result";
+});
 
 let unsub: (() => void) | null = null;
 let stopAutoFit: (() => void) | null = null;
 
 async function syncCopyButton(): Promise<void> {
   try {
-    const title = activeView.value === "yaml" ? "Copy YAML" : "Copy JSON";
+    let title = "Copy Pretty";
+    if (activeView.value === "yaml") title = "Copy YAML";
+    else if (activeView.value === "min") title = "Copy Min";
     await clipbus.attachmentRenderer.setButtons({
       buttons: [{ id: "copy", title }],
     });
@@ -49,10 +53,9 @@ onMounted(async () => {
 
   unsub = clipbus.attachmentRenderer.onHostInvoke.on(async (d) => {
     if (d?.buttonID === "copy" && payload.value) {
-      const text =
-        activeView.value === "yaml"
-          ? payload.value.yaml
-          : payload.value.formatted;
+      let text = payload.value.formatted;
+      if (activeView.value === "yaml") text = payload.value.yaml;
+      else if (activeView.value === "min") text = payload.value.minified;
       await clipbus.clipboard.copyText({ text });
     }
   });
@@ -77,7 +80,11 @@ onUnmounted(() => {
         <button
           :class="['toggle-btn', { active: activeView === 'json' }]"
           @click="activeView = 'json'"
-        >JSON</button>
+        >Pretty</button>
+        <button
+          :class="['toggle-btn', { active: activeView === 'min' }]"
+          @click="activeView = 'min'"
+        >Min</button>
         <button
           :class="['toggle-btn', { active: activeView === 'yaml' }]"
           @click="activeView = 'yaml'"

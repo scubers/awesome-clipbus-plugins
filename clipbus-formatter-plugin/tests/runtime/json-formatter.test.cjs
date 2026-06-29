@@ -229,3 +229,52 @@ test('jsonToYaml: decodeJsonPayload fills missing yaml with empty string', () =>
   assert.equal(decoded.yaml, '', 'yaml defaults to empty string for legacy payloads');
 });
 
+// ---------------------------------------------------------------------------
+// Minified JSON
+// ---------------------------------------------------------------------------
+
+test('minified field is compact: no newlines, no double spaces', () => {
+  const { buildJsonArtifact } = require(path.resolve(root, 'src/features/json-renderer/payload.ts'));
+  const artifact = buildJsonArtifact({
+    item: sampleItem,
+    content: { kind: 'text', text: '{"a":1,"b":[2,{"c":true}]}' },
+    attachments: [],
+  });
+  assert.ok(artifact, 'artifact should not be null');
+  const payload = JSON.parse(artifact.payloadJson);
+  assert.ok(typeof payload.minified === 'string', 'minified field should be a string');
+  assert.ok(!payload.minified.includes('\n'), 'minified should contain no newlines');
+  assert.ok(!payload.minified.includes('  '), 'minified should contain no double spaces');
+});
+
+test('minified is lossless: JSON.parse(minified) deep-equals original', () => {
+  const { buildJsonArtifact } = require(path.resolve(root, 'src/features/json-renderer/payload.ts'));
+  const original = { name: 'api', ports: [80, 443], enabled: true, meta: { v: 2 } };
+  const artifact = buildJsonArtifact({
+    item: sampleItem,
+    content: { kind: 'text', text: JSON.stringify(original) },
+    attachments: [],
+  });
+  assert.ok(artifact, 'artifact should not be null');
+  const payload = JSON.parse(artifact.payloadJson);
+  assert.deepEqual(JSON.parse(payload.minified), original, 'minified round-trips losslessly');
+});
+
+test('decodeJsonPayload fills missing minified with empty string', () => {
+  const { decodeJsonPayload } = require(path.resolve(root, 'src/features/json-renderer/payload.ts'));
+  const legacyPayload = JSON.stringify({
+    kind: 'json_formatter_preview',
+    version: 1,
+    originalLength: 7,
+    formatted: '{\n  "x": 1\n}',
+    formattedLength: 12,
+    yaml: '',
+    topLevelType: 'object',
+    topLevelCount: 1,
+    display: { typeLabel: 'JSON Object', headline: 'JSON Object · 1 keys', subheadline: '7 → 12 chars' },
+  });
+  const decoded = decodeJsonPayload(legacyPayload);
+  assert.ok(decoded !== null, 'should decode successfully');
+  assert.equal(decoded.minified, '', 'minified defaults to empty string for legacy payloads');
+});
+

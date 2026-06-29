@@ -18,6 +18,7 @@ const jsonObjectPayload = JSON.stringify({
     '{\n  "name": "api",\n  "url": "https://x.y/z?a=1",\n  "note": "value: with colon",\n  "ports": [\n    80,\n    443\n  ],\n  "enabled": true\n}',
   formattedLength: 133,
   yaml: 'name: api\nurl: https://x.y/z?a=1\nnote: "value: with colon"\nports:\n  - 80\n  - 443\nenabled: true',
+  minified: '{"name":"api","url":"https://x.y/z?a=1","note":"value: with colon","ports":[80,443],"enabled":true}',
   topLevelType: "object",
   topLevelCount: 5,
   display: {
@@ -34,6 +35,7 @@ const jsonArrayPayload = JSON.stringify({
   formatted: '[\n  1,\n  2,\n  3\n]',
   formattedLength: 16,
   yaml: "- 1\n- 2\n- 3",
+  minified: "[1,2,3]",
   topLevelType: "array",
   topLevelCount: 3,
   display: {
