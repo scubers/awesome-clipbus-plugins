@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 2,
+  "plugin": {
+    "id": "plugin.clipbus.toolbox",
+    "title": "Clipbus Toolbox",
+    "version": "0.1.0"
+  },
+  "install": {
+    "runtime": "node",
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs",
+    "uiRoot": "dist/ui"
+  },
+  "permissions": ["setAttachment"],
+  "attachmentRenderers": [
+    {
+      "id": "decode-renderer",
+      "title": "Decoded Preview",
+      "attachmentType": "plugin.clipbus.toolbox.decode.preview",
+      "height": { "min": 32, "max": 480 },
+      "uiEntry": "renderers/decode-renderer/index.html"
+    }
+  ],
+  "detectors": [
+    {
+      "id": "decode-detector",
+      "title": "Decode Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.clipbus.toolbox.decode.preview"]
+    }
+  ],
+  "actions": [
+    {
+      "id": "uppercase",
+      "title": "Uppercase",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["uppercase", "upper", "case", "大写"]
+    },
+    {
+      "id": "lowercase",
+      "title": "Lowercase",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["lowercase", "lower", "case", "小写"]
+    },
+    {
+      "id": "camelCase",
+      "title": "camelCase",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["camelCase", "camel", "case", "小驼峰"]
+    },
+    {
+      "id": "pascalCase",
+      "title": "PascalCase",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["PascalCase", "pascal", "case", "大驼峰"]
+    },
+    {
+      "id": "snakeCase",
+      "title": "snake_case",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["snake_case", "snake", "case", "蛇形"]
+    },
+    {
+      "id": "kebabCase",
+      "title": "kebab-case",
+      "supportedItemTypes": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["kebab-case", "kebab", "case", "短横线"]
+    },
+    {
+      "id": "image-edit",
+      "title": "Crop & Compress",
+      "supportedItemTypes": ["image"],
+      "lifecycle": "draft",
+      "uiEntry": "actions/image-edit/index.html",
+      "keywords": ["crop", "compress", "resize", "裁剪", "压缩"]
+    }
+  ]
+}
