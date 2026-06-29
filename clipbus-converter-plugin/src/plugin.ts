@@ -10,6 +10,8 @@ import { createTemperatureDetector } from "./features/temperature/detector.ts";
 import { createTemperatureRenderer } from "./features/temperature/renderer.ts";
 import { createFilesizeDetector } from "./features/filesize-renderer/detector.ts";
 import { createFilesizeRenderer } from "./features/filesize-renderer/renderer.ts";
+import { createChmodDetector } from "./features/chmod-renderer/detector.ts";
+import { createChmodRenderer } from "./features/chmod-renderer/renderer.ts";
 
 export default definePlugin({
   setup() {
@@ -20,6 +22,7 @@ export default definePlugin({
         "duration": createDurationRenderer(),
         "temperature": createTemperatureRenderer(),
         "filesize-renderer": createFilesizeRenderer(),
+        "chmod-renderer": createChmodRenderer(),
       },
       detectors: {
         "timestamp-detector": createTimestampDetector(),
@@ -27,6 +30,7 @@ export default definePlugin({
         "duration-detector": createDurationDetector(),
         "temperature-detector": createTemperatureDetector(),
         "filesize-detector": createFilesizeDetector(),
+        "chmod-detector": createChmodDetector(),
       },
       actions: {
         "case-tool": createCaseAction(),

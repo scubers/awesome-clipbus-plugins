@@ -5,6 +5,7 @@
 import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
 import { buildWorldClockZones } from "../../features/timestamp-renderer/payload.ts";
 import { createFilesizePayload } from "../../features/filesize-renderer/payload.ts";
+import { parsePermissions } from "../../features/chmod-renderer/payload.ts";
 
 const PLUGIN_ID = "plugin.converter";
 const ITEM_TAGS = ["converter"];
@@ -48,6 +49,8 @@ const temperaturePayload = JSON.stringify({
 const filesizePayload = JSON.stringify(
   createFilesizePayload({ content: { kind: "text", text: "1.5 GB" } })
 );
+
+const chmodPayload = JSON.stringify(parsePermissions("rwxr-xr-x"));
 
 const radixPayload = JSON.stringify({
   kind: "radix_preview",
@@ -151,5 +154,15 @@ export const attachmentScenarios: PreviewScenario[] = [
     min: 180,
     max: 420,
     payloadJson: filesizePayload,
+  }),
+  renderer({
+    id: "chmod-renderer-sample",
+    label: "File Permissions: rwxr-xr-x",
+    view: "chmod-renderer",
+    accentHex: "#475569",
+    attachmentType: "plugin.converter.chmod",
+    min: 180,
+    max: 380,
+    payloadJson: chmodPayload,
   }),
 ];

@@ -11,6 +11,7 @@ import DurationRenderer from "../../features/duration/app.vue";
 import TemperatureRenderer from "../../features/temperature/app.vue";
 import CaseTool from "../../features/case-tool/app.vue";
 import FilesizeRenderer from "../../features/filesize-renderer/app.vue";
+import ChmodRenderer from "../../features/chmod-renderer/app.vue";
 
 // PER-PLUGIN: map scenario.view (feature id) → its component.
 const COMPONENTS: Record<string, Component> = {
@@ -20,6 +21,7 @@ const COMPONENTS: Record<string, Component> = {
   "temperature": TemperatureRenderer,
   "case-tool": CaseTool,
   "filesize-renderer": FilesizeRenderer,
+  "chmod-renderer": ChmodRenderer,
 };
 
 createPreviewWorkbench(document.getElementById("app")!, {

@@ -44,6 +44,12 @@
       "title": "Data Size Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.converter.filesize"]
+    },
+    {
+      "id": "chmod-detector",
+      "title": "File Permission Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.converter.chmod"]
     }
   ],
   "attachmentRenderers": [
@@ -81,6 +87,13 @@
       "attachmentType": "plugin.converter.filesize",
       "height": { "min": 180, "max": 420 },
       "uiEntry": "renderers/filesize-renderer/index.html"
+    },
+    {
+      "id": "chmod-renderer",
+      "title": "File Permissions",
+      "attachmentType": "plugin.converter.chmod",
+      "height": { "min": 180, "max": 380 },
+      "uiEntry": "renderers/chmod-renderer/index.html"
     }
   ],
   "actions": [
