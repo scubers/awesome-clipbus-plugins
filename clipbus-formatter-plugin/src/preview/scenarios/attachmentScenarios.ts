@@ -8,18 +8,22 @@ const PLUGIN_ID = "plugin.formatter";
 const ITEM_TAGS = ["formatter"];
 const SOURCE_APP = "com.preview.editor";
 
+// Richer sample: nested array + a string that needs quoting (contains ": ")
+// so the YAML view demonstrates both cases clearly.
 const jsonObjectPayload = JSON.stringify({
   kind: "json_formatter_preview",
   version: 1,
-  originalLength: 25,
-  formatted: '{\n  "name": "Alice",\n  "age": 30\n}',
-  formattedLength: 30,
+  originalLength: 99,
+  formatted:
+    '{\n  "name": "api",\n  "url": "https://x.y/z?a=1",\n  "note": "value: with colon",\n  "ports": [\n    80,\n    443\n  ],\n  "enabled": true\n}',
+  formattedLength: 133,
+  yaml: 'name: api\nurl: https://x.y/z?a=1\nnote: "value: with colon"\nports:\n  - 80\n  - 443\nenabled: true',
   topLevelType: "object",
-  topLevelCount: 2,
+  topLevelCount: 5,
   display: {
     typeLabel: "JSON Object",
-    headline: "JSON Object · 2 keys",
-    subheadline: "25 → 30 chars",
+    headline: "JSON Object · 5 keys",
+    subheadline: "99 → 133 chars",
   },
 });
 
@@ -29,6 +33,7 @@ const jsonArrayPayload = JSON.stringify({
   originalLength: 9,
   formatted: '[\n  1,\n  2,\n  3\n]',
   formattedLength: 16,
+  yaml: "- 1\n- 2\n- 3",
   topLevelType: "array",
   topLevelCount: 3,
   display: {

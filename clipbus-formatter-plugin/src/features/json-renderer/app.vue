@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { clipbus } from "@clipbus/plugin-sdk/ui";
 import { autoFit } from "@clipbus/plugin-sdk/dom";
 import { useTopicRef } from "../../shared/composables/useTopicRef";
@@ -12,29 +12,53 @@ const rootEl = ref<HTMLElement | null>(null);
 
 const attachmentPayload = useTopicRef(clipbus.item.attachment);
 const payload = computed(() =>
-  decodeJsonPayload(attachmentPayload.value?.attachment?.payloadJson)
+  decodeJsonPayload(attachmentPayload.value?.attachment?.payloadJson),
+);
+
+type ViewMode = "json" | "yaml";
+const activeView = ref<ViewMode>("json");
+
+const displayText = computed(() =>
+  activeView.value === "yaml"
+    ? (payload.value?.yaml ?? "")
+    : (payload.value?.formatted ?? ""),
+);
+
+const codeLabel = computed(() =>
+  activeView.value === "yaml" ? "YAML Output" : "Formatted Result",
 );
 
 let unsub: (() => void) | null = null;
 let stopAutoFit: (() => void) | null = null;
 
-onMounted(async () => {
-  stopAutoFit = autoFit({ min: 160, max: 480, target: rootEl.value ?? undefined });
-
+async function syncCopyButton(): Promise<void> {
   try {
+    const title = activeView.value === "yaml" ? "Copy YAML" : "Copy JSON";
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy", title: "Copy Formatted Result" }],
+      buttons: [{ id: "copy", title }],
     });
   } catch {
     /* not in attachment renderer context */
   }
+}
+
+onMounted(async () => {
+  stopAutoFit = autoFit({ min: 160, max: 480, target: rootEl.value ?? undefined });
+
+  await syncCopyButton();
 
   unsub = clipbus.attachmentRenderer.onHostInvoke.on(async (d) => {
     if (d?.buttonID === "copy" && payload.value) {
-      await clipbus.clipboard.copyText({ text: payload.value.formatted });
+      const text =
+        activeView.value === "yaml"
+          ? payload.value.yaml
+          : payload.value.formatted;
+      await clipbus.clipboard.copyText({ text });
     }
   });
 });
+
+watch(activeView, syncCopyButton);
 
 onUnmounted(() => {
   unsub?.();
@@ -49,9 +73,19 @@ onUnmounted(() => {
         <span class="badge">{{ payload.display.typeLabel }}</span>
         <span class="char-count">{{ payload.display.subheadline }}</span>
       </div>
+      <div class="view-toggle">
+        <button
+          :class="['toggle-btn', { active: activeView === 'json' }]"
+          @click="activeView = 'json'"
+        >JSON</button>
+        <button
+          :class="['toggle-btn', { active: activeView === 'yaml' }]"
+          @click="activeView = 'yaml'"
+        >YAML</button>
+      </div>
       <div class="code-block">
-        <div class="code-label">Formatted Result</div>
-        <pre class="code-text">{{ payload.formatted }}</pre>
+        <div class="code-label">{{ codeLabel }}</div>
+        <pre class="code-text">{{ displayText }}</pre>
       </div>
     </section>
     <div v-else class="empty">Waiting for JSON content</div>
@@ -94,6 +128,33 @@ onUnmounted(() => {
 .char-count {
   color: var(--clipbus-text-tertiary, #94a3b8);
   font-size: 11px;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 2px;
+  background: var(--clipbus-surface-elevated, #f1f5f9);
+  border: 1px solid var(--clipbus-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 2px;
+  align-self: flex-start;
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--clipbus-text-secondary, #64748b);
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.toggle-btn.active {
+  background: var(--clipbus-surface, #ffffff);
+  color: var(--clipbus-text-primary, #0f172a);
 }
 
 .code-block {
