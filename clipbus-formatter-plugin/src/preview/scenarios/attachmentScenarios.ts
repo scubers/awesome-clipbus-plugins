@@ -43,23 +43,27 @@ const jsonArrayPayload = JSON.stringify({
   },
 });
 
+// 3-column, 3-row sample; "note" column has a value that contains a comma
+// (the result of parsing a quoted field like `"handles, UX & motion"`) to
+// demonstrate that CSV quoting is preserved through the JSON export.
 const csvTablePayload = JSON.stringify({
   kind: "csv_table",
   version: 1,
   delimiter: ",",
-  headers: ["name", "age"],
+  headers: ["name", "role", "note"],
   rows: [
-    ["Alice", "30"],
-    ["Bob", "25"],
+    ["Alice", "Engineer", "works on infra"],
+    ["Bob", "Designer", "handles, UX & motion"],
+    ["Carol", "PM", "leads roadmap"],
   ],
-  rowCount: 2,
-  colCount: 2,
+  rowCount: 3,
+  colCount: 3,
   display: {
     typeLabel: "CSV Table",
-    headline: "2 columns × 2 rows",
+    headline: "3 columns × 3 rows",
     facts: [
-      { label: "Rows", value: "2" },
-      { label: "Columns", value: "2" },
+      { label: "Rows", value: "3" },
+      { label: "Columns", value: "3" },
       { label: "Delimiter", value: "comma" },
     ],
   },

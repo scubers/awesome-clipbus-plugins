@@ -187,6 +187,88 @@ test('renderer resolveAttachment returns shouldDisplay:false for bad payload', a
   assert.equal(result.shouldDisplay, false, 'bad payload → shouldDisplay:false');
 });
 
+// ---------------------------------------------------------------------------
+// buildCsvJson
+// ---------------------------------------------------------------------------
+
+test('buildCsvJson exports factory exists', () => {
+  const { buildCsvJson } =
+    require(path.resolve(root, 'src/features/csv-table/payload.ts'));
+  assert.equal(typeof buildCsvJson, 'function');
+});
+
+test('buildCsvJson produces correct JSON for a 3-column 2-row CSV', () => {
+  const { buildCsvJson } =
+    require(path.resolve(root, 'src/features/csv-table/payload.ts'));
+  const payload = {
+    kind: 'csv_table',
+    version: 1,
+    delimiter: ',',
+    headers: ['name', 'age', 'city'],
+    rows: [
+      ['Alice', '30', 'London'],
+      ['Bob', '25', 'Paris'],
+    ],
+    rowCount: 2,
+    colCount: 3,
+    display: { typeLabel: 'CSV Table', headline: '3×2', facts: [] },
+  };
+  const result = buildCsvJson(payload);
+  const parsed = JSON.parse(result);
+  assert.equal(parsed.length, 2);
+  assert.deepEqual(parsed[0], { name: 'Alice', age: '30', city: 'London' });
+  assert.deepEqual(parsed[1], { name: 'Bob', age: '25', city: 'Paris' });
+  // Values are strings, not numbers
+  assert.equal(typeof parsed[0].age, 'string');
+});
+
+test('buildCsvJson preserves quoted field containing a comma as single value', () => {
+  const { buildCsvJson } =
+    require(path.resolve(root, 'src/features/csv-table/payload.ts'));
+  // The payload already has the parsed (unquoted) value; the comma inside is
+  // a regular string character — JSON export must not split or escape it.
+  const payload = {
+    kind: 'csv_table',
+    version: 1,
+    delimiter: ',',
+    headers: ['name', 'note'],
+    rows: [['Alice', 'handles, UX & motion']],
+    rowCount: 1,
+    colCount: 2,
+    display: { typeLabel: 'CSV Table', headline: '2×1', facts: [] },
+  };
+  const result = buildCsvJson(payload);
+  const parsed = JSON.parse(result);
+  assert.equal(parsed.length, 1);
+  assert.equal(parsed[0].note, 'handles, UX & motion');
+});
+
+test('buildCsvJson fills missing cells with empty string (ragged row)', () => {
+  const { buildCsvJson } =
+    require(path.resolve(root, 'src/features/csv-table/payload.ts'));
+  const payload = {
+    kind: 'csv_table',
+    version: 1,
+    delimiter: ',',
+    headers: ['a', 'b', 'c'],
+    rows: [
+      ['x', 'y'],       // missing 'c'
+      ['1', '2', '3'],  // full row
+    ],
+    rowCount: 2,
+    colCount: 3,
+    display: { typeLabel: 'CSV Table', headline: '3×2', facts: [] },
+  };
+  const result = buildCsvJson(payload);
+  const parsed = JSON.parse(result);
+  assert.equal(parsed[0].c, '', 'missing cell should be empty string');
+  assert.equal(parsed[1].c, '3');
+});
+
+// ---------------------------------------------------------------------------
+// Renderer (continued)
+// ---------------------------------------------------------------------------
+
 test('renderer resolveAttachment returns displayName for valid payload', async () => {
   const { createCsvRenderer } =
     require(path.resolve(root, 'src/features/csv-table/renderer.ts'));

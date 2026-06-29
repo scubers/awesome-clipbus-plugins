@@ -169,6 +169,19 @@ export function buildMarkdownTable(payload: CsvPayload): string {
   return [headerRow, separatorRow, ...dataRows].join("\n");
 }
 
+// Build a JSON array-of-objects from payload. Values stay strings (lossless —
+// avoids leading-zero / big-int / locale footguns). Missing cells → "".
+// Extra cells beyond headers are ignored. Repeated headers → last value wins
+// (Object.fromEntries semantics).
+export function buildCsvJson(payload: CsvPayload): string {
+  const objects = payload.rows.map((row) =>
+    Object.fromEntries(
+      payload.headers.map((header, i) => [header, row[i] ?? ""])
+    )
+  );
+  return JSON.stringify(objects, null, 2);
+}
+
 export function buildCsvArtifact(input: unknown): PluginDetectorArtifact | null {
   const payload = createCsvPayload(input);
   if (!payload) return null;

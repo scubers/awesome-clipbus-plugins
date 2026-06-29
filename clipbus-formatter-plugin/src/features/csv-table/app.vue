@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { clipbus } from "@clipbus/plugin-sdk/ui";
 import { autoFit } from "@clipbus/plugin-sdk/dom";
 import { useTopicRef } from "../../shared/composables/useTopicRef";
-import { decodeCsvPayload, buildMarkdownTable } from "./payload";
+import { decodeCsvPayload, buildMarkdownTable, buildCsvJson } from "./payload";
 
 // autoFit must observe this renderer's own root (content-sized), not document.body —
 // in the preview workbench document.body is the whole page, so without a target autoFit
@@ -25,28 +25,41 @@ const hiddenRowCount = computed(() =>
   payload.value ? Math.max(0, payload.value.rowCount - MAX_DISPLAY_ROWS) : 0
 );
 
+type ViewMode = "table" | "json";
+const activeView = ref<ViewMode>("table");
+
 let unsub: (() => void) | null = null;
 let stopAutoFit: (() => void) | null = null;
 
-onMounted(async () => {
-  stopAutoFit = autoFit({ min: 160, max: 460, target: rootEl.value ?? undefined });
-
+async function syncCopyButton(): Promise<void> {
   try {
+    const title =
+      activeView.value === "json" ? "Copy JSON" : "Copy as Markdown Table";
     await clipbus.attachmentRenderer.setButtons({
-      buttons: [{ id: "copy", title: "Copy as Markdown Table" }],
+      buttons: [{ id: "copy", title }],
     });
   } catch {
     /* not in attachment renderer context */
   }
+}
+
+onMounted(async () => {
+  stopAutoFit = autoFit({ min: 160, max: 460, target: rootEl.value ?? undefined });
+
+  await syncCopyButton();
 
   unsub = clipbus.attachmentRenderer.onHostInvoke.on(async (d) => {
     if (d?.buttonID === "copy" && payload.value) {
-      await clipbus.clipboard.copyText({
-        text: buildMarkdownTable(payload.value),
-      });
+      const text =
+        activeView.value === "json"
+          ? buildCsvJson(payload.value)
+          : buildMarkdownTable(payload.value);
+      await clipbus.clipboard.copyText({ text });
     }
   });
 });
+
+watch(activeView, syncCopyButton);
 
 onUnmounted(() => {
   unsub?.();
@@ -62,7 +75,17 @@ onUnmounted(() => {
         <span class="headline">{{ payload.display.headline }}</span>
         <span class="delimiter-hint">{{ payload.display.facts[2].value }}</span>
       </div>
-      <div class="table-wrap">
+      <div class="view-toggle">
+        <button
+          :class="['toggle-btn', { active: activeView === 'table' }]"
+          @click="activeView = 'table'"
+        >Table</button>
+        <button
+          :class="['toggle-btn', { active: activeView === 'json' }]"
+          @click="activeView = 'json'"
+        >JSON</button>
+      </div>
+      <div v-if="activeView === 'table'" class="table-wrap">
         <table class="csv-table">
           <thead>
             <tr>
@@ -89,8 +112,11 @@ onUnmounted(() => {
           </tbody>
         </table>
       </div>
-      <div v-if="hiddenRowCount > 0" class="more-rows">
+      <div v-if="activeView === 'table' && hiddenRowCount > 0" class="more-rows">
         +{{ hiddenRowCount }} more rows
+      </div>
+      <div v-if="activeView === 'json'" class="code-block">
+        <pre class="json-text">{{ buildCsvJson(payload) }}</pre>
       </div>
     </section>
     <div v-else class="empty">Waiting for CSV content</div>
@@ -139,6 +165,33 @@ onUnmounted(() => {
   color: var(--clipbus-text-tertiary, #94a3b8);
   font-size: 11px;
   margin-left: auto;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 2px;
+  background: var(--clipbus-surface-elevated, #f1f5f9);
+  border: 1px solid var(--clipbus-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 2px;
+  align-self: flex-start;
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--clipbus-text-secondary, #64748b);
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.toggle-btn.active {
+  background: var(--clipbus-surface, #ffffff);
+  color: var(--clipbus-text-primary, #0f172a);
 }
 
 .table-wrap {
@@ -195,6 +248,25 @@ onUnmounted(() => {
   font-size: 11px;
   color: var(--clipbus-text-tertiary, #94a3b8);
   padding: 4px 0 2px;
+}
+
+.code-block {
+  background: var(--clipbus-surface-elevated, #f8fafc);
+  border: 1px solid var(--clipbus-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.json-text {
+  margin: 0;
+  font-family: "SF Mono", "Menlo", "Monaco", "Cascadia Code", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--clipbus-text-primary, #0f172a);
+  max-height: 360px;
+  overflow-y: auto;
 }
 
 .empty {
