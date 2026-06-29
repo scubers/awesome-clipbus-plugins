@@ -10,6 +10,7 @@ import RadixRenderer from "../../features/radix-renderer/app.vue";
 import DurationRenderer from "../../features/duration/app.vue";
 import TemperatureRenderer from "../../features/temperature/app.vue";
 import CaseTool from "../../features/case-tool/app.vue";
+import FilesizeRenderer from "../../features/filesize-renderer/app.vue";
 
 // PER-PLUGIN: map scenario.view (feature id) → its component.
 const COMPONENTS: Record<string, Component> = {
@@ -18,6 +19,7 @@ const COMPONENTS: Record<string, Component> = {
   "duration": DurationRenderer,
   "temperature": TemperatureRenderer,
   "case-tool": CaseTool,
+  "filesize-renderer": FilesizeRenderer,
 };
 
 createPreviewWorkbench(document.getElementById("app")!, {

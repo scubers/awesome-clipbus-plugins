@@ -8,6 +8,8 @@ import { createDurationDetector } from "./features/duration/detector.ts";
 import { createDurationRenderer } from "./features/duration/renderer.ts";
 import { createTemperatureDetector } from "./features/temperature/detector.ts";
 import { createTemperatureRenderer } from "./features/temperature/renderer.ts";
+import { createFilesizeDetector } from "./features/filesize-renderer/detector.ts";
+import { createFilesizeRenderer } from "./features/filesize-renderer/renderer.ts";
 
 export default definePlugin({
   setup() {
@@ -17,12 +19,14 @@ export default definePlugin({
         "radix-renderer": createRadixRenderer(),
         "duration": createDurationRenderer(),
         "temperature": createTemperatureRenderer(),
+        "filesize-renderer": createFilesizeRenderer(),
       },
       detectors: {
         "timestamp-detector": createTimestampDetector(),
         "radix-detector": createRadixDetector(),
         "duration-detector": createDurationDetector(),
         "temperature-detector": createTemperatureDetector(),
+        "filesize-detector": createFilesizeDetector(),
       },
       actions: {
         "case-tool": createCaseAction(),

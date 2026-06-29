@@ -38,6 +38,12 @@
       "title": "Temperature Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.converter.temperature"]
+    },
+    {
+      "id": "filesize-detector",
+      "title": "Data Size Detector",
+      "supportedInputKinds": ["text"],
+      "attachmentTypes": ["plugin.converter.filesize"]
     }
   ],
   "attachmentRenderers": [
@@ -68,6 +74,13 @@
       "attachmentType": "plugin.converter.temperature",
       "height": { "min": 140, "max": 300 },
       "uiEntry": "renderers/temperature/index.html"
+    },
+    {
+      "id": "filesize-renderer",
+      "title": "Data Size",
+      "attachmentType": "plugin.converter.filesize",
+      "height": { "min": 180, "max": 420 },
+      "uiEntry": "renderers/filesize-renderer/index.html"
     }
   ],
   "actions": [

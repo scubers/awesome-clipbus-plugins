@@ -4,6 +4,7 @@
 
 import type { PreviewScenario } from "@clipbus/plugin-sdk/preview";
 import { buildWorldClockZones } from "../../features/timestamp-renderer/payload.ts";
+import { createFilesizePayload } from "../../features/filesize-renderer/payload.ts";
 
 const PLUGIN_ID = "plugin.converter";
 const ITEM_TAGS = ["converter"];
@@ -43,6 +44,10 @@ const temperaturePayload = JSON.stringify({
   kelvin: 310.15,
   belowAbsoluteZero: false,
 });
+
+const filesizePayload = JSON.stringify(
+  createFilesizePayload({ content: { kind: "text", text: "1.5 GB" } })
+);
 
 const radixPayload = JSON.stringify({
   kind: "radix_preview",
@@ -136,5 +141,15 @@ export const attachmentScenarios: PreviewScenario[] = [
     min: 120,
     max: 300,
     payloadJson: radixPayload,
+  }),
+  renderer({
+    id: "filesize-renderer-sample",
+    label: "Data Size: 1.5 GB",
+    view: "filesize-renderer",
+    accentHex: "#0369A1",
+    attachmentType: "plugin.converter.filesize",
+    min: 180,
+    max: 420,
+    payloadJson: filesizePayload,
   }),
 ];
