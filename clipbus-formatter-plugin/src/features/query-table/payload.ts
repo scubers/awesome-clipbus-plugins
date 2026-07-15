@@ -17,6 +17,7 @@ export interface QueryPayload {
 }
 
 const ATTACHMENT_TYPE = "plugin.formatter.query";
+const CONTROL_RE = /\p{C}/u;
 
 // Gate: anchored regex requiring at least two key=value pairs separated by &.
 // Key: one or more chars that are not =, &, or whitespace.
@@ -25,6 +26,7 @@ const GATE_REGEX = /^\??[^=&\s]+=[^&\s]*(?:&[^=&\s]+=[^&\s]*)+$/;
 
 function isQueryString(text: string): boolean {
   if (!text) return false;
+  if (!isReadableText(text)) return false;
   // A full URL (scheme://...) belongs to the url-extractor, not here. Reject only
   // when the WHOLE string starts with a scheme://, NOT when "://" merely appears
   // inside a value — e.g. "redirect=https://x.com&a=1" is a legitimate query string.
@@ -32,10 +34,26 @@ function isQueryString(text: string): boolean {
   return GATE_REGEX.test(text);
 }
 
+function isReadableText(text: string): boolean {
+  if (text.length === 0) return true;
+  let printable = 0;
+  let total = 0;
+  for (const char of text) {
+    total += 1;
+    if (char === "\t" || char === "\n" || char === "\r" || !CONTROL_RE.test(char)) {
+      printable += 1;
+    }
+  }
+  return printable / total >= 0.95;
+}
+
 // Form-encoding: replace "+" with space BEFORE decodeURIComponent.
 function decodeQueryPart(raw: string): { decoded: string; error: boolean } {
   try {
-    return { decoded: decodeURIComponent(raw.replace(/\+/g, " ")), error: false };
+    const decoded = decodeURIComponent(raw.replace(/\+/g, " "));
+    return isReadableText(decoded)
+      ? { decoded, error: false }
+      : { decoded: raw, error: true };
   } catch {
     // Malformed %XX — return raw and signal the error.
     return { decoded: raw, error: true };

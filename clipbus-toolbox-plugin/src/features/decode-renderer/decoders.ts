@@ -26,6 +26,11 @@ function safeJsonParse(text: string): { ok: true; value: unknown } | { ok: false
   }
 }
 
+function decodeUtf8Strict(buffer: Buffer): string | null {
+  const decoded = buffer.toString("utf8");
+  return Buffer.from(decoded, "utf8").equals(buffer) ? decoded : null;
+}
+
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
@@ -55,7 +60,13 @@ export function tryDecodeJWT(input: string): JWTDecodeResult | null {
     }
   }
 
-  const headerParse = safeJsonParse(headerBuf.toString("utf8"));
+  const headerText = decodeUtf8Strict(headerBuf);
+  const payloadText = decodeUtf8Strict(payloadBuf);
+  if (headerText === null || payloadText === null) {
+    return null;
+  }
+
+  const headerParse = safeJsonParse(headerText);
   if (!headerParse.ok || !isPlainObject(headerParse.value)) {
     return null;
   }
@@ -63,7 +74,7 @@ export function tryDecodeJWT(input: string): JWTDecodeResult | null {
     return null;
   }
 
-  const payloadParse = safeJsonParse(payloadBuf.toString("utf8"));
+  const payloadParse = safeJsonParse(payloadText);
   if (!payloadParse.ok) {
     return null;
   }
@@ -116,7 +127,7 @@ export function tryDecodeUrl(input: string): string | null {
   } catch {
     return null;
   }
-  return decoded === input ? null : decoded;
+  return decoded === input || printableRatio(decoded) < 0.95 ? null : decoded;
 }
 
 const BASE64_STANDARD_RE = /^[A-Za-z0-9+/]+={0,2}$/;

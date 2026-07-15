@@ -21,6 +21,8 @@ export interface UrlPayload {
   };
 }
 
+const CONTROL_RE = /\p{C}/u;
+
 /** Known tracking query parameter keys (exact match, lowercased). */
 const TRACKING_EXACT = new Set([
   "fbclid",
@@ -67,6 +69,46 @@ function isTracking(key: string): boolean {
   return lower.startsWith("utm_") || TRACKING_EXACT.has(lower);
 }
 
+function isReadableText(text: string): boolean {
+  if (text.length === 0) return true;
+  let printable = 0;
+  let total = 0;
+  for (const char of text) {
+    total += 1;
+    if (char === "\t" || char === "\n" || char === "\r" || !CONTROL_RE.test(char)) {
+      printable += 1;
+    }
+  }
+  return printable / total >= 0.95;
+}
+
+function decodeQueryPart(raw: string): string {
+  try {
+    const decoded = decodeURIComponent(raw.replace(/\+/g, " "));
+    return isReadableText(decoded) ? decoded : raw;
+  } catch {
+    return raw;
+  }
+}
+
+function parseReadableQuery(search: string): { key: string; value: string }[] {
+  const rawQuery = search.startsWith("?") ? search.slice(1) : search;
+  if (!rawQuery) return [];
+
+  return rawQuery
+    .split("&")
+    .filter((segment) => segment.length > 0)
+    .map((segment) => {
+      const separator = segment.indexOf("=");
+      const rawKey = separator === -1 ? segment : segment.slice(0, separator);
+      const rawValue = separator === -1 ? "" : segment.slice(separator + 1);
+      return {
+        key: decodeQueryPart(rawKey),
+        value: decodeQueryPart(rawValue),
+      };
+    });
+}
+
 /**
  * Parse a trimmed string as a URL. Accepts only URLs with a scheme + '//' authority
  * (http, https, ftp, ws, wss, or any custom scheme with '//') and a non-empty hostname.
@@ -105,7 +147,7 @@ export function createUrlPayload(input: unknown): UrlPayload | null {
   const path = u.pathname;
   const hash = u.hash;
   const username = u.username;
-  const query = [...u.searchParams].map(([key, value]) => ({ key, value }));
+  const query = parseReadableQuery(u.search);
 
   const trackingParams = query.filter((q) => isTracking(q.key));
   let cleanHref: string;

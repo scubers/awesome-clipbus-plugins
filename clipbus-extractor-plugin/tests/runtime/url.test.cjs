@@ -109,6 +109,26 @@ test('buildUrlArtifact detects plain https URL', () => {
   assert.equal(payload.query.length, 1);
 });
 
+test('buildUrlArtifact keeps raw percent encoding for invalid or unreadable query values', () => {
+  const { buildUrlArtifact } = require(path.resolve(root, 'src/features/url-parsed/payload.ts'));
+  const artifact = buildUrlArtifact({
+    item: sampleItem,
+    content: {
+      kind: 'text',
+      text: 'https://example.com/?bad=%FF&nul=%00&ok=%E4%BD%A0%E5%A5%BD&space=hello+world',
+    },
+    attachments: [],
+  });
+  assert.ok(artifact, 'the URL itself remains valid');
+  const payload = JSON.parse(artifact.payloadJson);
+  assert.deepEqual(payload.query, [
+    { key: 'bad', value: '%FF' },
+    { key: 'nul', value: '%00' },
+    { key: 'ok', value: '你好' },
+    { key: 'space', value: 'hello world' },
+  ]);
+});
+
 test('decodeUrlPayload returns null for bad payloads', () => {
   const { decodeUrlPayload } = require(path.resolve(root, 'src/features/url-parsed/payload.ts'));
   assert.equal(decodeUrlPayload('not-json'), null);
@@ -211,4 +231,3 @@ test('renderer resolveAttachment returns displayName for valid payload', async (
   assert.ok(result.displayName, 'displayName should be set');
   assert.notEqual(result.shouldDisplay, false, 'valid payload should display');
 });
-

@@ -111,6 +111,24 @@ test('buildQueryArtifact fires on "name=John+Doe&city=New%20York" and URL-decode
   assert.equal(payload.pairs[1].value, 'New York', '%20 decoded to space');
 });
 
+test('buildQueryArtifact keeps raw percent encoding when decoded values are unreadable', () => {
+  const { buildQueryArtifact } =
+    require(path.resolve(root, 'src/features/query-table/payload.ts'));
+  const artifact = buildQueryArtifact({
+    item: sampleItem,
+    content: { kind: 'text', text: 'a=%00&b=%01' },
+    attachments: [],
+  });
+  assert.ok(artifact, 'the query string itself remains valid');
+  const payload = JSON.parse(artifact.payloadJson);
+  assert.deepEqual(payload.pairs, [
+    { key: 'a', value: '%00' },
+    { key: 'b', value: '%01' },
+  ]);
+  assert.equal(payload.decodeError, true);
+  assert.equal(artifact.searchProjection.searchText, 'a %00 b %01');
+});
+
 test('buildQueryArtifact fires on a query string whose value contains a URL "redirect=https://x.com&a=1"', () => {
   const { buildQueryArtifact } =
     require(path.resolve(root, 'src/features/query-table/payload.ts'));
@@ -172,6 +190,17 @@ test('buildQueryArtifact returns null for "a=1 b=2" (internal whitespace)', () =
     attachments: [],
   });
   assert.equal(artifact, null, 'whitespace must be rejected');
+});
+
+test('buildQueryArtifact returns null for literal control characters', () => {
+  const { buildQueryArtifact } =
+    require(path.resolve(root, 'src/features/query-table/payload.ts'));
+  const artifact = buildQueryArtifact({
+    item: sampleItem,
+    content: { kind: 'text', text: 'a=\u0000&b=1' },
+    attachments: [],
+  });
+  assert.equal(artifact, null, 'raw control characters must not enter the attachment or search index');
 });
 
 test('buildQueryArtifact returns null for "key:value"', () => {

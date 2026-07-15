@@ -78,6 +78,25 @@ test("decoders.tryDecodeJWT returns null when header lacks alg field", () => {
   assert.equal(tryDecodeJWT(bad), null);
 });
 
+test("decoders.tryDecodeJWT rejects header or payload bytes that are not valid UTF-8", () => {
+  const { tryDecodeJWT } = loadDecodersModule();
+  const invalidHeader = Buffer.concat([
+    Buffer.from('{"alg":"'),
+    Buffer.from([0xff]),
+    Buffer.from('"}'),
+  ]).toString("base64url");
+  const validHeader = Buffer.from('{"alg":"HS256"}').toString("base64url");
+  const invalidPayload = Buffer.concat([
+    Buffer.from('{"sub":"'),
+    Buffer.from([0xff]),
+    Buffer.from('"}'),
+  ]).toString("base64url");
+  const validPayload = Buffer.from('{"sub":"123"}').toString("base64url");
+
+  assert.equal(tryDecodeJWT(`${invalidHeader}.${validPayload}.`), null);
+  assert.equal(tryDecodeJWT(`${validHeader}.${invalidPayload}.`), null);
+});
+
 test("decoders.tryDecodeEscapedJson returns the inner JSON container", () => {
   const { tryDecodeEscapedJson } = loadDecodersModule();
   assert.equal(tryDecodeEscapedJson(ESCAPED_JSON_NESTED), '{"nested":"json"}');
@@ -116,6 +135,12 @@ test("decoders.tryDecodeUrl returns null when no percent sequence present", () =
   assert.equal(tryDecodeUrl("hello world"), null);
 });
 
+test("decoders.tryDecodeUrl rejects unreadable control-character output", () => {
+  const { tryDecodeUrl } = loadDecodersModule();
+  assert.equal(tryDecodeUrl("%00%01%02"), null);
+  assert.equal(tryDecodeUrl("%09hello%0A"), "\thello\n");
+});
+
 test("decoders.tryDecodeBase64 decodes standard and url-safe base64 strings", () => {
   const { tryDecodeBase64 } = loadDecodersModule();
   assert.equal(tryDecodeBase64(B64_HELLO), "Hello, World!");
@@ -133,6 +158,8 @@ test("decoders.tryDecodeBase64 rejects common false positives", () => {
   assert.equal(tryDecodeBase64("YWI="), null);
   assert.equal(tryDecodeBase64(HEX_32), null);
   assert.equal(tryDecodeBase64("!!not-base64!!"), null);
+  assert.equal(tryDecodeBase64("abcdefghijklmnopqrstuvwx"), null);
+  assert.equal(tryDecodeBase64("AAAAAAAAAAAAAAAAAAAAAAAA"), null);
 });
 
 test("preprocess trims and enforces the 256 KB cap", () => {
