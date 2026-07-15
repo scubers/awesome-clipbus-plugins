@@ -19,6 +19,7 @@ const MAX_DISPLAY_CHARS = 800;
 
 const BASE64_STANDARD_RE = /^[A-Za-z0-9+/]+=*$/;
 const BASE64_URL_SAFE_RE = /^[A-Za-z0-9\-_]+=*$/;
+const CONTROL_RE = /\p{C}/u;
 
 function stripWhitespace(s: string): string {
   return s.replace(/\s+/g, "");
@@ -52,18 +53,24 @@ function tryDecode(stripped: string, encoding: Base64Encoding): string | null {
 
     const bytes = Buffer.from(b64, "base64");
     if (bytes.length === 0) return null;
-    return bytes.toString("utf-8");
+    const decoded = bytes.toString("utf-8");
+    if (!Buffer.from(decoded, "utf-8").equals(bytes)) return null;
+    return decoded;
   } catch {
     return null;
   }
 }
 
 function looksLikeText(s: string): boolean {
-  const printable = [...s].filter((c) => {
-    const cp = c.codePointAt(0) ?? 0;
-    return cp >= 32 || cp === 9 || cp === 10 || cp === 13;
-  }).length;
-  return printable / Math.max(s.length, 1) >= 0.85;
+  let printable = 0;
+  let total = 0;
+  for (const char of s) {
+    total += 1;
+    if (char === "\t" || char === "\n" || char === "\r" || !CONTROL_RE.test(char)) {
+      printable += 1;
+    }
+  }
+  return total > 0 && printable / total >= 0.95;
 }
 
 export function createBase64Payload(input: unknown): Base64Payload | null {
@@ -83,6 +90,7 @@ export function createBase64Payload(input: unknown): Base64Payload | null {
   if (!decoded) return null;
 
   const isText = looksLikeText(decoded);
+  if (!isText) return null;
 
   return {
     kind: "base64_preview",

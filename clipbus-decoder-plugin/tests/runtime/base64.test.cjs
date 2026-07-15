@@ -61,6 +61,26 @@ test('detector decodes URL-safe base64 (SGVsbG8_ → Hello?)', async () => {
   assert.equal(payload.decoded, 'Hello?');
 });
 
+test('detector accepts readable multilingual UTF-8 text', () => {
+  const { buildBase64Artifact } = require(path.resolve(root, 'src/features/base64-renderer/payload.ts'));
+  const input = { item: sampleItem, content: { kind: 'text', text: '5L2g5aW977yM5LiW55WM77yB' }, attachments: [] };
+  const artifact = buildBase64Artifact(input);
+  assert.ok(artifact, 'readable non-ASCII UTF-8 should be detected as base64');
+  assert.equal(JSON.parse(artifact.payloadJson).decoded, '你好，世界！');
+});
+
+test('detector rejects base64-shaped text that decodes to invalid UTF-8', () => {
+  const { buildBase64Artifact } = require(path.resolve(root, 'src/features/base64-renderer/payload.ts'));
+  const input = { item: sampleItem, content: { kind: 'text', text: 'abcdefghijklmnopqrstuvwx' }, attachments: [] };
+  assert.equal(buildBase64Artifact(input), null, 'garbled replacement characters are not readable text');
+});
+
+test('detector rejects base64 that decodes to control-character data', () => {
+  const { buildBase64Artifact } = require(path.resolve(root, 'src/features/base64-renderer/payload.ts'));
+  const input = { item: sampleItem, content: { kind: 'text', text: 'AAAAAAAAAAAAAAAAAAAAAAAA' }, attachments: [] };
+  assert.equal(buildBase64Artifact(input), null, 'binary control data is not readable text');
+});
+
 test('detector ignores plain English text', () => {
   const { buildBase64Artifact } = require(path.resolve(root, 'src/features/base64-renderer/payload.ts'));
   const artifact = buildBase64Artifact({ item: sampleItem, content: { kind: 'text', text: 'hello world foo bar' }, attachments: [] });
@@ -129,4 +149,3 @@ test('renderer resolveAttachment returns displayName for valid payload', async (
   assert.ok(result.displayName, 'displayName should be set');
   assert.notEqual(result.shouldDisplay, false, 'valid payload should display');
 });
-

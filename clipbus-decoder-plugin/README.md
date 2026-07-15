@@ -8,7 +8,7 @@ Clipbus plugin that detects and decodes encoded strings on the clipboard. Suppor
 
 | Capability | id | Description |
 |---|---|---|
-| detector | `base64-detector` | Recognises Base64 strings (standard `+/=` and URL-safe `-_` variants), minimum 8 characters |
+| detector | `base64-detector` | Recognises Base64 strings (standard `+/=` and URL-safe `-_` variants) only when they decode to valid, readable UTF-8 text; rejects binary and garbled output |
 | renderer | `base64-renderer` | Card view: encoding type badge, character count comparison (original → decoded), decoded text, and a "Copy Decoded Result" button |
 
 ### JWT (`jwt-*`, local decode only — signature not verified)
