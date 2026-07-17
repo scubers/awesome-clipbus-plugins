@@ -21,6 +21,10 @@ export const actionScenarios: PreviewScenario[] = [
       tags: ["converter"],
       sourceAppID: "com.preview.editor",
     },
+    actionInput: {
+      kind: "text",
+      text: "helloWorldFooBar",
+    },
     draft: {
       ...INITIAL_DRAFT,
       input: "helloWorldFooBar",

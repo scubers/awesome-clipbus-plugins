@@ -21,6 +21,10 @@ export const actionScenarios: PreviewScenario[] = [
       tags: ["extractor"],
       sourceAppID: "com.preview.editor",
     },
+    actionInput: {
+      kind: "text",
+      text: "Price: $99, discounted $49, save $10",
+    },
     draft: {
       ...INITIAL_DRAFT,
       pattern: "\\d+",

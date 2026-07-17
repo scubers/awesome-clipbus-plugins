@@ -21,6 +21,10 @@ export const actionScenarios: PreviewScenario[] = [
       tags: ["decoder"],
       sourceAppID: "com.preview.editor",
     },
+    actionInput: {
+      kind: "text",
+      text: "hello world & more",
+    },
     draft: {
       ...INITIAL_DRAFT,
       mode: "url",
