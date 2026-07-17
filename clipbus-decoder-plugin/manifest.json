@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "plugin": {
     "id": "plugin.decoder",
     "title": "Decoder",
@@ -61,7 +61,7 @@
     {
       "id": "escape-tool",
       "title": "Escape & Encode",
-      "supportedItemTypes": ["text"],
+      "supportedInputKinds": ["text"],
       "lifecycle": "draft",
       "uiEntry": "actions/escape-tool/index.html",
       "keywords": ["escape", "encode", "decode", "url", "html", "base64", "unicode", "json"]

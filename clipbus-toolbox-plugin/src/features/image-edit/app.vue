@@ -341,9 +341,9 @@ function endDrag(e: PointerEvent): void {
 
 async function loadPreview(): Promise<void> {
   try {
-    const { url } = await clipbus.asset.currentItemImageUrl();
+    const { url } = await clipbus.asset.currentActionInputImageUrl();
     if (url) previewUrl.value = url;
-    else errorMsg.value = "This item isn't an image and can't be edited.";
+    else errorMsg.value = "The current Action input isn't an image and can't be edited.";
   } catch {
     errorMsg.value = "Couldn't load the image preview.";
   }

@@ -60,8 +60,10 @@ test("processImage crops + re-encodes to the host temp path, preserving format",
       .toFile(srcPath);
 
     const host = {
-      item: { materializeImagePath: async () => ({ path: srcPath }) },
-      action: { allocateImageTempPath: async () => ({ path: outPath }) },
+      action: {
+        materializeInputImagePath: async () => ({ path: srcPath }),
+        allocateImageTempPath: async () => ({ path: outPath }),
+      },
     };
 
     const resp = await proc.processImage(host, { quality: 70, crop: { x: 10, y: 5, width: 40, height: 30 } });
@@ -90,8 +92,10 @@ test("processImage clamps an out-of-bounds crop instead of throwing", async () =
       .toFile(srcPath);
 
     const host = {
-      item: { materializeImagePath: async () => ({ path: srcPath }) },
-      action: { allocateImageTempPath: async () => ({ path: outPath }) },
+      action: {
+        materializeInputImagePath: async () => ({ path: srcPath }),
+        allocateImageTempPath: async () => ({ path: outPath }),
+      },
     };
 
     // Crop extends past the image; processImage must clamp it.
@@ -121,8 +125,10 @@ test("lower quality produces a smaller JPEG (spec acceptance baseline)", async (
 
     let outPath = outHigh;
     const host = {
-      item: { materializeImagePath: async () => ({ path: srcPath }) },
-      action: { allocateImageTempPath: async () => ({ path: outPath }) },
+      action: {
+        materializeInputImagePath: async () => ({ path: srcPath }),
+        allocateImageTempPath: async () => ({ path: outPath }),
+      },
     };
 
     await proc.processImage(host, { quality: 90, crop: { x: 0, y: 0, width: w, height: h } });
@@ -149,8 +155,10 @@ test("processImage downscales the cropped region to the resize target", async ()
       .toFile(srcPath);
 
     const host = {
-      item: { materializeImagePath: async () => ({ path: srcPath }) },
-      action: { allocateImageTempPath: async () => ({ path: outPath }) },
+      action: {
+        materializeInputImagePath: async () => ({ path: srcPath }),
+        allocateImageTempPath: async () => ({ path: outPath }),
+      },
     };
 
     // Crop 100x80, then downscale to half → 50x40.
@@ -180,8 +188,10 @@ test("processImage clamps a resize target larger than the crop down to the crop 
       .toFile(srcPath);
 
     const host = {
-      item: { materializeImagePath: async () => ({ path: srcPath }) },
-      action: { allocateImageTempPath: async () => ({ path: outPath }) },
+      action: {
+        materializeInputImagePath: async () => ({ path: srcPath }),
+        allocateImageTempPath: async () => ({ path: outPath }),
+      },
     };
 
     // resize larger than the crop must clamp to crop (never upscale).

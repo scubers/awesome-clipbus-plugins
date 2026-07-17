@@ -167,6 +167,7 @@ function minimalActionScenariosTs() {
 //   { id, label, mode: "action", pluginID: "<your plugin.id>", view: "<feature-dir>",
 //     viewport: { heightPolicy: "fixed", height: 320 },
 //     item: { id, type: "text", tags: [], sourceAppID: "com.preview.editor" },
+//     actionInput: { kind: "text", text: "current cascade value" },
 //     draft: { ...INITIAL_DRAFT },
 //     buttons: [{ id, title, isEnabled }], defaultButtonID: "<id>" }
 
@@ -324,7 +325,7 @@ async function main() {
     await readFile(path.join(templateDir, "manifest.json"), "utf8")
   );
   const newManifest = {
-    schemaVersion: templateManifest.schemaVersion ?? 2,
+    schemaVersion: templateManifest.schemaVersion ?? 3,
     plugin: {
       id: pluginId,
       title,

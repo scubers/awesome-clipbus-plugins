@@ -18,7 +18,7 @@
 
 2. **generator 脚手架即真相**——`scripts/build-ui.mjs` 与 `scripts/verify-build.mjs`。各插件用的是 `clipbus-plugin-generator/assets/scaffold/scripts/` 里的**通用 manifest 驱动版**（自动按 manifest 适配能力）；template 自带的是 **demo 专用版**（硬编码了 template 自己那些演示能力的 allowlist / NESTED_OVERRIDES）。**两者故意不一致。**
 
-> ⚠️ 由此得出本 skill 最重要的一条：**绝不能把 template 的 `build-ui.mjs`/`verify-build.mjs` 直接拷给插件**——那会把 9 个插件的通用版覆盖成 demo 专用版，9 个插件全部构建失败。
+> ⚠️ 由此得出本 skill 最重要的一条：**绝不能把 template 的 `build-ui.mjs`/`verify-build.mjs` 直接拷给插件**——那会把全部派生插件的通用版覆盖成 demo 专用版并导致构建失败。
 
 ## 怎么读 template 增量
 
@@ -30,7 +30,7 @@
 
 判断"有没有影响其他插件"时，**三张清单都要过**，尤其别漏 added（git diff 默认不显示它）。
 
-**⚠️ 特例：增量含 SDK 版本 bump。** 当三张清单里出现 `package.json` 且 hunk 是 `@clipbus/plugin-sdk` 版本变化时，**仓库文件 diff 到此为止只能看到一个版本号——真正的影响藏在依赖包内部，文件 diff 根本照不到**。这时**必跑 `scripts/sdk-api-diff.mjs <repoRoot>`**：它 npm-pack 新旧两版 SDK、diff 它们的 `API.md` + `docs/`，列出 ADDED/REMOVED 能力与 host event。这一步不是可选的——见下方[坑](#坑务必避开)里的 locale 实例。
+**⚠️ 特例：增量含 SDK 版本 bump。** 当三张清单里出现 `package.json` 且 hunk 是 `@clipbus/plugin-sdk` 版本变化时，**仓库文件 diff 到此为止只能看到一个版本号——真正的影响藏在依赖包内部，文件 diff 根本照不到**。这时**必跑 `scripts/sdk-api-diff.mjs <repoRoot>`**：它 npm-pack 新旧两版 SDK、diff `API.md`、SDK 根 Markdown（README/SPECIFICATION 等）和 `docs/` 教程正文，并列出 ADDED/REMOVED 能力与 host event。这一步不是可选的——根 README/SPEC 也可能包含 docs/ 没完整重复的生命周期语义。
 
 ## 类别表：识别 + 处置
 
@@ -79,6 +79,7 @@ tests/setup.cjs
     - **REMOVED / 改签名 = 破坏性**：插件用到就会编译/校验失败，`npm run verify` 会红。报错先读 `node_modules/@clipbus/plugin-sdk/API.md`（capability 真相源）+ `docs/` 再改。
     - **ADDED = 可选新能力**：插件不用它也照样编译过、verify 全绿——**所以光看"试点 verify 绿"会以为没影响，这是陷阱**。新增能力是真实影响，必须在修改方案里**显式列出**并问用户是否采用，绝不静默忽略。
   - **实例（0.8.1 → 0.8.4）**：仓库里只有 `template-plugin/package.json` 一行 `^0.8.1 → ^0.8.4`。`sdk-api-diff` 揭示真实增量 = 新增 `locale` 能力（runtime `host.locale.get()`、UI `clipbus.locale.current()/.on()`、topic `locale`、global `__CLIPBUS_PLUGIN_LOCALE__`），纯新增、无权限、无既有签名改动。verify 会全绿，但"插件该不该用上 locale"是真实的待决问题。第一版分析仅凭文件 diff + 试点 verify，把它误判成"只 bump 版本号、低影响"——`sdk-api-diff` 就是为堵这个洞而加的。
+  - **实例（0.8.7 → 0.9.5）**：除四个新增 capability 外，根 `README.md` / `SPECIFICATION.md` 明确了 Action `{sourceItem,content,attachments}`、Draft 结果终止级联等关键语义。旧脚本只列 `docs/` 文件名会漏掉这些正文；脚本现已扩为输出全部根 Markdown + 教程 unified diff。schema v3 还要求所有 Action `supportedItemTypes`→`supportedInputKinds`，图片 Action 必须切换到当前输入专用 API。
 - **attachmentType 命名空间**：若契约变化牵涉 detector/renderer 的 attachmentType 规则，记住宿主加载期强制 `plugin.<本插件>.*` 前缀，而 `npm run verify` 查不出——改动涉及此处时要格外小心（详见 `clipbus-plugin-generator` 的铁律）。
 - **added 文件不在 `git diff` 里**：务必从 `pull-template.mjs` 的清单取 added，别只看 `git diff`。
 
@@ -90,4 +91,5 @@ tests/setup.cjs
 2. 再分发给现有各插件；
 3. 否则：之后新 `generate` 出来的插件会与现有插件不一致，留下隐患。
 
-这是本 skill 与 `clipbus-plugin-generator` 唯一的耦合点，改分叉脚本时务必两边一起动。
+此外，schema/SDK 的 authoring 契约变化必须同步 generator 的 `SKILL.md`、
+`references/architecture.md`、`references/authoring-guide.md` 与 scaffold fallback；否则新生成插件仍会使用旧字段或旧 Action 语义。分叉脚本与 authoring 契约两类耦合都要一起收敛。

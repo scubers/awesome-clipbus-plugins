@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "plugin": {
     "id": "plugin.text",
     "title": "Text Tools",
@@ -20,28 +20,28 @@
     {
       "id": "text-sort",
       "title": "Sort Lines",
-      "supportedItemTypes": ["text"],
+      "supportedInputKinds": ["text"],
       "lifecycle": "auto-run",
       "keywords": ["sort", "order", "lines"]
     },
     {
       "id": "text-dedup",
       "title": "Remove Duplicate Lines",
-      "supportedItemTypes": ["text"],
+      "supportedInputKinds": ["text"],
       "lifecycle": "auto-run",
       "keywords": ["dedup", "unique", "duplicates"]
     },
     {
       "id": "text-trim",
       "title": "Tidy Whitespace",
-      "supportedItemTypes": ["text"],
+      "supportedInputKinds": ["text"],
       "lifecycle": "auto-run",
       "keywords": ["trim", "whitespace", "spaces"]
     },
     {
       "id": "text-strip-ansi",
       "title": "Strip ANSI Codes",
-      "supportedItemTypes": ["text"],
+      "supportedInputKinds": ["text"],
       "lifecycle": "auto-run",
       "keywords": ["ansi", "escape", "terminal", "color", "strip"]
     }

@@ -20,6 +20,7 @@ This project (`plugins/template-plugin/`) is the **scaffold and runnable example
 ### Prerequisites
 
 - Node.js >= 18
+- Clipbus plugin manifest schema v3 / `@clipbus/plugin-sdk` 0.9.x
 
 ### Initialize
 
@@ -64,6 +65,11 @@ Clipbus → Settings → Plugins → the Developer Plugins section provides life
 
 States: `installing` → installing; `installFailed` → non-zero exit code or runtime unreachable; `ready` → usable.
 
+Existing schema v2 plugins must rename Action `supportedItemTypes` to
+`supportedInputKinds`. The host intentionally does not provide a v2 runtime
+adapter; incompatible installed/development sources remain visible as
+`requiresUpdate` until rebuilt.
+
 ### Production build
 
 ```sh
@@ -82,8 +88,9 @@ Runs in order: **manifest validation → build → tests**.
 
 The manifest validation step (`npm run verify:manifest`) checks your `manifest.json`
 for structural issues — namespace violations, unsupported schema versions, legacy fields,
-unrecognised item types, and more — before the build runs. This catches errors early,
-the same ones the host validates at install time.
+unrecognised item types, invalid `plugin.id` formats (lowercase letters/digits and `-` `.` `_`
+only, no `..`, no leading `.`, max 128 chars), and more — before the build runs. This catches
+errors early, the same ones the host validates at install time.
 
 You can also run manifest validation alone:
 

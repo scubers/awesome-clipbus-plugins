@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "plugin": {
     "id": "plugin.extractor",
     "title": "Extractor",
@@ -100,7 +100,7 @@
     {
       "id": "regex-tool",
       "title": "Regex Tester",
-      "supportedItemTypes": ["text"],
+      "supportedInputKinds": ["text"],
       "lifecycle": "draft",
       "uiEntry": "actions/regex-tool/index.html",
       "keywords": ["regex", "regexp", "pattern", "match"]

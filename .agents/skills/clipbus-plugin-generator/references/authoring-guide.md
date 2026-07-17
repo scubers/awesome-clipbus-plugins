@@ -223,6 +223,10 @@ onUnmounted(() => { unsub?.(); });
 
 无 UI，处理后返回结果上下文。`resolveSession` 是 R13 后接口要求的桩。
 
+SDK 0.9+ 中 `input.sourceItem` 始终保留最初打开 Action Panel 的 item 身份；
+`input.content` 才是当前级联值，可能已由前一个 auto-run Action 改变 kind。
+过滤与变换一律依据 `input.content.kind`，item mutation 才使用 `input.sourceItem.id`。
+
 ```ts
 import { actionResult } from "@clipbus/plugin-sdk/runtime";
 import type { PluginAutoRunActionHandler, PluginAutoRunActionInput, PluginActionOperationResult, PluginActionResolveResult } from "@clipbus/plugin-sdk/runtime";
@@ -272,13 +276,21 @@ import { useTopicRef } from "../../shared/composables/useTopicRef";
 import { reactive, watch } from "vue";
 
 const draftTopic = useTopicRef(clipbus.action.draft);  // 宿主推来的 draft
+const actionInput = useTopicRef(clipbus.action.input); // 当前级联值；path 不暴露真实路径
 const draft = reactive({ /* 本地可编辑副本 */ });
 watch(draftTopic, (d) => Object.assign(draft, d ?? {}), { immediate: true });
 
 // 动态按钮：await clipbus.action.setButtons({ buttons: [...] })
-// 提交：await clipbus.action.complete({ resultKind: "text", text }) // 或 image / none
+// 提交：await clipbus.action.complete({ result: { resultKind: "text", text } })
 // 宿主条按钮：clipbus.action.onHostInvoke.on(async (d) => { if (d.buttonID === "submit") … })
 ```
+
+Draft 结果是终点，不继续进入下一个 Action。Action 图片在 Runtime 用
+`ctx.host.action.materializeInputImagePath()`，在 Draft UI 用
+`clipbus.asset.currentActionInputImageUrl()`；两者都读取当前级联值，而不是原始 item。
+普通文件输出必须先经 `ctx.host.action.allocateOutputFilePath()` 分配，再用
+`actionResult.path_reference()` 或 `clipbus.action.complete({result:{resultKind:"path_reference",…}})`
+返回，任意绝对路径会被宿主拒绝。
 
 UI↔Node 自定义 RPC（如让 Node 干重活/生图）：Runtime 用 `defineMessage<Req,Resp>("<topic>.key").handle(fn)` 注册进 `messageHandlers`；UI `await clipbus.runtime.invoke({ key: "<topic>.key", payload })`。生成图片：Node 写临时 PNG → `host.asset.registerImage({ path })` 得 `clipbus-asset://` URL → UI `<img :src>`。
 

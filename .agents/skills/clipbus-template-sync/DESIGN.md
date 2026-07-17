@@ -2,8 +2,8 @@
 
 ## 要解决的问题
 
-合集里 `template-plugin/` 是上游 `clipbus-template-plugin` 的 vendored 副本，9 个 `clipbus-*-plugin`
-是从它派生的。上游模板更新（升 SDK、改共享工具、调构建脚本、引入新约定）后，需要：把更新拉进
+合集里 `template-plugin/` 是上游 `clipbus-template-plugin` 的 vendored 副本，所有已跟踪且结构完整的
+`clipbus-*-plugin` 都从它派生。上游模板更新（升 SDK、改共享工具、调构建脚本、引入新约定）后，需要：把更新拉进
 `template-plugin/`，判断哪些改动**影响派生插件**，再把有影响的部分**同步到全部插件并验证到绿**。
 本 skill 把这套流程固化下来，避免每次手工同步遗漏或弄坏插件。
 
@@ -62,7 +62,7 @@ clipbus-template-sync/
 ├── scripts/
 │   ├── pull-template.mjs          # 浅克隆上游 → 替换 template-plugin tracked 文件 → 输出 added/modified/removed
 │   │                              #   （保留 gitignored；不 git add；支持 --dry-run/--ref/--upstream/--json）
-│   ├── sdk-api-diff.mjs           # SDK bump 专用：npm-pack 新旧两版 SDK，diff API.md/docs，列 ADDED/REMOVED 能力
+│   ├── sdk-api-diff.mjs           # SDK bump：diff API、根 Markdown、docs 正文，列 ADDED/REMOVED 能力
 │   │                              #   （影响藏在依赖内部、文件 diff 与 verify 绿都照不到，必须单独 diff）
 │   └── check-consistency.mjs      # 收尾：动态导出共享集，校验各插件收敛一致（exit≠0 即有分歧）
 └── references/
@@ -96,6 +96,16 @@ ADDED 也要显式列出问采用"定为硬规则。实测 `sdk-api-diff` 正确
 
 ## 验证方式的选择
 
-本 skill 的"运行"会真实改动仓库（克隆上游、改 9 个插件、9× npm install/verify），不适合 skill-creator
+本 skill 的"运行"会真实改动仓库（克隆上游、改全部派生插件、逐插件 npm install/verify），不适合 skill-creator
 的自动 eval 跑分（重、有副作用、非纯函数）。最有意义的验证是拿真实的 0.8.4 更新**实跑一次**——这
 既是测试也是用户的真实任务。两个确定性脚本已用非破坏方式（dry-run、apply+revert、只读校验）测过。
+
+## Self-iteration log：0.9.5 根文档盲点与历史 verify 例外
+
+0.8.7→0.9.5 实跑发现旧 `sdk-api-diff` 只列 `docs/` 变化并输出 `API.md`，但关键的
+Action 级联语义还写在 SDK 根 `README.md` / `SPECIFICATION.md`：`sourceItem` 与当前 `content`
+分离、Draft 结果终止级联、Action 当前图片与安全文件输出。修复为动态 diff SDK 根 Markdown，
+并输出所有变更教程的 unified diff，避免只看文件名。
+
+同次上游删除了历史上依赖 sibling `protocol/plugin` 的 `wire-roundtrip.test.cjs`。因此过去的
+template verify 环境性豁免已经失效：每次同步都必须依据当前上游重新验证，不能永久沿用旧红灯规则。

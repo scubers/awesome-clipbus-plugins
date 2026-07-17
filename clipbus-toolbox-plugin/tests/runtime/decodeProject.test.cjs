@@ -13,6 +13,7 @@ function loadJSON(relativePath) {
 
 test("manifest declares the toolbox plugin identity and the decode feature", () => {
   const manifest = loadJSON("manifest.json");
+  assert.equal(manifest.schemaVersion, 3);
   assert.equal(manifest.plugin.id, "plugin.clipbus.toolbox");
   assert.equal(manifest.plugin.title, "Clipbus Toolbox");
   assert.equal(manifest.runtime.nodeEntry, "dist/plugin.cjs");
@@ -38,13 +39,13 @@ test("manifest declares the toolbox plugin identity and the decode feature", () 
   const caseActions = manifest.actions.filter((action) => action.id !== "image-edit");
   assert.equal(caseActions.length, 6);
   for (const action of caseActions) {
-    assert.deepEqual(action.supportedItemTypes, ["text"]);
+    assert.deepEqual(action.supportedInputKinds, ["text"]);
     assert.equal(action.lifecycle, "auto-run");
     assert.equal(action.uiEntry, undefined);
   }
   // image-edit is the draft-lifecycle crop & compress action for image items.
   const imageEdit = manifest.actions.find((action) => action.id === "image-edit");
-  assert.deepEqual(imageEdit.supportedItemTypes, ["image"]);
+  assert.deepEqual(imageEdit.supportedInputKinds, ["image"]);
   assert.equal(imageEdit.lifecycle, "draft");
   assert.equal(imageEdit.uiEntry, "actions/image-edit/index.html");
 });

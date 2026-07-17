@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "plugin": {
     "id": "plugin.converter",
     "title": "Converter",
@@ -100,7 +100,7 @@
     {
       "id": "case-tool",
       "title": "Case Converter",
-      "supportedItemTypes": ["text"],
+      "supportedInputKinds": ["text"],
       "lifecycle": "draft",
       "uiEntry": "actions/case-tool/index.html",
       "keywords": ["case", "camel", "snake", "kebab", "pascal", "convert", "naming"]

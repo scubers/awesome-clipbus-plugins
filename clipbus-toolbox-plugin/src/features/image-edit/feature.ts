@@ -15,7 +15,8 @@ const DEFAULT_QUALITY = 80;
 const imageEditAction: PluginAutoRunActionHandler = {
   async resolveSession(input) {
     if (input.content.kind !== "image") {
-      // The host only offers this action for image items (supportedItemTypes),
+      // The host only offers this action for the current image value
+      // (supportedInputKinds),
       // but stay defensive: an empty session is harmless.
       return { buttons: [], initialDraft: {} };
     }

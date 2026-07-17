@@ -53,7 +53,7 @@
 
 ```jsonc
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "plugin": { "id": "plugin.<topic>", "title": "...", "version": "0.1.0" },
   "install": { "runtime": "node", "entry": "scripts/install.mjs" },
   "runtime": { "nodeEntry": "dist/plugin.cjs", "uiRoot": "dist/ui" },
@@ -67,12 +67,16 @@
       "attachmentTypes": ["plugin.<topic>.<feat>"] }
   ],
   "actions": [
-    { "id": "<id>", "title": "...", "supportedItemTypes": ["text"],
+    { "id": "<id>", "title": "...", "supportedInputKinds": ["text"],
       "lifecycle": "auto-run", "keywords": ["..."] }
     // draft 多一个 "uiEntry": "actions/<id>/index.html"，lifecycle:"draft"
   ]
 }
 ```
+
+schema v3 下 Action Runtime 收到 `{ sourceItem, content, attachments }`：
+`sourceItem` 是原始剪贴板身份，`content` 是可由前序 auto-run Action 改变 kind 的当前级联值。
+Action 的过滤和处理必须依据 `content.kind`，不能依据 `sourceItem.type`。
 
 ## 常用命令（插件目录内）
 

@@ -12,8 +12,10 @@ import type { CropRect, ProcessImageReq, ProcessImageResp } from "./contracts.ts
  * tests, and so we don't couple to SDK type re-exports.
  */
 export interface ImageEditHost {
-  item: { materializeImagePath(): Promise<{ path: string }> };
-  action: { allocateImageTempPath(payload: { formatHint: string }): Promise<{ path: string }> };
+  action: {
+    materializeInputImagePath(): Promise<{ path: string }>;
+    allocateImageTempPath(payload: { formatHint: string }): Promise<{ path: string }>;
+  };
 }
 
 export type OutputFormat = "jpeg" | "png" | "webp";
@@ -83,13 +85,13 @@ export function applyFormat(pipeline: sharp.Sharp, format: OutputFormat, quality
 }
 
 /**
- * Crop + compress the current item's image and write the result to a
+ * Crop + compress the current Action image and write the result to a
  * host-allocated temp path. The original is never mutated (sharp reads a
  * materialized copy). Returns the temp path + format hint for
  * clipbus.action.complete({ result: { resultKind: 'image', ... } }).
  */
 export async function processImage(host: ImageEditHost, req: ProcessImageReq): Promise<ProcessImageResp> {
-  const { path: srcPath } = await host.item.materializeImagePath();
+  const { path: srcPath } = await host.action.materializeInputImagePath();
   const meta = await sharp(srcPath).metadata();
   if (!meta.width || !meta.height) {
     // Without real dimensions we cannot bound the crop safely; fail closed

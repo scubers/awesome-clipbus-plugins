@@ -7,19 +7,19 @@
  * APIs (a new capability / host event) do NOT fail `npm run verify` — plugins keep
  * compiling green while quietly missing a capability they may want to adopt. So a
  * file-diff + verify-green is NOT enough to understand an SDK bump. You must diff
- * the SDK's own API.md + docs between the old and new versions. This script does
- * that deterministically.
+ * the SDK's own API.md + root Markdown references + docs/ tutorials between the
+ * old and new versions. This script does that deterministically.
  *
  * It npm-packs both versions (no install, no repo mutation) and reports:
  *   - the Overview counts (capabilities / host events) for each version
  *   - capability method names ADDED / REMOVED (set-diff of CAPABILITY_METHOD_NAMES)
  *   - the unified diff of API.md (authoritative human-readable surface)
- *   - which docs/ files were added / removed / modified
+ *   - unified diffs for changed root Markdown references and docs/ tutorials
  *
  * Usage:
  *   node sdk-api-diff.mjs [repoRoot] [--old <ver>] [--new <ver>]
- *     --old  old version (default: SDK version installed in the first plugin,
- *            else that plugin's package.json range, with ^/~ stripped)
+ *     --old  old version (default: template-plugin/package.json at git HEAD,
+ *            then the first plugin's installed/package.json version as fallback)
  *     --new  new version (default: template-plugin/package.json SDK version)
  *
  * stdout: the report. stderr: diagnostics. Read-only w.r.t. the repo.
@@ -60,6 +60,20 @@ function sdkRangeFromPkg(pkgPath) {
   return pkg.dependencies?.[PKG] ?? pkg.devDependencies?.[PKG] ?? null;
 }
 
+function sdkRangeFromGitHead(repoRoot) {
+  try {
+    const raw = execFileSync("git", ["show", "HEAD:template-plugin/package.json"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+    const pkg = JSON.parse(raw);
+    return pkg.dependencies?.[PKG] ?? pkg.devDependencies?.[PKG] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 function firstPluginDir(repoRoot) {
   return readdirSync(repoRoot, { withFileTypes: true })
     .filter((e) => e.isDirectory() && /^clipbus-.+-plugin$/.test(e.name))
@@ -72,10 +86,13 @@ function resolveVersions(opts) {
   if (!nw) nw = stripRange(sdkRangeFromPkg(path.join(opts.repoRoot, "template-plugin", "package.json")));
   let old = opts.old;
   if (!old) {
-    const p = firstPluginDir(opts.repoRoot);
-    if (p) {
-      const installed = readJSON(path.join(opts.repoRoot, p, "node_modules", PKG, "package.json"));
-      old = installed?.version ?? stripRange(sdkRangeFromPkg(path.join(opts.repoRoot, p, "package.json")));
+    old = stripRange(sdkRangeFromGitHead(opts.repoRoot));
+    if (!old) {
+      const p = firstPluginDir(opts.repoRoot);
+      if (p) {
+        const installed = readJSON(path.join(opts.repoRoot, p, "node_modules", PKG, "package.json"));
+        old = installed?.version ?? stripRange(sdkRangeFromPkg(path.join(opts.repoRoot, p, "package.json")));
+      }
     }
   }
   return { old, new: nw };
@@ -124,6 +141,14 @@ function listFiles(dir) {
   return out;
 }
 
+function listRootMarkdown(dir) {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((e) => e.isFile() && e.name.endsWith(".md") && e.name !== "API.md")
+    .map((e) => e.name)
+    .sort();
+}
+
 function sameFile(a, b) {
   try {
     return readFileSync(a).equals(readFileSync(b));
@@ -139,6 +164,10 @@ function unifiedDiff(a, b) {
     // diff exits 1 when files differ — that's the normal case, output is on stdout.
     return e.stdout ?? `(diff failed: ${e.message})`;
   }
+}
+
+function unifiedDiffOptional(oldPath, newPath) {
+  return unifiedDiff(existsSync(oldPath) ? oldPath : "/dev/null", existsSync(newPath) ? newPath : "/dev/null");
 }
 
 function main() {
@@ -190,6 +219,21 @@ function main() {
       );
     }
 
+    // Root Markdown references can carry lifecycle and authoring semantics that
+    // are not duplicated in API.md or docs/. Diff them explicitly.
+    const oldRootDocs = new Set(listRootMarkdown(oldRoot));
+    const newRootDocs = new Set(listRootMarkdown(newRoot));
+    const rootDocsAdded = [...newRootDocs].filter((f) => !oldRootDocs.has(f)).sort();
+    const rootDocsRemoved = [...oldRootDocs].filter((f) => !newRootDocs.has(f)).sort();
+    const rootDocsModified = [...newRootDocs]
+      .filter((f) => oldRootDocs.has(f) && !sameFile(path.join(oldRoot, f), path.join(newRoot, f)))
+      .sort();
+    lines.push("");
+    lines.push("root Markdown changes (excluding API.md):");
+    lines.push(`  added:    ${rootDocsAdded.join(", ") || "(none)"}`);
+    lines.push(`  removed:  ${rootDocsRemoved.join(", ") || "(none)"}`);
+    lines.push(`  modified: ${rootDocsModified.join(", ") || "(none)"}`);
+
     // docs/ changes
     const oldDocs = path.join(oldRoot, "docs");
     const newDocs = path.join(newRoot, "docs");
@@ -210,6 +254,15 @@ function main() {
     lines.push("===== API.md unified diff =====");
     process.stdout.write(lines.join("\n") + "\n");
     process.stdout.write(unifiedDiff(oldApi, newApi));
+
+    for (const f of [...rootDocsAdded, ...rootDocsRemoved, ...rootDocsModified]) {
+      process.stdout.write(`\n===== root ${f} unified diff =====\n`);
+      process.stdout.write(unifiedDiffOptional(path.join(oldRoot, f), path.join(newRoot, f)));
+    }
+    for (const f of [...docsAdded, ...docsRemoved, ...docsModified]) {
+      process.stdout.write(`\n===== docs/${f} unified diff =====\n`);
+      process.stdout.write(unifiedDiffOptional(path.join(oldDocs, f), path.join(newDocs, f)));
+    }
   } catch (e) {
     process.stderr.write(`sdk-api-diff: fatal: ${e.message}\n`);
     process.exitCode = 1;
