@@ -11,6 +11,33 @@ export function sortLines(text: string): string {
   return lines.join("\n");
 }
 
+/** Reverse line order, normalizing line endings to LF. */
+export function reverseLines(text: string): string {
+  return text.split(/\r?\n/).reverse().join("\n");
+}
+
+const graphemeSegmenter = new Intl.Segmenter(undefined, {
+  granularity: "grapheme",
+});
+
+function graphemes(text: string): string[] {
+  return Array.from(graphemeSegmenter.segment(text), ({ segment }) => segment);
+}
+
+/** Reverse user-perceived characters without splitting emoji or combining marks. */
+export function reverseCharacters(text: string): string {
+  return graphemes(text).reverse().join("");
+}
+
+/** Sort user-perceived characters using case-insensitive natural ordering. */
+export function sortCharacters(text: string): string {
+  return graphemes(text)
+    .sort((a, b) =>
+      a.localeCompare(b, undefined, { sensitivity: "base", numeric: true })
+    )
+    .join("");
+}
+
 /** Remove duplicate lines, preserving first occurrence and original order. */
 export function dedupLines(text: string): string {
   const lines = text.split(/\r?\n/);

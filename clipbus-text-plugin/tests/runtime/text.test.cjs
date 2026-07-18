@@ -9,13 +9,16 @@ const manifest = JSON.parse(fs.readFileSync(path.resolve(root, 'manifest.json'),
 
 // ── manifest ─────────────────────────────────────────────────────────────────
 
-test('manifest declares the 4 action ids', () => {
+test('manifest declares the 7 action ids', () => {
   const ids = manifest.actions.map((a) => a.id);
   assert.ok(ids.includes('text-sort'), 'missing text-sort');
   assert.ok(ids.includes('text-dedup'), 'missing text-dedup');
   assert.ok(ids.includes('text-trim'), 'missing text-trim');
   assert.ok(ids.includes('text-strip-ansi'), 'missing text-strip-ansi');
-  assert.equal(ids.length, 4);
+  assert.ok(ids.includes('text-reverse-lines'), 'missing text-reverse-lines');
+  assert.ok(ids.includes('text-reverse-characters'), 'missing text-reverse-characters');
+  assert.ok(ids.includes('text-sort-characters'), 'missing text-sort-characters');
+  assert.equal(ids.length, 7);
 });
 
 test('all actions are lifecycle auto-run', () => {
@@ -47,6 +50,19 @@ test('createTrimAction returns a handler with runAutoAction and resolveSession',
   assert.equal(typeof handler.resolveSession, 'function');
 });
 
+for (const [moduleName, factoryName] of [
+  ['reverse-lines', 'createReverseLinesAction'],
+  ['reverse-characters', 'createReverseCharactersAction'],
+  ['sort-characters', 'createSortCharactersAction'],
+]) {
+  test(`${factoryName} returns a handler with runAutoAction and resolveSession`, () => {
+    const actionModule = require(path.resolve(root, `src/features/line-tools/${moduleName}.ts`));
+    const handler = actionModule[factoryName]();
+    assert.equal(typeof handler.runAutoAction, 'function');
+    assert.equal(typeof handler.resolveSession, 'function');
+  });
+}
+
 // ── pure transform unit tests ─────────────────────────────────────────────────
 
 test('sortLines sorts alphabetically case-insensitive with natural numeric order', () => {
@@ -63,6 +79,21 @@ test('dedupLines removes duplicate lines preserving first occurrence', () => {
 test('tidyWhitespace trims trailing spaces, collapses blank lines, trims edges', () => {
   const { tidyWhitespace } = require(path.resolve(root, 'src/features/line-tools/transforms.ts'));
   assert.equal(tidyWhitespace('  x  \n\n\n\ny  '), 'x\n\ny');
+});
+
+test('reverseLines reverses lines and normalizes line endings', () => {
+  const { reverseLines } = require(path.resolve(root, 'src/features/line-tools/transforms.ts'));
+  assert.equal(reverseLines('first\r\nsecond\r\nthird'), 'third\nsecond\nfirst');
+});
+
+test('reverseCharacters reverses graphemes without splitting combined characters', () => {
+  const { reverseCharacters } = require(path.resolve(root, 'src/features/line-tools/transforms.ts'));
+  assert.equal(reverseCharacters('A👍🏽e\u0301'), 'e\u0301👍🏽A');
+});
+
+test('sortCharacters sorts graphemes case-insensitively with natural numeric order', () => {
+  const { sortCharacters } = require(path.resolve(root, 'src/features/line-tools/transforms.ts'));
+  assert.equal(sortCharacters('b10A2a'), '012Aab');
 });
 
 // ── action wiring ────────────────────────────────────────────────────────────
@@ -99,6 +130,27 @@ test('trim action tidies whitespace', async () => {
   assert.equal(result.result.text, 'x\n\ny');
 });
 
+test('reverse lines action reverses line order', async () => {
+  const { createReverseLinesAction } = require(path.resolve(root, 'src/features/line-tools/reverse-lines.ts'));
+  const result = await createReverseLinesAction().runAutoAction(makeInput('one\ntwo\nthree'));
+  assert.equal(result.result.resultKind, 'text');
+  assert.equal(result.result.text, 'three\ntwo\none');
+});
+
+test('reverse characters action reverses all graphemes', async () => {
+  const { createReverseCharactersAction } = require(path.resolve(root, 'src/features/line-tools/reverse-characters.ts'));
+  const result = await createReverseCharactersAction().runAutoAction(makeInput('abc👍🏽'));
+  assert.equal(result.result.resultKind, 'text');
+  assert.equal(result.result.text, '👍🏽cba');
+});
+
+test('sort characters action sorts all graphemes', async () => {
+  const { createSortCharactersAction } = require(path.resolve(root, 'src/features/line-tools/sort-characters.ts'));
+  const result = await createSortCharactersAction().runAutoAction(makeInput('cba'));
+  assert.equal(result.result.resultKind, 'text');
+  assert.equal(result.result.text, 'abc');
+});
+
 test('sort action on empty text returns resultKind none', async () => {
   const { createSortAction } = require(path.resolve(root, 'src/features/line-tools/sort.ts'));
   const handler = createSortAction();
@@ -119,3 +171,15 @@ test('trim action on whitespace-only text returns resultKind none', async () => 
   const result = await handler.runAutoAction(makeInput('   \n  \n  '));
   assert.equal(result.result.resultKind, 'none');
 });
+
+for (const [moduleName, factoryName] of [
+  ['reverse-lines', 'createReverseLinesAction'],
+  ['reverse-characters', 'createReverseCharactersAction'],
+  ['sort-characters', 'createSortCharactersAction'],
+]) {
+  test(`${moduleName} action on empty text returns resultKind none`, async () => {
+    const actionModule = require(path.resolve(root, `src/features/line-tools/${moduleName}.ts`));
+    const result = await actionModule[factoryName]().runAutoAction(makeInput(''));
+    assert.equal(result.result.resultKind, 'none');
+  });
+}

@@ -3,7 +3,7 @@
   "plugin": {
     "id": "plugin.text",
     "title": "Text Tools",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "install": {
     "runtime": "node",
@@ -44,6 +44,27 @@
       "supportedInputKinds": ["text"],
       "lifecycle": "auto-run",
       "keywords": ["ansi", "escape", "terminal", "color", "strip"]
+    },
+    {
+      "id": "text-reverse-lines",
+      "title": "Reverse Lines",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["reverse", "lines", "flip"]
+    },
+    {
+      "id": "text-reverse-characters",
+      "title": "Reverse Characters",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["reverse", "characters", "text", "flip"]
+    },
+    {
+      "id": "text-sort-characters",
+      "title": "Sort Characters",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["sort", "characters", "order"]
     }
   ]
 }

@@ -3,6 +3,9 @@ import { createSortAction } from "./features/line-tools/sort.ts";
 import { createDedupAction } from "./features/line-tools/dedup.ts";
 import { createTrimAction } from "./features/line-tools/trim.ts";
 import { createStripAnsiAction } from "./features/line-tools/strip-ansi.ts";
+import { createReverseLinesAction } from "./features/line-tools/reverse-lines.ts";
+import { createReverseCharactersAction } from "./features/line-tools/reverse-characters.ts";
+import { createSortCharactersAction } from "./features/line-tools/sort-characters.ts";
 
 export default definePlugin({
   setup() {
@@ -14,6 +17,9 @@ export default definePlugin({
         "text-dedup": createDedupAction(),
         "text-trim": createTrimAction(),
         "text-strip-ansi": createStripAnsiAction(),
+        "text-reverse-lines": createReverseLinesAction(),
+        "text-reverse-characters": createReverseCharactersAction(),
+        "text-sort-characters": createSortCharactersAction(),
       },
       messageHandlers: {},
     };
