@@ -1,33 +1,58 @@
-// action.ts — runtime-only draft action handler for escape-tool.
-// This file is never imported by app.vue (UI side).
-
 import { actionResult } from "@clipbus/plugin-sdk/runtime";
 import type {
   PluginAutoRunActionHandler,
-  PluginActionOperationResult,
-  PluginAutoRunActionInput,
+  PluginActionResolveResult,
 } from "@clipbus/plugin-sdk/runtime";
-import { INITIAL_DRAFT } from "./payload.ts";
+import {
+  base64Decode,
+  base64Encode,
+  htmlDecode,
+  htmlEncode,
+  jsonDecode,
+  jsonEncode,
+  unicodeDecode,
+  unicodeEncode,
+  urlDecode,
+  urlEncode,
+} from "./payload.ts";
 
-export function createEscapeAction(): PluginAutoRunActionHandler {
+const resolveStub = async (): Promise<PluginActionResolveResult> => ({
+  buttons: [],
+  initialDraft: {},
+});
+
+function createTransformAction(
+  transform: (text: string) => string | null,
+  userMessage: string,
+): PluginAutoRunActionHandler {
   return {
-    async resolveSession(input, _ctx) {
-      const inputText =
-        (input as { content?: { text?: string } } | undefined)?.content?.text ?? "";
-      return {
-        displayName: "Escape & Encode",
-        buttons: [{ id: "submit", title: "Copy Encoded Result", isEnabled: true }],
-        defaultButtonID: "submit",
-        initialDraft: {
-          ...INITIAL_DRAFT,
-          input: inputText,
-        } as unknown as Record<string, unknown>,
-      };
-    },
-    // Draft-lifecycle actions are driven by the UI; runAutoAction is a guarded stub
-    // that satisfies the PluginAutoRunActionHandler interface.
-    async runAutoAction(_input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
-      return actionResult.none({ userMessage: "Draft is driven by the UI" });
+    resolveSession: resolveStub,
+    async runAutoAction(input) {
+      if (input.content.kind !== "text") {
+        return actionResult.none({ userMessage: "Text input required" });
+      }
+      try {
+        const output = transform(input.content.text);
+        if (output === null) {
+          return actionResult.none({ userMessage: "Invalid encoded input" });
+        }
+        return actionResult.text(output, { userMessage });
+      } catch {
+        return actionResult.none({ userMessage: "Invalid encoded input" });
+      }
     },
   };
 }
+
+export const escapeActions: Record<string, PluginAutoRunActionHandler> = {
+  "url-encode": createTransformAction(urlEncode, "URL encoded"),
+  "url-decode": createTransformAction(urlDecode, "URL decoded"),
+  "html-encode": createTransformAction(htmlEncode, "HTML encoded"),
+  "html-decode": createTransformAction(htmlDecode, "HTML decoded"),
+  "base64-encode": createTransformAction(base64Encode, "Base64 encoded"),
+  "base64-decode": createTransformAction(base64Decode, "Base64 decoded"),
+  "unicode-escape": createTransformAction(unicodeEncode, "Unicode escaped"),
+  "unicode-unescape": createTransformAction(unicodeDecode, "Unicode unescaped"),
+  "json-escape": createTransformAction(jsonEncode, "JSON escaped"),
+  "json-unescape": createTransformAction(jsonDecode, "JSON unescaped"),
+};

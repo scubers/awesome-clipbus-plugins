@@ -3,6 +3,7 @@ import type { PluginDetectorArtifact } from "@clipbus/plugin-sdk/runtime";
 export interface UrlPayload {
   kind: "url_parsed";
   version: 1;
+  inputType: "url" | "query";
   input: string;
   href: string;
   scheme: string;
@@ -11,6 +12,8 @@ export interface UrlPayload {
   port: string;
   path: string;
   query: { key: string; value: string }[];
+  queryJson: string;
+  hasDuplicateKeys: boolean;
   hash: string;
   cleanHref: string;
   trackingParams: { key: string; value: string }[];
@@ -20,8 +23,6 @@ export interface UrlPayload {
     facts: { label: string; value: string }[];
   };
 }
-
-const CONTROL_RE = /\p{C}/u;
 
 /** Known tracking query parameter keys (exact match, lowercased). */
 const TRACKING_EXACT = new Set([
@@ -69,44 +70,34 @@ function isTracking(key: string): boolean {
   return lower.startsWith("utm_") || TRACKING_EXACT.has(lower);
 }
 
-function isReadableText(text: string): boolean {
-  if (text.length === 0) return true;
-  let printable = 0;
-  let total = 0;
-  for (const char of text) {
-    total += 1;
-    if (char === "\t" || char === "\n" || char === "\r" || !CONTROL_RE.test(char)) {
-      printable += 1;
-    }
-  }
-  return printable / total >= 0.95;
-}
-
-function decodeQueryPart(raw: string): string {
-  try {
-    const decoded = decodeURIComponent(raw.replace(/\+/g, " "));
-    return isReadableText(decoded) ? decoded : raw;
-  } catch {
-    return raw;
-  }
-}
-
-function parseReadableQuery(search: string): { key: string; value: string }[] {
+function parseQuery(search: string): { key: string; value: string }[] {
   const rawQuery = search.startsWith("?") ? search.slice(1) : search;
   if (!rawQuery) return [];
+  return Array.from(new URLSearchParams(rawQuery).entries()).map(([key, value]) => ({
+    key,
+    value,
+  }));
+}
 
-  return rawQuery
-    .split("&")
-    .filter((segment) => segment.length > 0)
-    .map((segment) => {
-      const separator = segment.indexOf("=");
-      const rawKey = separator === -1 ? segment : segment.slice(0, separator);
-      const rawValue = separator === -1 ? "" : segment.slice(separator + 1);
-      return {
-        key: decodeQueryPart(rawKey),
-        value: decodeQueryPart(rawValue),
-      };
-    });
+function queryMetadata(query: { key: string; value: string }[]) {
+  const keys = query.map(({ key }) => key);
+  return {
+    queryJson: JSON.stringify(Object.fromEntries(query.map(({ key, value }) => [key, value])), null, 2),
+    hasDuplicateKeys: new Set(keys).size !== keys.length,
+  };
+}
+
+/** A conservative naked query-string gate: require at least two key=value pairs. */
+export function parseQueryString(text: string): { key: string; value: string }[] | null {
+  const value = text.trim();
+  if (!value || value.includes("://") || /\s/.test(value)) return null;
+  const raw = value.startsWith("?") ? value.slice(1) : value;
+  const segments = raw.split("&");
+  if (segments.length < 2 || segments.some((segment) => !/^[^=&#]+=[^&#]*$/.test(segment))) {
+    return null;
+  }
+  const query = parseQuery(raw);
+  return query.length >= 2 ? query : null;
 }
 
 /**
@@ -139,7 +130,36 @@ export function createUrlPayload(input: unknown): UrlPayload | null {
 
   const text = content.text.trim();
   const u = parseUrl(text);
-  if (!u) return null;
+  if (!u) {
+    const query = parseQueryString(text);
+    if (!query) return null;
+    const metadata = queryMetadata(query);
+    return {
+      kind: "url_parsed",
+      version: 1,
+      inputType: "query",
+      input: text,
+      href: "",
+      scheme: "",
+      username: "",
+      host: "",
+      port: "",
+      path: "",
+      query,
+      ...metadata,
+      hash: "",
+      cleanHref: "",
+      trackingParams: [],
+      display: {
+        typeLabel: "Query String",
+        headline: `${query.length} parameters`,
+        facts: [
+          { label: "Pairs", value: String(query.length) },
+          { label: "Duplicate keys", value: metadata.hasDuplicateKeys ? "Yes" : "No" },
+        ],
+      },
+    };
+  }
 
   const scheme = u.protocol.replace(/:$/, "");
   const host = u.hostname;
@@ -147,7 +167,8 @@ export function createUrlPayload(input: unknown): UrlPayload | null {
   const path = u.pathname;
   const hash = u.hash;
   const username = u.username;
-  const query = parseReadableQuery(u.search);
+  const query = parseQuery(u.search);
+  const metadata = queryMetadata(query);
 
   const trackingParams = query.filter((q) => isTracking(q.key));
   let cleanHref: string;
@@ -170,6 +191,7 @@ export function createUrlPayload(input: unknown): UrlPayload | null {
   return {
     kind: "url_parsed",
     version: 1,
+    inputType: "url",
     input: text,
     href: u.href,
     scheme,
@@ -178,6 +200,7 @@ export function createUrlPayload(input: unknown): UrlPayload | null {
     port,
     path,
     query,
+    ...metadata,
     hash,
     cleanHref,
     trackingParams,
@@ -196,11 +219,15 @@ export function decodeUrlPayload(
   payloadJson: string | null | undefined
 ): UrlPayload | null {
   try {
-    const p = JSON.parse(payloadJson ?? "{}") as { kind?: string };
+    const p = JSON.parse(payloadJson ?? "{}") as { kind?: string; href?: string; query?: { key: string; value: string }[] };
     if (p.kind !== "url_parsed") return null;
+    const query = Array.isArray(p.query) ? p.query : [];
+    const metadata = queryMetadata(query);
     const withDefaults: unknown = {
+      inputType: p.href ? "url" : "query",
       trackingParams: [],
-      cleanHref: (p as { href?: string }).href ?? "",
+      cleanHref: p.href ?? "",
+      ...metadata,
       ...(p as object),
     };
     return withDefaults as UrlPayload;
@@ -220,9 +247,11 @@ export function buildUrlArtifact(input: unknown): PluginDetectorArtifact | null 
     attachmentKey: "primary",
     payloadJson: JSON.stringify(payload),
     searchProjection: {
-      scope: "url",
-      searchText: payload.host,
-      label: "URL",
+      scope: payload.inputType,
+      searchText: payload.inputType === "url"
+        ? payload.host
+        : payload.query.map(({ key, value }) => `${key} ${value}`).join(" "),
+      label: payload.inputType === "url" ? "URL" : "Query String",
     },
   };
 }

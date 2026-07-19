@@ -42,16 +42,6 @@ const gradientSwatchBootstrapPayload = JSON.stringify({
   angleOrShape: "to right",
 });
 
-const qrCodeBootstrapPayload = JSON.stringify({
-  kind: "qr_code",
-  version: 1,
-  url: "https://example.com",
-  display: {
-    typeLabel: "QR Code",
-    headline: "example.com",
-  },
-});
-
 const markdownPreviewPayload = JSON.stringify({
   kind: "markdown_preview",
   version: 1,
@@ -133,14 +123,5 @@ export const attachmentScenarios: PreviewScenario[] = [
     attachmentType: "plugin.preview.markdown",
     viewport: { heightPolicy: "bounded", min: 120, max: 480 },
     payloadJson: markdownPreviewPayload,
-  }),
-  renderer({
-    id: "qr-code-sample",
-    label: "QR Code: example.com",
-    view: "qr-code",
-    accentHex: "#1a1a1a",
-    attachmentType: "plugin.preview.qr",
-    viewport: { heightPolicy: "fixed", height: 240 },
-    payloadJson: qrCodeBootstrapPayload,
   }),
 ];

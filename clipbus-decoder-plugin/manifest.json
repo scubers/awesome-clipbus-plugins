@@ -59,12 +59,74 @@
   ],
   "actions": [
     {
-      "id": "escape-tool",
-      "title": "Escape & Encode",
+      "id": "url-encode",
+      "title": "URL Encode",
       "supportedInputKinds": ["text"],
-      "lifecycle": "draft",
-      "uiEntry": "actions/escape-tool/index.html",
-      "keywords": ["escape", "encode", "decode", "url", "html", "base64", "unicode", "json"]
+      "lifecycle": "auto-run",
+      "keywords": ["url", "percent", "encode", "escape"]
+    },
+    {
+      "id": "url-decode",
+      "title": "URL Decode",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["url", "percent", "decode", "unescape"]
+    },
+    {
+      "id": "html-encode",
+      "title": "HTML Encode",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["html", "entity", "encode", "escape"]
+    },
+    {
+      "id": "html-decode",
+      "title": "HTML Decode",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["html", "entity", "decode", "unescape"]
+    },
+    {
+      "id": "base64-encode",
+      "title": "Base64 Encode",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["base64", "encode"]
+    },
+    {
+      "id": "base64-decode",
+      "title": "Base64 Decode",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["base64", "decode"]
+    },
+    {
+      "id": "unicode-escape",
+      "title": "Unicode Escape",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["unicode", "escape", "encode"]
+    },
+    {
+      "id": "unicode-unescape",
+      "title": "Unicode Unescape",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["unicode", "unescape", "decode"]
+    },
+    {
+      "id": "json-escape",
+      "title": "JSON Escape",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["json", "escape", "encode"]
+    },
+    {
+      "id": "json-unescape",
+      "title": "JSON Unescape",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["json", "unescape", "decode"]
     }
   ]
 }

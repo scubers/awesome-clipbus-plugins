@@ -1,6 +1,6 @@
 # Decoder
 
-Clipbus plugin that detects and decodes encoded strings on the clipboard. Supports Base64 and JWT out of the box, plus a multi-format escape/encode draft tool.
+Clipbus plugin that detects encoded clipboard strings and exposes composable encoding and escaping actions.
 
 ## Features
 
@@ -25,11 +25,9 @@ Clipbus plugin that detects and decodes encoded strings on the clipboard. Suppor
 | detector | `data-uri-detector` | Recognises RFC 2397 data URIs (`data:[mediatype][;base64],<data>`), anchored — rejects bare base64, URLs, and prose |
 | renderer | `data-uri` | Card view: media type, encoding label, decoded byte size, decoded text preview with "Copy decoded" button for text types, or an image-data note for binary types |
 
-### Escape & Encode draft tool (`escape-tool`)
+### Encoding and escaping actions
 
-| Capability | id | Description |
-|---|---|---|
-| action | `escape-tool` | Draft form with five interchangeable modes: URL, HTML, Base64, Unicode, and JSON (draft lifecycle) |
+Ten independent auto-run actions provide URL, HTML, Base64, Unicode, and JSON encode/decode pairs. Each action consumes the current cascade text and returns text that can continue through another host action.
 
 ## Development
 

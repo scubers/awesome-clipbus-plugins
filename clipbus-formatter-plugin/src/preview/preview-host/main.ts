@@ -7,17 +7,13 @@ import { actionScenarios } from "../scenarios/actionScenarios";
 // PER-PLUGIN: import every renderer + draft-action feature component.
 import JsonRenderer from "../../features/json-renderer/app.vue";
 import XmlRenderer from "../../features/xml-renderer/app.vue";
-import SqlRenderer from "../../features/sql-renderer/app.vue";
 import CsvTable from "../../features/csv-table/app.vue";
-import QueryTable from "../../features/query-table/app.vue";
 
 // PER-PLUGIN: map scenario.view (feature id) → its component.
 const COMPONENTS: Record<string, Component> = {
   "json-renderer": JsonRenderer,
   "xml-renderer": XmlRenderer,
-  "sql-renderer": SqlRenderer,
   "csv-table": CsvTable,
-  "query-table": QueryTable,
 };
 
 createPreviewWorkbench(document.getElementById("app")!, {

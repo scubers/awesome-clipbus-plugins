@@ -28,22 +28,10 @@
       "attachmentTypes": ["plugin.formatter.xml"]
     },
     {
-      "id": "sql-detector",
-      "title": "SQL Detector",
-      "supportedInputKinds": ["text"],
-      "attachmentTypes": ["plugin.formatter.sql"]
-    },
-    {
       "id": "csv-detector",
       "title": "CSV Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.formatter.csv"]
-    },
-    {
-      "id": "query-detector",
-      "title": "Query String Detector",
-      "supportedInputKinds": ["text"],
-      "attachmentTypes": ["plugin.formatter.query"]
     }
   ],
   "attachmentRenderers": [
@@ -62,26 +50,11 @@
       "uiEntry": "renderers/xml-renderer/index.html"
     },
     {
-      "id": "sql-renderer",
-      "title": "SQL Formatter",
-      "attachmentType": "plugin.formatter.sql",
-      "height": { "min": 140, "max": 460 },
-      "tint": "#0369A1",
-      "uiEntry": "renderers/sql-renderer/index.html"
-    },
-    {
       "id": "csv-table",
       "title": "CSV Table",
       "attachmentType": "plugin.formatter.csv",
       "height": { "min": 160, "max": 460 },
       "uiEntry": "renderers/csv-table/index.html"
-    },
-    {
-      "id": "query-table",
-      "title": "Query String",
-      "attachmentType": "plugin.formatter.query",
-      "height": { "min": 140, "max": 420 },
-      "uiEntry": "renderers/query-table/index.html"
     }
   ],
   "actions": []

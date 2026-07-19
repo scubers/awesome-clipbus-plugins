@@ -20,6 +20,7 @@ const entitiesPayload = JSON.stringify({
 const urlParsedPayload = JSON.stringify({
   kind: "url_parsed",
   version: 1,
+  inputType: "url",
   input:
     "https://example.com/article?utm_source=newsletter&utm_medium=email&fbclid=AbC123&id=42",
   href: "https://example.com/article?utm_source=newsletter&utm_medium=email&fbclid=AbC123&id=42",
@@ -34,6 +35,13 @@ const urlParsedPayload = JSON.stringify({
     { key: "fbclid", value: "AbC123" },
     { key: "id", value: "42" },
   ],
+  queryJson: JSON.stringify({
+    utm_source: "newsletter",
+    utm_medium: "email",
+    fbclid: "AbC123",
+    id: "42",
+  }, null, 2),
+  hasDuplicateKeys: false,
   hash: "",
   cleanHref: "https://example.com/article?id=42",
   trackingParams: [
@@ -48,6 +56,37 @@ const urlParsedPayload = JSON.stringify({
       { label: "Scheme", value: "https" },
       { label: "Host", value: "example.com" },
       { label: "Path", value: "/article" },
+    ],
+  },
+});
+
+const queryStringPayload = JSON.stringify({
+  kind: "url_parsed",
+  version: 1,
+  inputType: "query",
+  input: "tag=one&tag=two&lang=zh-CN",
+  href: "",
+  scheme: "",
+  username: "",
+  host: "",
+  port: "",
+  path: "",
+  query: [
+    { key: "tag", value: "one" },
+    { key: "tag", value: "two" },
+    { key: "lang", value: "zh-CN" },
+  ],
+  queryJson: JSON.stringify({ tag: "two", lang: "zh-CN" }, null, 2),
+  hasDuplicateKeys: true,
+  hash: "",
+  cleanHref: "",
+  trackingParams: [],
+  display: {
+    typeLabel: "Query String",
+    headline: "3 parameters",
+    facts: [
+      { label: "Pairs", value: "3" },
+      { label: "Duplicate keys", value: "Yes" },
     ],
   },
 });
@@ -200,6 +239,16 @@ export const attachmentScenarios: PreviewScenario[] = [
     min: 140,
     max: 500,
     payloadJson: urlParsedPayload,
+  }),
+  renderer({
+    id: "url-parsed-query-string",
+    label: "Query String: duplicate keys",
+    view: "url-parsed",
+    accentHex: "#2563EB",
+    attachmentType: "plugin.extractor.url",
+    min: 140,
+    max: 500,
+    payloadJson: queryStringPayload,
   }),
   renderer({
     id: "ip-details-v4",

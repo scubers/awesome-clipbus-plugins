@@ -23,7 +23,7 @@
     },
     {
       "id": "url-detector",
-      "title": "URL Detector",
+      "title": "URL / Query String Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.extractor.url"]
     },

@@ -71,23 +71,6 @@ const csvTablePayload = JSON.stringify({
   },
 });
 
-const queryTablePayload = JSON.stringify({
-  kind: "query_table",
-  version: 1,
-  pairs: [
-    { key: "utm_source", value: "newsletter" },
-    { key: "utm_medium", value: "email" },
-    { key: "utm_campaign", value: "spring sale" },
-  ],
-  count: 3,
-  hasDuplicateKeys: false,
-  jsonObject: JSON.stringify({
-    utm_source: "newsletter",
-    utm_medium: "email",
-    utm_campaign: "spring sale",
-  }),
-});
-
 const xmlPayload = JSON.stringify({
   kind: "xml_preview",
   version: 1,
@@ -96,16 +79,6 @@ const xmlPayload = JSON.stringify({
   elementCount: 10,
   attributeCount: 2,
   maxDepth: 3,
-});
-
-const sqlPayload = JSON.stringify({
-  kind: "sql_preview",
-  version: 1,
-  statementType: "SELECT",
-  formatted:
-    "SELECT u.id, u.name, o.total\nFROM users u\nINNER JOIN orders o ON u.id = o.user_id\nWHERE o.total > 100\nORDER BY o.total DESC\nLIMIT 20",
-  original:
-    "SELECT u.id, u.name, o.total FROM users u INNER JOIN orders o ON u.id = o.user_id WHERE o.total > 100 ORDER BY o.total DESC LIMIT 20",
 });
 
 /** Build an attachmentRenderer scenario; `view` routes to the feature component. */
@@ -179,16 +152,6 @@ export const attachmentScenarios: PreviewScenario[] = [
     payloadJson: xmlPayload,
   }),
   renderer({
-    id: "sql-renderer-select",
-    label: "SQL: SELECT with JOIN",
-    view: "sql-renderer",
-    accentHex: "#0369A1",
-    attachmentType: "plugin.formatter.sql",
-    min: 140,
-    max: 460,
-    payloadJson: sqlPayload,
-  }),
-  renderer({
     id: "csv-table-basic",
     label: "CSV Table",
     view: "csv-table",
@@ -197,15 +160,5 @@ export const attachmentScenarios: PreviewScenario[] = [
     min: 160,
     max: 460,
     payloadJson: csvTablePayload,
-  }),
-  renderer({
-    id: "query-table-basic",
-    label: "Query String",
-    view: "query-table",
-    accentHex: "#0F766E",
-    attachmentType: "plugin.formatter.query",
-    min: 140,
-    max: 420,
-    payloadJson: queryTablePayload,
   }),
 ];

@@ -17,10 +17,7 @@ const payload = computed(() =>
 
 const queryJson = computed(() => {
   if (!payload.value || payload.value.query.length === 0) return null;
-  const obj = Object.fromEntries(
-    payload.value.query.map((q) => [q.key, q.value])
-  );
-  return JSON.stringify(obj, null, 2);
+  return payload.value.queryJson;
 });
 
 const trackingKeySet = computed(() => {
@@ -38,7 +35,9 @@ let stopAutoFit: (() => void) | null = null;
 onMounted(async () => {
   stopAutoFit = autoFit({ min: 140, max: 500, target: rootEl.value ?? undefined });
   try {
-    const buttons = hasTracking.value
+    const buttons = payload.value?.inputType === "query"
+      ? [{ id: "copy", title: "Copy as JSON" }]
+      : hasTracking.value
       ? [
           { id: "copy-clean", title: "Copy clean URL" },
           { id: "copy", title: "Copy query params (JSON)" },
@@ -124,7 +123,7 @@ onUnmounted(() => {
         </div>
       </div>
     </section>
-    <div v-else class="empty">Waiting for a URL…</div>
+    <div v-else class="empty">Waiting for a URL or query string…</div>
   </main>
 </template>
 

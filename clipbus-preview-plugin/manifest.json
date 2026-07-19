@@ -32,12 +32,6 @@
       "title": "Gradient Detector",
       "supportedInputKinds": ["text"],
       "attachmentTypes": ["plugin.preview.gradient"]
-    },
-    {
-      "id": "qr-detector",
-      "title": "QR Detector",
-      "supportedInputKinds": ["text"],
-      "attachmentTypes": ["plugin.preview.qr"]
     }
   ],
   "attachmentRenderers": [
@@ -61,13 +55,6 @@
       "attachmentType": "plugin.preview.gradient",
       "height": 260,
       "uiEntry": "renderers/gradient-swatch/index.html"
-    },
-    {
-      "id": "qr-code",
-      "title": "QR Code",
-      "attachmentType": "plugin.preview.qr",
-      "height": 240,
-      "uiEntry": "renderers/qr-code/index.html"
     }
   ],
   "actions": []

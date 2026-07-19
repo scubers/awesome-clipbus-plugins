@@ -13,10 +13,10 @@ Automatically detects URLs (http/https), email addresses, and IPv4 addresses in 
 
 ### URL Structure Parser (`url-*`)
 
-Detects a single HTTP/HTTPS URL on the clipboard and renders a structured breakdown of its components.
+Detects a URL or an unambiguous naked query string on the clipboard and renders a structured breakdown.
 
-- **Detector** (`url-detector`): input kind `text`, attachment type `plugin.extractor.url`
-- **Renderer** (`url-parsed`): displays scheme, host, pathname, query parameters (as a key/value table), and fragment in separate rows; height adapts automatically to fit the content
+- **Detector** (`url-detector`): recognizes URLs and naked query strings with at least two `key=value` pairs
+- **Renderer** (`url-parsed`): displays URL components or query pairs in one URL Details card; duplicate query pairs are preserved and the JSON representation is copyable
 - **Tracking cleaner**: when the URL contains known tracking parameters (`utm_*`, `fbclid`, `gclid`, `msclkid`, and [30+ others](src/features/url-parsed/payload.ts)), a highlighted banner shows how many were found and displays the clean URL with those params stripped. Tracker rows in the query table are visually flagged. A "Copy clean URL" button appears alongside the existing "Copy query params (JSON)" button.
 
 ### IP Address Details (`ip-*`)

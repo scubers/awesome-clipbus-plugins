@@ -5,7 +5,7 @@ import { createJwtDetector } from "./features/jwt-renderer/detector.ts";
 import { createJwtRenderer } from "./features/jwt-renderer/renderer.ts";
 import { createDataUriDetector } from "./features/data-uri/detector.ts";
 import { createDataUriRenderer } from "./features/data-uri/renderer.ts";
-import { createEscapeAction } from "./features/escape-tool/action.ts";
+import { escapeActions } from "./features/escape-tool/action.ts";
 
 export default definePlugin({
   setup() {
@@ -20,9 +20,7 @@ export default definePlugin({
         "jwt-detector": createJwtDetector(),
         "data-uri-detector": createDataUriDetector(),
       },
-      actions: {
-        "escape-tool": createEscapeAction(),
-      },
+      actions: escapeActions,
       messageHandlers: {},
     };
   },

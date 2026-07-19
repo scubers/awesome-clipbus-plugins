@@ -1,29 +1,50 @@
-// action.ts — runtime-only draft action handler for case-tool.
-// This file is never imported by app.vue (UI side).
-
 import { actionResult } from "@clipbus/plugin-sdk/runtime";
 import type {
   PluginAutoRunActionHandler,
-  PluginActionOperationResult,
-  PluginAutoRunActionInput,
+  PluginActionResolveResult,
 } from "@clipbus/plugin-sdk/runtime";
-import { INITIAL_DRAFT } from "./payload.ts";
+import {
+  toCamel,
+  toConstant,
+  toDot,
+  toKebab,
+  toLowercase,
+  toPascal,
+  toSentence,
+  toSnake,
+  toTitle,
+  toUppercase,
+} from "./payload.ts";
 
-export function createCaseAction(): PluginAutoRunActionHandler {
+const resolveStub = async (): Promise<PluginActionResolveResult> => ({
+  buttons: [],
+  initialDraft: {},
+});
+
+export function createCaseAction(
+  transform: (text: string) => string,
+  userMessage: string,
+): PluginAutoRunActionHandler {
   return {
-    async resolveSession(input, _ctx) {
-      const prefill = ((input as unknown) as { content?: { text?: string } })?.content?.text ?? "";
-      return {
-        displayName: "Case Converter",
-        buttons: [{ id: "submit", title: "Copy camelCase", isEnabled: true }],
-        defaultButtonID: "submit",
-        initialDraft: { ...INITIAL_DRAFT, input: prefill } as unknown as Record<string, unknown>,
-      };
-    },
-    // Draft-lifecycle actions are driven by the UI; runAutoAction is a guarded stub
-    // that satisfies the PluginAutoRunActionHandler interface.
-    async runAutoAction(_input: PluginAutoRunActionInput): Promise<PluginActionOperationResult> {
-      return actionResult.none({ userMessage: "driven by the UI" });
+    resolveSession: resolveStub,
+    async runAutoAction(input) {
+      if (input.content.kind !== "text" || input.content.text.length === 0) {
+        return actionResult.none({ userMessage: "Nothing to convert" });
+      }
+      return actionResult.text(transform(input.content.text), { userMessage });
     },
   };
 }
+
+export const caseActions: Record<string, PluginAutoRunActionHandler> = {
+  uppercase: createCaseAction(toUppercase, "Converted to uppercase"),
+  lowercase: createCaseAction(toLowercase, "Converted to lowercase"),
+  camelCase: createCaseAction(toCamel, "Converted to camelCase"),
+  pascalCase: createCaseAction(toPascal, "Converted to PascalCase"),
+  snakeCase: createCaseAction(toSnake, "Converted to snake_case"),
+  kebabCase: createCaseAction(toKebab, "Converted to kebab-case"),
+  constantCase: createCaseAction(toConstant, "Converted to CONSTANT_CASE"),
+  titleCase: createCaseAction(toTitle, "Converted to Title Case"),
+  sentenceCase: createCaseAction(toSentence, "Converted to Sentence case"),
+  dotCase: createCaseAction(toDot, "Converted to dot.case"),
+};

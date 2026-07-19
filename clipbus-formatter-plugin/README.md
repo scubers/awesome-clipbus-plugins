@@ -1,6 +1,6 @@
 # Formatter
 
-Clipbus plugin that detects JSON, XML, SQL, and CSV data on the clipboard, auto-formats it with proper indentation or keyword casing, and shows a preview card. Supports one-click copy of the formatted result.
+Clipbus plugin that detects JSON, XML, and CSV data on the clipboard, formats it, and shows a preview card. Supports one-click copy of the formatted result.
 
 ## Features
 
@@ -14,20 +14,10 @@ Clipbus plugin that detects JSON, XML, SQL, and CSV data on the clipboard, auto-
 - **XML Detector** (`xml-detector`): Detects text containing valid tag structure (element pairs, prolog, or comments) and attaches `plugin.formatter.xml`.
 - **XML Formatter** (`xml-renderer`): Preview card showing element count, attribute count, nesting depth, and the indented XML with a "Copy Formatted" button.
 
-### SQL (`sql-*`)
-
-- **SQL Detector** (`sql-detector`): Detects SELECT / INSERT / UPDATE / DELETE and other SQL statement patterns, attaches `plugin.formatter.sql`. Filters out natural-language English sentences that accidentally match (e.g. "select the best option from the menu").
-- **SQL Formatter** (`sql-renderer`): Preview card showing the statement type and keyword-uppercased, clause-per-line SQL with a "Copy Formatted" button.
-
 ### CSV Table (`csv-*`)
 
 - **CSV Detector** (`csv-detector`): Identifies comma-separated values with consistent column counts and attaches `plugin.formatter.csv`.
 - **CSV Table** (`csv-table`): Renders the CSV data as a styled table with header row highlighting. Height adapts automatically to fit the content.
-
-### Query String (`query-*`)
-
-- **Query String Detector** (`query-detector`): Identifies bare URL query strings / form-encoded pairs (requires `>=2` `key=value` pairs, no `://`) and attaches `plugin.formatter.query`.
-- **Query String** (`query-table`): Renders decoded key/value pairs as a two-column table with a "Copy as JSON" button. Flags duplicate keys inline.
 
 ## Development
 

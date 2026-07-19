@@ -1,6 +1,6 @@
 # Formatter — 格式化工具
 
-Clipbus 插件，自动检测剪贴板中的 JSON、XML、SQL、CSV 文本并格式化展示，支持一键复制。
+Clipbus 插件，自动检测剪贴板中的 JSON、XML、CSV 文本并格式化展示，支持一键复制。
 
 ## 功能
 
@@ -13,11 +13,6 @@ Clipbus 插件，自动检测剪贴板中的 JSON、XML、SQL、CSV 文本并格
 
 - **XML 检测器**（`xml-detector`）：识别有效 XML 标签结构（元素对、文档声明、注释），挂载 `plugin.formatter.xml`。
 - **XML 格式化渲染器**（`xml-renderer`）：卡片展示元素数、属性数、嵌套深度，以及缩进后的 XML，附"Copy Formatted"按钮。
-
-### SQL（`sql-*`）
-
-- **SQL 检测器**（`sql-detector`）：识别 SELECT / INSERT / UPDATE / DELETE 等语句模式，挂载 `plugin.formatter.sql`。过滤掉误触发的自然语言句子。
-- **SQL 格式化渲染器**（`sql-renderer`）：卡片展示语句类型，关键字大写、按子句换行的 SQL，附"Copy Formatted"按钮。
 
 ### CSV 表格（`csv-*`）
 

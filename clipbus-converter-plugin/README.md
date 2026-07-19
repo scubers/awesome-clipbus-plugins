@@ -1,6 +1,6 @@
 # Converter
 
-Clipbus plugin that integrates three conversion capabilities: Unix timestamp display, integer radix conversion, and text case transformation.
+Clipbus plugin for numeric, time, unit, permission, and composable text case conversions.
 
 ## Features
 
@@ -12,7 +12,7 @@ Clipbus plugin that integrates three conversion capabilities: Unix timestamp dis
 - **Duration Renderer** (`duration`): Displays the detected duration as a human breakdown (e.g. "1 year, 2 months, 10 days, 2 hours, 30 minutes"), total seconds (marked "≈" when years or months are present, "=" otherwise), and the original input. Includes a "Copy Seconds" button.
 - **Temperature Detector** (`temperature-detector`): Recognises single temperature values such as `37°C`, `98.6°F`, `300 K`, `37 Celsius`. Requires an explicit scale marker — bare values like `37C` or `300K` (no degree sign or separating space) are rejected to avoid false positives.
 - **Temperature Renderer** (`temperature`): Converts the detected temperature to all three scales (Celsius, Fahrenheit, Kelvin) and displays them in a facts grid with per-row copy buttons. The source scale is highlighted. Shows a warning note when the value is below absolute zero.
-- **Case Converter** (`case-tool`): Draft action that converts clipboard text into eight naming conventions — camelCase, snake_case, kebab-case, PascalCase, CONSTANT_CASE, Title Case, Sentence case, dot.case — and lets you copy any variant or submit the camelCase result.
+- **Case Actions**: Ten independent auto-run actions for uppercase, lowercase, camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, Title Case, Sentence case, and dot.case. Each action consumes the current cascade text so the host can automate multi-step transformations.
 
 ## Development
 

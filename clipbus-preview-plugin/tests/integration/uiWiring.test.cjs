@@ -10,7 +10,7 @@ const OLD_SHELL = path.join(ROOT, "src", "preview", "PreviewShellApp.vue");
 
 // Renderers intentionally using a fixed numeric manifest height (no autoFit needed).
 // PER-PLUGIN: e.g. preview → ["color-swatch","gradient-swatch"]; else [].
-const FIXED_HEIGHT = new Set(["color-swatch", "gradient-swatch", "qr-code"]);
+const FIXED_HEIGHT = new Set(["color-swatch", "gradient-swatch"]);
 // PER-PLUGIN: false only for plugins with no renderer AND no draft action (text).
 const HAS_PREVIEWABLE_UI = true;
 

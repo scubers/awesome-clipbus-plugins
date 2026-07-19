@@ -98,12 +98,74 @@
   ],
   "actions": [
     {
-      "id": "case-tool",
-      "title": "Case Converter",
+      "id": "uppercase",
+      "title": "Uppercase",
       "supportedInputKinds": ["text"],
-      "lifecycle": "draft",
-      "uiEntry": "actions/case-tool/index.html",
-      "keywords": ["case", "camel", "snake", "kebab", "pascal", "convert", "naming"]
+      "lifecycle": "auto-run",
+      "keywords": ["uppercase", "upper", "case"]
+    },
+    {
+      "id": "lowercase",
+      "title": "Lowercase",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["lowercase", "lower", "case"]
+    },
+    {
+      "id": "camelCase",
+      "title": "camelCase",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["camel", "case", "naming"]
+    },
+    {
+      "id": "pascalCase",
+      "title": "PascalCase",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["pascal", "case", "naming"]
+    },
+    {
+      "id": "snakeCase",
+      "title": "snake_case",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["snake", "case", "naming"]
+    },
+    {
+      "id": "kebabCase",
+      "title": "kebab-case",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["kebab", "case", "naming"]
+    },
+    {
+      "id": "constantCase",
+      "title": "CONSTANT_CASE",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["constant", "case", "naming"]
+    },
+    {
+      "id": "titleCase",
+      "title": "Title Case",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["title", "case", "naming"]
+    },
+    {
+      "id": "sentenceCase",
+      "title": "Sentence case",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["sentence", "case", "naming"]
+    },
+    {
+      "id": "dotCase",
+      "title": "dot.case",
+      "supportedInputKinds": ["text"],
+      "lifecycle": "auto-run",
+      "keywords": ["dot", "case", "naming"]
     }
   ]
 }

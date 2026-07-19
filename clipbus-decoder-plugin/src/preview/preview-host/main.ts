@@ -8,14 +8,12 @@ import { actionScenarios } from "../scenarios/actionScenarios";
 import Base64Renderer from "../../features/base64-renderer/app.vue";
 import DataUri from "../../features/data-uri/app.vue";
 import JwtRenderer from "../../features/jwt-renderer/app.vue";
-import EscapeTool from "../../features/escape-tool/app.vue";
 
 // PER-PLUGIN: map scenario.view (feature id) → its component.
 const COMPONENTS: Record<string, Component> = {
   "base64-renderer": Base64Renderer,
   "data-uri": DataUri,
   "jwt-renderer": JwtRenderer,
-  "escape-tool": EscapeTool,
 };
 
 createPreviewWorkbench(document.getElementById("app")!, {

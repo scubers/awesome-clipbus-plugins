@@ -9,7 +9,6 @@ import TimestampRenderer from "../../features/timestamp-renderer/app.vue";
 import RadixRenderer from "../../features/radix-renderer/app.vue";
 import DurationRenderer from "../../features/duration/app.vue";
 import TemperatureRenderer from "../../features/temperature/app.vue";
-import CaseTool from "../../features/case-tool/app.vue";
 import FilesizeRenderer from "../../features/filesize-renderer/app.vue";
 import ChmodRenderer from "../../features/chmod-renderer/app.vue";
 
@@ -19,7 +18,6 @@ const COMPONENTS: Record<string, Component> = {
   "radix-renderer": RadixRenderer,
   "duration": DurationRenderer,
   "temperature": TemperatureRenderer,
-  "case-tool": CaseTool,
   "filesize-renderer": FilesizeRenderer,
   "chmod-renderer": ChmodRenderer,
 };

@@ -67,6 +67,7 @@ test('buildUrlArtifact parses full URL with host, port, query, hash', () => {
   assert.equal(artifact.attachmentType, 'plugin.extractor.url');
   const payload = JSON.parse(artifact.payloadJson);
   assert.equal(payload.kind, 'url_parsed');
+  assert.equal(payload.inputType, 'url');
   assert.equal(payload.host, 'example.com');
   assert.equal(payload.port, '8080');
   assert.equal(payload.query.length, 2);
@@ -109,7 +110,7 @@ test('buildUrlArtifact detects plain https URL', () => {
   assert.equal(payload.query.length, 1);
 });
 
-test('buildUrlArtifact keeps raw percent encoding for invalid or unreadable query values', () => {
+test('buildUrlArtifact parses query values with URLSearchParams semantics', () => {
   const { buildUrlArtifact } = require(path.resolve(root, 'src/features/url-parsed/payload.ts'));
   const artifact = buildUrlArtifact({
     item: sampleItem,
@@ -122,11 +123,40 @@ test('buildUrlArtifact keeps raw percent encoding for invalid or unreadable quer
   assert.ok(artifact, 'the URL itself remains valid');
   const payload = JSON.parse(artifact.payloadJson);
   assert.deepEqual(payload.query, [
-    { key: 'bad', value: '%FF' },
-    { key: 'nul', value: '%00' },
+    { key: 'bad', value: '�' },
+    { key: 'nul', value: '\u0000' },
     { key: 'ok', value: '你好' },
     { key: 'space', value: 'hello world' },
   ]);
+});
+
+test('buildUrlArtifact detects naked query strings and preserves duplicate pairs', () => {
+  const { buildUrlArtifact } = require(path.resolve(root, 'src/features/url-parsed/payload.ts'));
+  const artifact = buildUrlArtifact({
+    item: sampleItem,
+    content: { kind: 'text', text: 'tag=one&tag=two&lang=zh-CN' },
+    attachments: [],
+  });
+  assert.ok(artifact);
+  const payload = JSON.parse(artifact.payloadJson);
+  assert.equal(payload.inputType, 'query');
+  assert.deepEqual(payload.query, [
+    { key: 'tag', value: 'one' },
+    { key: 'tag', value: 'two' },
+    { key: 'lang', value: 'zh-CN' },
+  ]);
+  assert.equal(payload.hasDuplicateKeys, true);
+  assert.deepEqual(JSON.parse(payload.queryJson), { tag: 'two', lang: 'zh-CN' });
+  assert.equal(artifact.searchProjection.scope, 'query');
+});
+
+test('buildUrlArtifact rejects ambiguous single-pair text', () => {
+  const { buildUrlArtifact } = require(path.resolve(root, 'src/features/url-parsed/payload.ts'));
+  assert.equal(buildUrlArtifact({
+    item: sampleItem,
+    content: { kind: 'text', text: 'status=ready' },
+    attachments: [],
+  }), null);
 });
 
 test('decodeUrlPayload returns null for bad payloads', () => {

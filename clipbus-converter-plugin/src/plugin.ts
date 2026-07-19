@@ -3,7 +3,7 @@ import { createTimestampDetector } from "./features/timestamp-renderer/detector.
 import { createTimestampRenderer } from "./features/timestamp-renderer/renderer.ts";
 import { createRadixDetector } from "./features/radix-renderer/detector.ts";
 import { createRadixRenderer } from "./features/radix-renderer/renderer.ts";
-import { createCaseAction } from "./features/case-tool/action.ts";
+import { caseActions } from "./features/case-tool/action.ts";
 import { createDurationDetector } from "./features/duration/detector.ts";
 import { createDurationRenderer } from "./features/duration/renderer.ts";
 import { createTemperatureDetector } from "./features/temperature/detector.ts";
@@ -32,9 +32,7 @@ export default definePlugin({
         "filesize-detector": createFilesizeDetector(),
         "chmod-detector": createChmodDetector(),
       },
-      actions: {
-        "case-tool": createCaseAction(),
-      },
+      actions: caseActions,
       messageHandlers: {},
     };
   },
