@@ -25,13 +25,16 @@ The primary way to use these plugins is installing straight from this repository
 
 Clipbus's free tier includes 3 slots per capability type (detector / renderer / action) — Pro lifts the limits and adds Cloud Sync.
 
-## Create plugins with AI
+## Build and maintain plugins with AI
 
 1. Clone this repository.
-2. Open [Claude Code](https://claude.ai/code) inside it.
-3. Describe the plugin you want.
+2. Open the repository with your preferred AI coding agent.
+3. Describe the plugin or maintenance task you want to complete.
 
-This repository ships a `clipbus-plugin-generator` Claude Code skill (under `.claude/skills/`). It surveys the existing plugins first and, based on their real responsibilities, either extends the best-matching plugin or scaffolds a new one — instead of creating a near-duplicate.
+Two repository skills under `.agents/skills/` provide purpose-built workflows:
+
+- **Create — `clipbus-plugin-generator`:** Surveys the existing collection, then extends the best-matching plugin or scaffolds a new one. It implements the feature and runs the full verification gate while avoiding near-duplicates.
+- **Sync — `clipbus-template-sync`:** Pulls updates from the official plugin template and Plugin SDK, determines which shared changes affect existing plugins, and migrates and verifies them as needed.
 
 ## Plugins
 

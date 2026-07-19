@@ -25,13 +25,16 @@
 
 Clipbus 免费版每类能力（detector / renderer / action）各有 3 个插件槽位；Pro 提升这个上限，并加入 Cloud Sync。
 
-## 用 AI 创建插件
+## 用 AI 创建和维护插件
 
 1. Clone 本仓库。
-2. 在其中打开 [Claude Code](https://claude.ai/code)。
-3. 描述你想要的插件。
+2. 用你常用的 AI Coding Agent 打开仓库。
+3. 直接描述要创建的插件或要执行的维护任务。
 
-本仓库自带 `clipbus-plugin-generator` skill（位于 `.claude/skills/`）：它会先勘察现有插件，按其真实职责，把选题**并入最匹配的插件**或新建一个——而不是另起一个近重复插件。
+仓库在 `.agents/skills/` 中提供了两套专用工作流：
+
+- **Create — `clipbus-plugin-generator`：**先勘察现有插件，再把功能并入最匹配的插件或创建新插件；完成实现与全量验证，同时避免产生近重复插件。
+- **Sync — `clipbus-template-sync`：**拉取官方插件模板与 Plugin SDK 更新，判断哪些共享改动会影响现有插件，并按需完成迁移与验证。
 
 ## 插件列表
 
