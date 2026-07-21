@@ -153,6 +153,8 @@ export function createXDetector(): PluginDetectorHandler {
 只在内容**真的匹配**时返回 artifact（如 decoder 检测到合法 base64 才挂）——不匹配返回 `[]`，别污染所有剪贴板项。
 
 > **附件 vs 搜索投影（两面，互相独立）**：artifact 的 `attachmentType`+`payloadJson` 是**附件**——要展示成卡片就得配同 `attachmentType` 的 renderer。可选的 `searchProjection: { scope, searchText, label? }` 是**搜索投影**——把内容喂进宿主搜索索引让记录可被搜到（如 OCR 文本、解码结果），**不展示、不需要 renderer**。所以「detector 必配 renderer」不准确：detector 若**只为搜索**（不展示卡片），就只填 `searchProjection`、不建 renderer。搜索扩展写入受 `setSearchExtension` 权限门控（imperative 写法是 runtime verb `host.item.setSearchExtension`）。
+>
+> schema v4 不提供 `attachmentSyncScope`；attachment 由宿主统一按 `local_only` 保存。需要跨设备预搜索的文本用 `searchProjection`。
 
 ## 4. renderer（运行时）
 
@@ -285,7 +287,7 @@ watch(draftTopic, (d) => Object.assign(draft, d ?? {}), { immediate: true });
 // 宿主条按钮：clipbus.action.onHostInvoke.on(async (d) => { if (d.buttonID === "submit") … })
 ```
 
-Draft 结果是终点，不继续进入下一个 Action。Action 图片在 Runtime 用
+Draft 的 `text`、`image`、`path_reference` 成功结果会先由宿主展示确认，用户可显式推进为下一个 Action 输入；`none` 不可继续，`complete(...)` 本身不会自动推进。Action 图片在 Runtime 用
 `ctx.host.action.materializeInputImagePath()`，在 Draft UI 用
 `clipbus.asset.currentActionInputImageUrl()`；两者都读取当前级联值，而不是原始 item。
 普通文件输出必须先经 `ctx.host.action.allocateOutputFilePath()` 分配，再用

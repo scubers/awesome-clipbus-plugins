@@ -34,6 +34,5 @@ export function buildVibeArtifact(input: PluginDetectorInput): PluginDetectorArt
     attachmentType: ATTACHMENT_TYPE,
     attachmentKey: "primary",
     payloadJson: JSON.stringify(payload),
-    attachmentSyncScope: "local_only",          // 兜底附件仅本机，不同步
   };
 }

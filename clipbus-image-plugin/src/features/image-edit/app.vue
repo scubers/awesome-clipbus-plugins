@@ -388,8 +388,8 @@ async function apply(): Promise<void> {
       },
       userMessage: "Cropped & compressed",
     });
-    // Success is terminal: complete() ends the action session and the host
-    // tears down this WebView, so we deliberately leave `busy` set (no reset).
+    // complete() ends this WebView, so leave `busy` set. The host may then let
+    // the user confirm the result and explicitly advance to another Action.
   } catch (err) {
     errorMsg.value = `Processing failed: ${err instanceof Error ? err.message : String(err)}`;
     busy.value = false;

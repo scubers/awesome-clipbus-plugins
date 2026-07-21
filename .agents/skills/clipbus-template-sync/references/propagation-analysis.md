@@ -47,7 +47,7 @@
 
 ## 当前已知的"逐字共享集"
 
-**这是观测快照，不是硬清单**——`check-consistency.mjs` 用"template 的实际 tracked 文件 − 各插件自定义 denylist"**动态导出**它，所以模板新增共享文件时会自动纳入。当前为 12 个：
+**这是观测快照，不是硬清单**——`check-consistency.mjs` 用"template 的实际 tracked 文件 − 各插件自定义 denylist"**动态导出**它，所以模板新增共享文件时会自动纳入。当前为 10 个：
 
 ```
 AGENTS.md
@@ -59,13 +59,12 @@ scripts/build-runtime.mjs
 scripts/install.mjs
 src/shared/base.css
 src/shared/composables/useTopicRef.ts
-src/shared/debug.ts
-src/shared/display.ts
 tests/setup.cjs
 ```
 
 注意边界：
 - `tests/setup.cjs` 共享；`tests/**/*.test.cjs` **不**共享（各插件测自己的 feature）。
+- `src/shared/debug.ts` / `display.ts` 只服务 template 的 demo features；生产插件没有引用时不传播。不能仅因它们位于 `src/shared/` 就复制死代码（2026-07-22 修：旧校验器将二者误判为逐字共享，对 9 个插件报 18 个 missing）。
 - `package.json` 不在逐字集——走**字段级合并**。
 - `package-lock.json` 不在逐字集——各插件依赖树天生不同（实测 template 3953 行、各插件各 4422 行且 hash 互异）。`check-consistency.mjs` 的 `DENY_EXACT` 已显式排除它（2026-06-28 修：此前漏排，脚本把 lockfile 当逐字共享、对 9 个插件长期 false-fail；同次上游同步还删除了 template 自带的 lockfile，本仓决定各插件**保留**各自 lockfile 以保可复现安装）。
 - `scripts/build-ui.mjs` / `scripts/verify-build.mjs` 不在逐字集——是**分叉脚本**。
@@ -79,7 +78,8 @@ tests/setup.cjs
     - **REMOVED / 改签名 = 破坏性**：插件用到就会编译/校验失败，`npm run verify` 会红。报错先读 `node_modules/@clipbus/plugin-sdk/API.md`（capability 真相源）+ `docs/` 再改。
     - **ADDED = 可选新能力**：插件不用它也照样编译过、verify 全绿——**所以光看"试点 verify 绿"会以为没影响，这是陷阱**。新增能力是真实影响，必须在修改方案里**显式列出**并问用户是否采用，绝不静默忽略。
   - **实例（0.8.1 → 0.8.4）**：仓库里只有 `template-plugin/package.json` 一行 `^0.8.1 → ^0.8.4`。`sdk-api-diff` 揭示真实增量 = 新增 `locale` 能力（runtime `host.locale.get()`、UI `clipbus.locale.current()/.on()`、topic `locale`、global `__CLIPBUS_PLUGIN_LOCALE__`），纯新增、无权限、无既有签名改动。verify 会全绿，但"插件该不该用上 locale"是真实的待决问题。第一版分析仅凭文件 diff + 试点 verify，把它误判成"只 bump 版本号、低影响"——`sdk-api-diff` 就是为堵这个洞而加的。
-  - **实例（0.8.7 → 0.9.5）**：除四个新增 capability 外，根 `README.md` / `SPECIFICATION.md` 明确了 Action `{sourceItem,content,attachments}`、Draft 结果终止级联等关键语义。旧脚本只列 `docs/` 文件名会漏掉这些正文；脚本现已扩为输出全部根 Markdown + 教程 unified diff。schema v3 还要求所有 Action `supportedItemTypes`→`supportedInputKinds`，图片 Action 必须切换到当前输入专用 API。
+  - **实例（0.8.7 → 0.9.5）**：除四个新增 capability 外，根 `README.md` / `SPECIFICATION.md` 明确了 Action `{sourceItem,content,attachments}` 与当时的 Draft 终止语义（后在 0.9.8 再变更）。旧脚本只列 `docs/` 文件名会漏掉这些正文；脚本现已扩为输出全部根 Markdown + 教程 unified diff。schema v3 还要求所有 Action `supportedItemTypes`→`supportedInputKinds`，图片 Action 必须切换到当前输入专用 API。
+  - **实例（0.9.7 → 0.9.8）**：capability/event 数量完全不变，但 `API.md` 删除 detector artifact 的 `attachmentSyncScope` 与 `item.setAttachments` entry 的 `syncScope`，manifest 升 schema v4；根文档同时把 Draft 从“终点”改为“成功结果确认后可由用户显式推进”。前者必须逐插件删字段并改测试，后者通常无需业务代码改造，但要清理错误注释/设计文档并更新 generator authoring 资产。
 - **attachmentType 命名空间**：若契约变化牵涉 detector/renderer 的 attachmentType 规则，记住宿主加载期强制 `plugin.<本插件>.*` 前缀，而 `npm run verify` 查不出——改动涉及此处时要格外小心（详见 `clipbus-plugin-generator` 的铁律）。
 - **added 文件不在 `git diff` 里**：务必从 `pull-template.mjs` 的清单取 added，别只看 `git diff`。
 

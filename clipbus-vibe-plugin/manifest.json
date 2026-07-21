@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "plugin": { "id": "plugin.vibe", "title": "Vibe", "version": "0.1.0" },
   "install": { "runtime": "node", "entry": "scripts/install.mjs" },
   "runtime": { "nodeEntry": "dist/plugin.cjs", "uiRoot": "dist/ui" },

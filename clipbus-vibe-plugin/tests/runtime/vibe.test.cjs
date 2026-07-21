@@ -44,7 +44,7 @@ describe('payload', () => {
     assert.ok(art, 'should return artifact');
     assert.equal(art.attachmentType, 'plugin.vibe.fallback');
     assert.equal(art.attachmentKey, 'primary');
-    assert.equal(art.attachmentSyncScope, 'local_only');
+    assert.equal('attachmentSyncScope' in art, false);
   });
 
   it('buildVibeArtifact returns null for blank text', () => {

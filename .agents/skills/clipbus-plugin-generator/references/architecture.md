@@ -53,7 +53,7 @@
 
 ```jsonc
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "plugin": { "id": "plugin.<topic>", "title": "...", "version": "0.1.0" },
   "install": { "runtime": "node", "entry": "scripts/install.mjs" },
   "runtime": { "nodeEntry": "dist/plugin.cjs", "uiRoot": "dist/ui" },
@@ -74,9 +74,13 @@
 }
 ```
 
-schema v3 下 Action Runtime 收到 `{ sourceItem, content, attachments }`：
+schema v4 下 Action Runtime 收到 `{ sourceItem, content, attachments }`：
 `sourceItem` 是原始剪贴板身份，`content` 是可由前序 auto-run Action 改变 kind 的当前级联值。
 Action 的过滤和处理必须依据 `content.kind`，不能依据 `sourceItem.type`。
+
+Detector artifact 不写 `attachmentSyncScope`，`item.setAttachments` entry 不写
+`syncScope`；attachment 由宿主统一作为 `local_only` 派生数据保存。跨设备搜索文本用
+`searchProjection` 或 `item.setSearchExtension`。
 
 ## 常用命令（插件目录内）
 

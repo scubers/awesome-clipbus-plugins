@@ -41,6 +41,9 @@ const DENY_EXACT = new Set([
   "README_zh.md",
   "GUIDE.md",
   "GUIDE_zh.md",
+  // Used only by template demo features; production plugins keep feature-local helpers.
+  "src/shared/debug.ts",
+  "src/shared/display.ts",
   ".gitignore",
   ".DS_Store",
 ]);
