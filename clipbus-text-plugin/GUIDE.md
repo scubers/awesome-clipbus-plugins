@@ -2,7 +2,7 @@
 
 *English · [中文](./GUIDE_zh.md)*
 
-This project (`clipbus-text-plugin/`) provides nine text transformation Actions for Clipbus on SDK 2.0.0 and protocol V2 (manifest schema 5). This file covers only the **scaffold workflow** (getting started, local development, debugging inside Clipbus, building, testing) and the **project structure**.
+This project (`clipbus-text-plugin/`) provides nine text transformation Actions for Clipbus on SDK 3.0.0 and protocol V2 (manifest schema 6). This file covers only the **scaffold workflow** (getting started, local development, debugging inside Clipbus, building, testing) and the **project structure**.
 
 **The authoritative knowledge for plugin development** (architecture, manifest, SDK entry points, detector/renderer/action, input shapes, messages, pitfalls) **ships with the SDK package**. After `npm install` it lives in `node_modules/@clipbus/plugin-sdk/docs/` — and always matches the SDK version you currently have installed.
 
@@ -44,7 +44,7 @@ Starts the Text Tools preview page. These nine Actions run without a WebView, so
 Clipbus → Settings → Plugins → the Developer Plugins section provides lifecycle management for development plugins:
 
 1. **Add Path** — select the directory containing `manifest.json` (i.e. the `sourceRootPath`).
-2. If `manifest.json` declares an `install` field, Clipbus **runs the install script automatically**, with the working directory set to `sourceRootPath`. Artifacts such as `node_modules/` land in the project directory (equivalent to running `npm install` yourself).
+2. If `manifest.json` declares an `install` field, Clipbus **asks for confirmation before running the install script**, with the working directory set to `sourceRootPath`. The script uses `npm ci` when a lockfile exists, otherwise `npm install`, then runs `npm run build`. Dependency lifecycle scripts are disabled by the Host; the explicit build still runs. Artifacts such as `node_modules/` and `dist/` land in the project directory.
 3. Install logs are written to `<AppData>/development-plugins/<pluginID>/install-logs/` and will not pollute your git status.
 
 | Button | Behavior |
@@ -100,7 +100,7 @@ The text transformation code is organized as follows:
 ```text
 clipbus-text-plugin/
 ├── manifest.json                       ← nine text Actions, no renderers or detectors
-├── package.json                        ← @clipbus/plugin-sdk ^2.0.0
+├── package.json                        ← @clipbus/plugin-sdk ^3.0.0
 ├── scripts/                            ← runtime build and manifest-driven UI verification
 ├── src/
 │   ├── features/line-tools/

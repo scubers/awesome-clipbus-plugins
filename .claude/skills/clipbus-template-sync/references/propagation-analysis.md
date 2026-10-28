@@ -106,3 +106,13 @@ tests/support/plugin.cjs
 - 新 ui-pages.mjs 是共享构建规划器；通用 build-ui 仍来自 generator。tests/support/plugin.cjs 是通用构建产物 harness；tests/support/png.cjs 与 src/shared/digest.ts 仅服务模板演示，排除传播。
 - check-consistency 要包含尚未 git add 的新增文件并过滤已删除文件，否则会漏查新 helper 或把已删除 harness/插件报成缺失。分叉脚本对 generator 资产比较，缺文件也报错。
 - 删除某个宿主不再支持的贡献时，连实现、注册、UI、scenario、测试、指南与根索引一起清理；纯该贡献的插件按用户确认的范围退役。不要用空壳或隐式替代交互冒充迁移完成。
+
+## SDK 3.0 / schema 6 实战规则
+
+- v5→v6：SDK 升至 ^3.0.0，schemaVersion 改为 6，移除 install.runtime；安装脚本总是用 Node 运行。有 lockfile 时 install.mjs 使用 npm ci，保留各插件各自的锁文件并避免无关依赖 churn。
+- 方法数 19→18、事件数不变，不代表没有新增能力：ctx.plugin.folder(id) 是不走线的本地 helper，permissions.folders 与 launch.grants 同样不在公共方法名集合。sdk-api-diff 的方法清单必须结合 API.md 类型、根 CHANGELOG 与所有教程正文判断；同名方法还要核对调用侧与参数规则。
+- system.openPath 删除；system.openUrl 仅供卡片页使用，协议只允许 http/https/mailto；system.reveal 限插件目录或授权文件夹内的现存路径。不要用 Runtime 中其他系统调用替代被删 API。
+- Runtime 与卡片页不能联网；Runtime 不能启动子程序，只读 package、读写 data/cache、读取输入图片与按 access 授权的文件夹。安装 hook 仍可联网/启动子进程，但依赖安装生命周期脚本被禁用，显式 npm run build 照常；检查原生依赖是否要求 postinstall。
+- permissions.folders 只在业务需要时添加，ctx.plugin.folder 未授权返回 null。模板 gallery 的 exports 槽位、网络/进程/文件限制演示及测试都是模板业务，不向既有插件或 scaffold 空清单复制。
+- 同步 generator 的 schema fallback、eval grade 和 authoring 文档，以及根 AGENTS；build-ui/verify-build 没有行为变化时保留通用版。三份技能同步后运行 check-skills。
+- SDK 的类型和 preview 不证明真实 Host 支持 schema 6、文件夹授权或隔离；需配套 Host。测试限制演示时使用 stub，不让本地测试真的联网、启动程序或写用户目录。

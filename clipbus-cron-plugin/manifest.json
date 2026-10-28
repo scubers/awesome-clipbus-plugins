@@ -1,12 +1,11 @@
 {
-  "schemaVersion": 5,
+  "schemaVersion": 6,
   "plugin": {
     "id": "plugin.cron",
     "title": "Cron Explainer",
     "version": "0.1.0"
   },
   "install": {
-    "runtime": "node",
     "entry": "scripts/install.mjs"
   },
   "runtime": {

@@ -1,4 +1,4 @@
-# Feature 编写指南（SDK 2.x / schema 5）
+# Feature 编写指南（SDK 3.x / schema 6）
 
 先在目标插件目录 npm install，再读 SDK docs/README.md、API.md 与相关主题文档。下列是合集接线约定，签名与限额以安装包为准。
 
@@ -96,6 +96,10 @@ Action 没有表单 UI；需要宿主未支持的能力时明确说明限制，�
 
 Node 文件写进 data/ 或 cache/；通过插件内相对路径传给页面，显示时 ctx.asset.fileUrl(path)。
 ctx.asset.itemImageUrl() 显示卡片条目图片。cache 可能被清理，持久数据使用 data/。
+需要用户文件夹才在 manifest permissions.folders 声明用途与 read/readWrite，使用 ctx.plugin.folder(id)，未授权为 null。
+Runtime 与卡片页都不能联网，Runtime 不能启动子程序，package 只读。外部脚本、字体、样式随包提供。
+system.openPath 已删除；ctx.system.openUrl 仅供卡片页打开 http/https/mailto；reveal 只接受插件目录或授权文件夹里的现存路径。
+schema 6 的 install 只有 entry，用 Node 运行；有 lockfile 时用 npm ci。依赖安装生命周期脚本被禁用，显式 npm run build 照常。
 区分 PluginRemoteError（插件处理函数错误）与 PluginProtocolError（宿主错误）；不要解析固定错误文案。
 
 ## 8. 高度与滚动

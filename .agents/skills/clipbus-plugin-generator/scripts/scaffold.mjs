@@ -255,7 +255,7 @@ async function main() {
     await readFile(path.join(templateDir, "manifest.json"), "utf8")
   );
   const newManifest = {
-    schemaVersion: templateManifest.schemaVersion ?? 5,
+    schemaVersion: templateManifest.schemaVersion ?? 6,
     plugin: {
       id: pluginId,
       title,

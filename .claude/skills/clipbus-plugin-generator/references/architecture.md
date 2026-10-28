@@ -1,6 +1,6 @@
-# Clipbus 插件架构（SDK 2.x / 协议 V2）
+# Clipbus 插件架构（SDK 3.x / 协议 V2）
 
-确切接口以安装版本 SDK 的 API.md 与 docs/README.md 为准，工程使用 manifest schema 5。
+确切接口以安装版本 SDK 的 API.md 与 docs/README.md 为准，工程使用 manifest schema 6。
 
 ## 两侧与贡献
 
@@ -29,7 +29,7 @@ verify-build.mjs 加载实际 Runtime 对照 detector/Action 注册，并检查�
 
 ## manifest 与写入
 
-schemaVersion: 5；runtime.nodeEntry 只有 Runtime 贡献时必需。卡片 page 相对插件根目录。
+schemaVersion: 6；install 只有 entry，使用 Node；runtime.nodeEntry 只有 Runtime 贡献时必需。卡片 page 相对插件根目录。
 writes.attachmentTypes 声明全部写入类型，writes.searchScopes 声明全部搜索 scope。
 附件类型必须以本插件 id + "." 开头；不能沿用被合并 feature 原来的插件命名空间。
 
@@ -40,6 +40,12 @@ writes.attachmentTypes 声明全部写入类型，writes.searchScopes 声明全�
 Runtime 写入成功返回后提交，调用结束后 ctx 失效。detector 成功运行整体替换自己的旧输出；
 recopy 也要重写完整结果。页面/消息状态应与 detector 输出分类型；内容编辑会清空全部附件。
 单 payload、搜索文本与跨 detector 的总条数都按 API.md 的 PluginWriteLimits 预算。
+
+Runtime 和卡片页不能联网；Runtime 不能启动子程序，只读 package，读写 data/cache，读取输入图片副本。
+用户文件夹按需声明 permissions.folders，通过 ctx.plugin.folder(id) 获取，未授权为 null。
+system.openPath 已删除；openUrl 仅供页面打开 http/https/mailto，reveal 限插件目录或授权文件夹。
+安装 hook 可以联网和启动子进程，但依赖生命周期脚本被禁用；提交 lockfile，有 lockfile 时用 npm ci 后显式 npm run build。
+文件夹授权与运行隔离由配套 Host 提供，SDK/preview 校验不能证明旧 Host 兼容。
 
 ## preview 与测试
 

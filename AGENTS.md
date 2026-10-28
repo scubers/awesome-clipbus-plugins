@@ -5,12 +5,12 @@
 这是 Clipbus 插件合集：一个顶层 `clipbus-*-plugin/` 对应一个独立插件。
 `template-plugin/` 是复制起点与完整示例，不是被依赖的库。根目录没有 package.json 或 workspace；安装、构建、测试都在插件目录中执行。
 
-当前使用 `@clipbus/plugin-sdk ^2.0.0`、插件协议 V2、manifest schema 5。
+当前使用 `@clipbus/plugin-sdk ^3.0.0`、插件协议 V2、manifest schema 6。
 动手前先在目标目录 `npm install`，再读：
 
 - `node_modules/@clipbus/plugin-sdk/docs/README.md`：文档地图。
 - `node_modules/@clipbus/plugin-sdk/API.md`：生成的签名、类型和限额真相源。
-- `docs/migration-v1-v2.md`：旧插件迁移；文档中的 1.x 示例仍需按实际 2.x API 校准。
+- `docs/migration-v1-v2.md`：旧插件迁移；文档中的 1.x 示例仍需按实际 3.x API 校准，后续破坏性变更见 `CHANGELOG.md`。
 - `SPECIFICATION.md`：扩展协议的方法。
 
 仓库示例与注释可能滞后，冲突以安装版本的 API.md 为准。不要查看或修改 SDK 实现源码。
@@ -59,18 +59,26 @@ npm run lint
 4. 附件类型必须以 `plugin.id + "."` 开头，全部写入类型列在 `writes.attachmentTypes`；搜索 scope 列在 `writes.searchScopes`。
 5. `scripts/build-ui.mjs` 与 `verify-build.mjs` 的通用版本来自 generator 的 `assets/scaffold/scripts/`。模板的 UI 构建版本含演示专用源映射，不能直接覆盖派生插件。
 6. package.json 按字段合并 SDK/scripts/共享开发依赖，保留插件名称、说明与业务依赖。
+7. schema 6 的 `install` 只有 `entry`，总是由 Node 运行；有 lockfile 时安装脚本用 `npm ci`。宿主禁用依赖安装生命周期脚本，显式 `npm run build` 仍会运行。
+
+## 运行环境与文件夹
+
+Runtime 与卡片页不能联网；Runtime 不能启动子程序，包目录只读，写入使用 `data/`、`cache/`。
+需要用户文件夹时才声明 `permissions.folders`，用 `ctx.plugin.folder(id)` 取授权路径；未授权返回 `null`。
+`system.openPath` 已删除；`ctx.system.openUrl` 仅供卡片页打开 `http`、`https`、`mailto`。
+`ctx.system.reveal` 只接受插件目录或已授权文件夹里的现存路径。实际授权与隔离需要配套 Host，preview 不验证这些限制。
 
 ## 数据、事件与限额
 
 输入只有 `text` / `image`。payload 是结构化 JSON 对象；共享 payload.ts 不能导入 Node/DOM API，Node 运算放独立 Runtime 文件。
 每条附件是 `{ type, key, updatedAt, own, payload, card? }`；item.attachments 仅包含引用 `{ type, key, updatedAt, own }`。
-不要继续使用 payloadJson、owner、historyID、旧 topic 全局或权限字段。
+不要继续使用 payloadJson、owner、historyID、旧 topic 全局或旧版方法权限字段；schema 6 的 `permissions` 仅用于文件夹槽位。
 
 Runtime 写入必须 await，处理函数成功后提交；ctx 在调用结束后失效。
 detector 每次成功执行整体替换自己的附件和搜索结果，包含 recopy。本次不写意味着清空，不应通过直接 return 跳过重复复制。
 页面/消息的交互状态使用独立类型，避免与 detector 输出产生重复卡片；编辑内容会清空所有附件。
 
-按 SDK 2.0 限额预算：单 payload 2 MiB、每插件每条目合计 64 个附件/10 条搜索扩展、单条搜索文本 4 KiB。按 UTF-8 字节检查，不按 JS 字符数。最终数字以 API.md 为准。
+按 SDK 3.0 限额预算：单 payload 2 MiB、每插件每条目合计 64 个附件/10 条搜索扩展、单条搜索文本 4 KiB。按 UTF-8 字节检查，不按 JS 字符数。最终数字以 API.md 为准。
 
 ## UI、preview 与验证
 

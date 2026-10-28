@@ -13,7 +13,7 @@ const validPayload = { kind: 'vibe_fallback', version: 1, text: 'hello world', c
 describe('manifest', () => {
   it('keeps plugin.vibe identity and declares V2 writes', () => {
     assert.equal(manifest.plugin.id, 'plugin.vibe');
-    assert.equal(manifest.schemaVersion, 5);
+    assert.equal(manifest.schemaVersion, 6);
     assert.deepEqual(manifest.writes.attachmentTypes, [ATTACHMENT_TYPE]);
     assert.ok(manifest.writes.attachmentTypes.every(type => type.startsWith('plugin.vibe.')));
     assert.deepEqual(manifest.writes.searchScopes, []);

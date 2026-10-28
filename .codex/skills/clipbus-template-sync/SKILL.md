@@ -36,7 +36,8 @@ description: >-
 
 ## 当前标准
 
-SDK ^2.0.0、协议 V2、manifest schema 5。旧版本的迁移案例仅作历史证据，不是当前接口范式。
+SDK ^3.0.0、协议 V2、manifest schema 6。旧版本的迁移案例仅作历史证据，不是当前接口范式。
+schema 6 的 install 只有 entry，运行期与文件夹规则见 references/propagation-analysis.md 的 SDK 3.0 一节。
 宿主已经移除 Draft Action；同步时删除相关实现/表单/预览/测试与教程，纯此类能力的插件经用户确认后整体移除。
 当前 preview 是 V2 的 plugin/item/attachment/renderer/height；item.attachments 仅放引用。每个 renderer 必须保留实际组件和业务样例。
 
@@ -100,7 +101,7 @@ SDK ^2.0.0、协议 V2、manifest schema 5。旧版本的迁移案例仅作历�
 - **绝不直接把 template 的 `build-ui.mjs`/`verify-build.mjs` 拷给插件**：template 是 demo 专用版，插件用的是 generator 脚手架的通用 manifest 驱动版。直接拷会让全部派生插件构建失败。这俩有真实行为变化时，先 port 进 `clipbus-plugin-generator/assets/scaffold/scripts/` 再分发，并同步更新 generator 资产。
 - **package.json 字段级合并，禁止整文件覆盖**：只同步 SDK 版本 / scripts 段 / 共享 devDeps；保留各插件的 `name`/`description`/自有依赖。
 - **SDK 版本 bump ≠ 只改版本号，且 verify 绿 ≠ 没影响**：升级的真实影响**藏在依赖包内部**。**必跑 `scripts/sdk-api-diff.mjs` diff 新旧 SDK 的 API、根 Markdown 与 docs 教程正文**。删除/改签名是**破坏性**的（verify 会红，报错先读 `API.md`/`docs/README.md` 再改）；**新增的可选 API（如 0.8.4 的 `locale`）verify 绿也照样是真实影响，必须在方案里列出并问是否采用**——只靠文件 diff + 试点 verify 会漏掉它（真实踩过）。**任何 added/modified 文档都必须读实际 diff**：0.8.5 的 capability 数没变，却新增 `docs/preview.md` + `@clipbus/plugin-sdk/preview`；0.8.7→0.9.5 的关键 Action 级联语义又同时藏在根 `README.md` / `SPECIFICATION.md`，只看 `docs/` 文件名仍会漏判。
-- **schema major bump 迁移完整契约**：对照 SDK API.md 与迁移文档。当前 v4→v5 需要 renderers/page/inputKinds/writes、函数 handler、结构化 payload、/view ctx、typed messages，以及 V2 preview。删除已移除入口；同步测试、设计文档和 generator 资产。Action 仅处理当前 content，item 保持 Flow 起点身份。
+- **schema major bump 迁移完整契约**：对照 SDK API.md、CHANGELOG.md 与迁移文档。v5→v6 要删除 install.runtime，检查 system.openPath 删除、openUrl 调用侧/协议与 reveal 路径限制；方法数不含 ctx.plugin.folder 这类本地 helper，仍要读完整文档。文件夹授权按需采用，不复制模板演示槽位。v4→v5 的 renderer/page/inputKinds/writes 等迁移见参考文档。同步测试、设计文档和 generator 资产；Action 仅处理当前 content，item 保持 Flow 起点身份。
 - **added 文件不在 `git diff` 里**：上游新增文件是 untracked，必须从 `pull-template.mjs` 清单取，否则会漏传播。
 - **dist 在真实路径重建**：dist 是 gitignore 产物、宿主实际加载它；在当前分支重建（别跑去 worktree）。
 - **全新 Agent 并行**：不复用 idle executor；orchestrator 独占根索引等共享物；自己复跑 verify 复核。

@@ -80,7 +80,7 @@
 
 scaffold.mjs 从模板整体复制，排除依赖、构建产物、内部 git 和缓存；删除全部演示 feature、演示测试以及只用于演示的 shared/PNG 工具。
 保留配置、base.css、useCard、通用测试 harness、Runtime 构建与安装脚本，并替换为 generator 的通用 UI 构建和校验资产。
-生成 schema 5 空能力清单、函数式 definePlugin、V2 卡片 scenario 入口与构建产物接线测试。renderer page 从 manifest 推导。
+生成 schema 6 空能力清单、Node 安装入口、函数式 definePlugin、V2 卡片 scenario 入口与构建产物接线测试。renderer page 从 manifest 推导，不继承模板的演示文件夹授权槽位。
 业务实现与实际预览由后续阶段补齐，不能用占位组件交付。
 
 当前架构见 references/architecture.md，实现范式见 references/authoring-guide.md。

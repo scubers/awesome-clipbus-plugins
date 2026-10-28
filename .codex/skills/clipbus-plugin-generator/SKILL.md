@@ -26,7 +26,7 @@ description: >-
 ## 前置：确认环境
 
 1. 确认在合集仓库根：存在 `template-plugin/` 目录。不在则停下并说明。
-2. 目标插件先 npm install，并读安装 SDK 的 docs/README.md 与 API.md；当前标准为 SDK 2.x / schema 5。
+2. 目标插件先 npm install，并读安装 SDK 的 docs/README.md 与 API.md；当前标准为 SDK 3.x / schema 6。
 3. 本 skill 的脚本路径（相对本 skill 目录）：`scripts/survey.mjs`、`scripts/scaffold.mjs`。深入资料在 `references/`。
 
 ## 工作流（七阶段）
@@ -113,7 +113,8 @@ description: >-
 - **扩展点按需**：已展示并有复制按钮的值，不再创建同值复制 Action；Action 适合无卡片的文本变换或独立结果。
 - **命名空间与声明**：attachment type 必须以 plugin.id + "." 开头；所有实际写入列入 writes。新增类型/搜索 scope 后同步 manifest、契约、preview 和测试。
 - **输入仅两种 kind**：text / image，字段与 kind 同级；图片只有元数据，像素通过 ctx.input.imagePath() 读取。
-- **当前契约**：SDK ^2.0.0、schemaVersion 5、renderers[].page、detectors/actions 的 inputKinds。Action 只有函数处理器；宿主已移除 Draft 能力，不生成表单或兼容层。
+- **当前契约**：SDK ^3.0.0、schemaVersion 6、renderers[].page、detectors/actions 的 inputKinds。install 只有 entry，总是用 Node 运行。Action 只有函数处理器；宿主已移除 Draft 能力，不生成表单或兼容层。
+- **运行环境与文件夹**：Runtime/卡片页不能联网，Runtime 不能启动子程序。文件写入 data/cache；确需用户文件夹才声明 permissions.folders，ctx.plugin.folder(id) 未授权为 null。system.openPath 已删除，openUrl 仅供页面打开 http/https/mailto，reveal 限插件目录或授权文件夹。提交 lockfile，安装 hook 有 lockfile 时用 npm ci；依赖安装生命周期脚本被禁用，显式 npm run build 照常。
 - **Action 当前值**：input.item 是 Flow 起点；处理逻辑看 input.content。图片读取当前级联 ctx.input.imagePath()，输出写插件 cache 后用 result.image 返回。
 - **文本解码验证**：Base64 等文本输出先验证 UTF-8 无损往返与可显示字符比例，业务测试覆盖无效 UTF-8、控制字符和合法非 ASCII 文本。
 - **能力签名以 API.md 为准**；不改 `node_modules/@clipbus/plugin-sdk/` 内 SDK 源码。

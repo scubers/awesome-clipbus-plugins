@@ -17,7 +17,7 @@ test('manifest declares the 9 text action ids', () => {
 });
 
 test('all actions accept text through protocol V2', () => {
-  assert.equal(manifest.schemaVersion, 5);
+  assert.equal(manifest.schemaVersion, 6);
   for (const action of manifest.actions) {
     assert.deepEqual(action.inputKinds, ['text'], action.id);
     assert.equal(action.lifecycle, undefined, action.id);

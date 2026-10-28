@@ -56,7 +56,7 @@ async function main() {
   const renderers = manifest?.renderers ?? [];
   const actions = manifest?.actions ?? [];
 
-  add("manifest 使用 schema v5", manifest?.schemaVersion === 5, manifest?.schemaVersion);
+  add("manifest 使用 schema v6", manifest?.schemaVersion === 6, manifest?.schemaVersion);
   add("至少有一个有效能力", detectors.length + renderers.length + actions.length > 0,
     `detectors=${detectors.length} renderers=${renderers.length} actions=${actions.length}`);
 

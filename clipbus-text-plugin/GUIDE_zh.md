@@ -2,7 +2,7 @@
 
 *[English](./GUIDE.md) · 中文*
 
-本工程（`clipbus-text-plugin/`）提供九个 Clipbus 文本变换 Action，基于 SDK 2.0.0 与协议 V2（manifest schema 5）。本文件只讲**脚手架工作流**（起步、本地开发、在 Clipbus 中调试、构建、测试）与**工程结构**。
+本工程（`clipbus-text-plugin/`）提供九个 Clipbus 文本变换 Action，基于 SDK 3.0.0 与协议 V2（manifest schema 6）。本文件只讲**脚手架工作流**（起步、本地开发、在 Clipbus 中调试、构建、测试）与**工程结构**。
 
 **插件开发的权威知识**（架构、manifest、SDK 入口、detector/renderer/action、入参形状、消息、坑点）**随 SDK 包发布**，`npm install` 后在 `node_modules/@clipbus/plugin-sdk/docs/`——它始终对应你当前安装的 SDK 版本。
 
@@ -44,7 +44,7 @@ npm run dev
 Clipbus → Settings → Plugins → Developer Plugins 区段提供开发插件生命周期管理：
 
 1. **Add Path** — 选择含 `manifest.json` 的目录（即 `sourceRootPath`）。
-2. 若 `manifest.json` 声明了 `install` 字段，Clipbus **自动执行安装脚本**，工作目录为 `sourceRootPath`。`node_modules/` 等产物落到工程目录（等价于你手动 `npm install`）。
+2. 若 `manifest.json` 声明了 `install` 字段，Clipbus **先请用户确认再执行安装脚本**，工作目录为 `sourceRootPath`。脚本在存在 lockfile 时使用 `npm ci`，否则使用 `npm install`，随后执行 `npm run build`。宿主禁用依赖安装生命周期脚本，显式构建照常运行。`node_modules/` 与 `dist/` 等产物落到工程目录。
 3. 安装日志写入 `<AppData>/development-plugins/<pluginID>/install-logs/`，不会污染你的 git status。
 
 | 按钮 | 行为 |
@@ -99,7 +99,7 @@ npm test         # tests/runtime/ 与 tests/integration/；先执行 npm run bui
 ```text
 clipbus-text-plugin/
 ├── manifest.json                       ← 九个文本 Action，无 renderer 或 detector
-├── package.json                        ← @clipbus/plugin-sdk ^2.0.0
+├── package.json                        ← @clipbus/plugin-sdk ^3.0.0
 ├── scripts/                            ← runtime 构建与 manifest 驱动的 UI 校验
 ├── src/
 │   ├── features/line-tools/
