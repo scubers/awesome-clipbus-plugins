@@ -71,11 +71,9 @@ The [official plugin template](https://github.com/scubers/clipbus-template-plugi
 
 Building a Clipbus plugin outside this collection? List it here.
 
-_No community plugins yet — be the first._
-
 | Plugin | Description | Repository | Install Subdirectory |
 |--------|-------------|------------|-----------------------|
-| _(your plugin)_ | _one-line description_ | `https://github.com/<you>/<repo>` | leave blank unless your repo hosts multiple plugins |
+| [Copy Sound](https://github.com/MuhametSmaili/clipbus-plugins/tree/main/sound-plugin) | Quiet copy feedback for macOS, with custom sound and volume settings. | `https://github.com/MuhametSmaili/clipbus-plugins` | `sound-plugin` |
 
 To add a row, open a PR — see **Contributing** below.
 
