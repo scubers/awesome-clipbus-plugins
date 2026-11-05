@@ -27,17 +27,23 @@ Clipbus 免费版每类能力（detector / renderer / action）各有 3 个插�
 
 ## 用 AI 创建和维护插件
 
-1. Clone 本仓库。
-2. 用你常用的 AI Coding Agent 打开仓库。
-3. 直接描述要创建的插件或要执行的维护任务。
+在自己的工程创建或升级插件：把所需 skill 的 `SKILL.md` 和 `references/`
+安装到 AI Coding Agent，打开目标文件夹，直接描述任务即可。两个 skill 均可单独分发、独立使用。
+需要 Node.js、npm、Git，以及访问上游模板与 npm registry 的网络。
+Agent 阅读当前官方模板与实际安装的 SDK 文档，按工程情况实现功能并运行工程自身的验证。
+无需 clone 本合集，也无需准备本地模板。
+
+要向本合集贡献改动，再 clone 本仓库并用 AI Coding Agent 打开。
 
 `.agents/skills/`、`.codex/skills/` 和 `.claude/skills/` 各保留一份内容一致的最新技能。
 Windows / macOS 新 clone 后即可直接使用，无需额外初始化。修改时同步三份，CI 自动检查内容一致。
 
 仓库在 `.agents/skills/` 中提供了两套专用工作流：
 
-- **Create — `clipbus-plugin-generator`：**先勘察现有插件，再把功能并入最匹配的插件或创建新插件；完成实现与全量验证，同时避免产生近重复插件。
-- **Sync — `clipbus-template-sync`：**拉取官方插件模板与 Plugin SDK 更新，判断哪些共享改动会影响现有插件，并按需完成迁移与验证。
+- **Create — [`clipbus-plugin-generator`](./.agents/skills/clipbus-plugin-generator/)：**通过说明驱动 Agent，支持空目录、独立插件和插件合集。参考官方模板、读取实际安装的 SDK 文档、实现功能并运行工程自身的检查；有现有插件时按真实职责判断归属。
+- **Sync — [`clipbus-template-sync`](./.agents/skills/clipbus-template-sync/)：**支持独立插件和用户指定的插件合集。对照实际实现、官方模板和 SDK 文档判断升级影响，按需迁移，并运行各工程自身的检查。
+
+两个 skill 只包含说明与参考资料，不附带脚手架、构建资产或固定插件结构校验器，彼此没有安装依赖。
 
 ## 插件列表
 
@@ -54,7 +60,7 @@ Windows / macOS 新 clone 后即可直接使用，无需额外初始化。修改
 | [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | `clipbus-cron-plugin` | 识别 5 段 cron 表达式，逐字段中文释义表、一句执行概述,以及接下来 5 次触发时刻（实时本地时间）（带护栏避免误判普通数字行）| — |
 | [clipbus-vibe-plugin](./clipbus-vibe-plugin/README.md) | `clipbus-vibe-plugin` | 情绪兜底动画：当没有任何插件能展示某条纯文本时，提供三种可切换的 Three.js 粒子动画——①Particle Core：粒子自字形炸开、噪声漂移后重组为发光球体；②Text Reveal：文字完整可读（字号自适应卡片尺寸）→ 光扫描 → 边缘裂解 → 爆发 → 回收为多面体光核；③Text Loop：8 阶段无缝循环——文字→粒子化→爆发→漂浮能量云→旋涡回收成球→稳定悬浮→解构→重组文字（首尾完全衔接）；原生按钮栏切换，展示哪些动画及顺序可用 `plugin.vibe.animations` 设置项配置（默认全部三个） | [GIF](./docs/gifs/vibe.gif) |
 
-`template-plugin/` 是官方脚手架 + 全能力参考——用于被**复制**，而非安装。它不是产品插件，因此不出现在上表中。上方 AI 创建流程生成的新插件，起点都是它的一份拷贝。
+[官方插件模板](https://github.com/scubers/clipbus-template-plugin) 在上游独立维护。Agent 按需临时获取，本仓库不再保存模板副本。
 
 ## 社区插件
 

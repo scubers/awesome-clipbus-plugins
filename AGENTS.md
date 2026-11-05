@@ -3,7 +3,7 @@
 ## 仓库与权威文档
 
 这是 Clipbus 插件合集：一个顶层 `clipbus-*-plugin/` 对应一个独立插件。
-`template-plugin/` 是复制起点与完整示例，不是被依赖的库。根目录没有 package.json 或 workspace；安装、构建、测试都在插件目录中执行。
+仓库不再保存模板副本。创建和升级插件时，由 Agent 临时获取官方模板 `https://github.com/scubers/clipbus-template-plugin` 作为工程参考，再依据目标插件实际安装的 SDK 文档实现或迁移。两个 skill 均可独立分发，不依赖本仓库、内置脚手架或另一个 skill。根目录没有 package.json 或 workspace；安装、构建、测试都在插件目录中执行。
 
 当前使用 `@clipbus/plugin-sdk ^3.0.0`、插件协议 V2、manifest schema 6。
 动手前先在目标目录 `npm install`，再读：
@@ -20,6 +20,7 @@
 `.agents/skills/`、`.codex/skills/`、`.claude/skills/` 各保存一份内容完全一致的技能，随仓库提交。
 新 clone 后即可直接使用，无需初始化、目录链接或启动 Hook。修改任一技能时同步更新三处；
 `node .agents/scripts/check-skills.mjs` 和跨平台 CI 检查目录与文件内容一致。
+每个 skill 的 `SKILL.md` 与 `references/` 构成完整分发内容。工程结构、SDK 契约和验证命令从实际目标与安装版本文档确认，不在 skill 内维护模板文件清单或额外验收脚本。
 
 ## Shell 与常用命令
 
@@ -57,7 +58,7 @@ npm run lint
 2. renderer 的 id 对应 `src/features/<id>/`，包含 main.ts、app.vue、index.html。通用构建脚本自动读取 manifest；renderer 不出现在 Runtime registry。
 3. `page` 通常为 `dist/ui/renderers/<id>/index.html`；引用页内相对资源。每个输出页使用独立目录，避免构建清空互相覆盖。
 4. 附件类型必须以 `plugin.id + "."` 开头，全部写入类型列在 `writes.attachmentTypes`；搜索 scope 列在 `writes.searchScopes`。
-5. `scripts/build-ui.mjs` 与 `verify-build.mjs` 的通用版本来自 generator 的 `assets/scaffold/scripts/`。模板的 UI 构建版本含演示专用源映射，不能直接覆盖派生插件。
+5. 模板的构建脚本可能包含演示专用源映射，不能直接覆盖既有插件。Agent 根据当前模板与目标工程适配构建配置；各插件保留自己的构建脚本，不要求与模板或其他插件逐字一致。
 6. package.json 按字段合并 SDK/scripts/共享开发依赖，保留插件名称、说明与业务依赖。
 7. schema 6 的 `install` 只有 `entry`，总是由 Node 运行；有 lockfile 时安装脚本用 `npm ci`。宿主禁用依赖安装生命周期脚本，显式 `npm run build` 仍会运行。
 

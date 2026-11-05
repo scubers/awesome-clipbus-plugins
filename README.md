@@ -27,18 +27,28 @@ Clipbus's free tier includes 3 slots per capability type (detector / renderer / 
 
 ## Build and maintain plugins with AI
 
-1. Clone this repository.
-2. Open it with your preferred AI coding agent.
-3. Describe the plugin or maintenance task you want to complete.
+To create or upgrade a plugin in your own project, install the relevant skill's
+`SKILL.md` and `references/` in your AI coding agent, open your target folder,
+and describe the task. Each skill can be distributed and used independently.
+Node.js, npm, Git, and access to the upstream template and npm registry are required.
+The agent reads the current official template and the installed SDK documentation,
+adapts the implementation to the project, and runs the project's own validation.
+Cloning this collection or keeping a local template is unnecessary.
+
+To contribute changes to this collection, clone the repository and open it with
+your preferred AI coding agent.
 
 The repository includes identical skill files in `.agents/skills/`, `.codex/skills/`,
 and `.claude/skills/`. They work directly after cloning on Windows and macOS.
 Keep all three copies updated together; CI checks that their contents match.
 
-Two repository skills under `.agents/skills/` provide purpose-built workflows:
+Two skills under `.agents/skills/` provide purpose-built workflows:
 
-- **Create — `clipbus-plugin-generator`:** Surveys the existing collection, then extends the best-matching plugin or scaffolds a new one. It implements the feature and runs the full verification gate while avoiding near-duplicates.
-- **Sync — `clipbus-template-sync`:** Pulls updates from the official plugin template and Plugin SDK, determines which shared changes affect existing plugins, and migrates and verifies them as needed.
+- **Create — [`clipbus-plugin-generator`](./.agents/skills/clipbus-plugin-generator/):** An instruction-based workflow for empty folders, standalone plugins, and collections. The agent consults the official template and installed SDK documentation, implements the feature, and runs the project's own checks. Existing plugin responsibilities guide reuse when relevant.
+- **Sync — [`clipbus-template-sync`](./.agents/skills/clipbus-template-sync/):** Upgrades standalone plugins or a selected collection by comparing their actual implementation with the official template and SDK documentation, adapting relevant changes, and running each project's own checks.
+
+Both skills contain instructions and references, with no bundled scaffold,
+build assets, or fixed plugin-structure validators. They do not require one another.
 
 ## Plugins
 
@@ -55,7 +65,7 @@ Each plugin below lives in its own top-level directory and is fully self-contain
 | [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | `clipbus-cron-plugin` | Detect 5-field cron expressions: a per-field explanation table, a one-sentence summary, and the next 5 fire times (live, local time), guarded to avoid misfiring on ordinary number rows. | — |
 | [clipbus-vibe-plugin](./clipbus-vibe-plugin/README.md) | `clipbus-vibe-plugin` | Emotional fallback for plain text with no structured match: three switchable Three.js particle animations — ① Particle Core: glyphs burst → noise drift → glowing Fibonacci sphere; ② Text Reveal: readable text (≥ 0.6 s, glyph-fit scaled) → light scan → edge disintegration → burst → polyhedral data crystal; ③ Text Loop: seamless 8-phase cycle — text → scatter → burst → drift cloud → sphere recall → stable sphere → deconstruct → text reassembly. A native button bar switches between them; which animations appear and their order are configurable via the `plugin.vibe.animations` setting (defaults to all three). | [GIF](./docs/gifs/vibe.gif) |
 
-`template-plugin/` is the official scaffold and full-capability reference — it is meant to be **copied**, not installed. It is not a product plugin, so it is not listed in the table above. New plugins created with the AI workflow above start life as a copy of it.
+The [official plugin template](https://github.com/scubers/clipbus-template-plugin) is maintained upstream. Agents retrieve it temporarily when needed; this repository does not keep a template copy.
 
 ## Community plugins
 
