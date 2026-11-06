@@ -1,6 +1,6 @@
 import { defineAttachment } from "@clipbus/plugin-sdk";
 
-export const ATTACHMENT_TYPE = "plugin.toolbox.ip" as const;
+export const ATTACHMENT_TYPE = "plugin.awesome.toolbox.ip" as const;
 
 // ── Named types ───────────────────────────────────────────────────────────────
 

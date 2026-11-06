@@ -19,7 +19,7 @@ export interface TimestampPayload {
   zones: WorldClockZone[];
 }
 
-const ATTACHMENT_TYPE = "plugin.toolbox.timestamp";
+const ATTACHMENT_TYPE = "plugin.awesome.toolbox.timestamp";
 const SECONDS_RE = /^\d{10}$/;
 const MILLIS_RE = /^\d{13}$/;
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

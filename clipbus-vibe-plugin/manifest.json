@@ -1,14 +1,14 @@
 {
   "schemaVersion": 6,
-  "plugin": { "id": "plugin.vibe", "title": "Vibe", "version": "0.1.0" },
+  "plugin": { "id": "plugin.awesome.vibe", "title": "Vibe", "version": "0.1.0" },
   "install": { "entry": "scripts/install.mjs" },
   "runtime": { "nodeEntry": "dist/plugin.cjs" },
-  "writes": { "attachmentTypes": ["plugin.vibe.fallback"], "searchScopes": [] },
+  "writes": { "attachmentTypes": ["plugin.awesome.vibe.fallback"], "searchScopes": [] },
   "renderers": [
     {
       "id": "vibe-fallback",
       "title": "Vibe",
-      "attachmentType": "plugin.vibe.fallback",
+      "attachmentType": "plugin.awesome.vibe.fallback",
       "tint": "#7C5CFF",
       "buttons": [
         { "id": "particle-core", "title": "Particle Core", "enabled": true },

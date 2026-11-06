@@ -34,13 +34,13 @@ test('geo-coordinates page references dist/ui/renderers/ path', () => {
   assert.ok(renderer.page.startsWith('dist/ui/renderers/'), `unexpected page: ${renderer.page}`);
 });
 
-test('manifest declares attachment type plugin.toolbox.geo', () => {
-  assert.ok(manifest.writes.attachmentTypes.includes('plugin.toolbox.geo'));
+test('manifest declares attachment type plugin.awesome.toolbox.geo', () => {
+  assert.ok(manifest.writes.attachmentTypes.includes('plugin.awesome.toolbox.geo'));
 });
 
-test('geo-coordinates renderer attachmentType is plugin.toolbox.geo', () => {
+test('geo-coordinates renderer attachmentType is plugin.awesome.toolbox.geo', () => {
   const r = manifest.renderers.find((r) => r.id === 'geo-coordinates');
-  assert.equal(r.attachmentType, 'plugin.toolbox.geo');
+  assert.equal(r.attachmentType, 'plugin.awesome.toolbox.geo');
 });
 
 test('toDms carries 60" up to the next minute/degree (no invalid 60.0 component)', () => {
@@ -67,14 +67,14 @@ test('createGeoDetector returns a detector function', () => {
 // Detector: fires on valid coordinate pairs
 // ---------------------------------------------------------------------------
 
-test('detector fires on "37.7749, -122.4194"', async t => {
+test('decimal coordinate detection requires an explicit opt-in', async t => {
   const { registry, launch } = await setupPlugin(t);
-  const host = fakeHost(launch);
+  const host = fakeHost(launch, { 'settings.get': { values: { decimalCoordinates: true } } });
   const det = registry.detectors['geo-detector'];
   await det(makeInput('37.7749, -122.4194'), host.ctx);
   const attachments = host.paramsOf('item.setAttachments');
   assert.equal(attachments.length, 1);
-  assert.equal(attachments[0].type, 'plugin.toolbox.geo');
+  assert.equal(attachments[0].type, 'plugin.awesome.toolbox.geo');
 });
 
 test('detector fires on "40.7128° N, 74.0060° W"', async t => {
@@ -84,7 +84,7 @@ test('detector fires on "40.7128° N, 74.0060° W"', async t => {
   await det(makeInput('40.7128° N, 74.0060° W'), host.ctx);
   const attachments = host.paramsOf('item.setAttachments');
   assert.equal(attachments.length, 1);
-  assert.equal(attachments[0].type, 'plugin.toolbox.geo');
+  assert.equal(attachments[0].type, 'plugin.awesome.toolbox.geo');
 });
 
 // ---------------------------------------------------------------------------
@@ -196,9 +196,9 @@ test('Google URL contains decimal lat and lng', () => {
 // Payload: ATTACHMENT_TYPE constant consistency
 // ---------------------------------------------------------------------------
 
-test('ATTACHMENT_TYPE constant equals plugin.toolbox.geo', () => {
+test('ATTACHMENT_TYPE constant equals plugin.awesome.toolbox.geo', () => {
   const { ATTACHMENT_TYPE } = require(path.resolve(root, 'src/features/geo-coordinates/payload.ts'));
-  assert.equal(ATTACHMENT_TYPE, 'plugin.toolbox.geo');
+  assert.equal(ATTACHMENT_TYPE, 'plugin.awesome.toolbox.geo');
 });
 
 // ---------------------------------------------------------------------------

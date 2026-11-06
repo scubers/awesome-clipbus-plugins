@@ -14,6 +14,11 @@ const card = useCard(attachment);
 const payload = computed(() =>
   decodeXmlPayload(card.attachment.value.payload)
 );
+const preview = computed(() => {
+  const text = payload.value?.formatted ?? "";
+  const chars = Array.from(text);
+  return chars.length > 20000 ? chars.slice(0, 20000).join("") + "\n…" : text;
+});
 
 let stopAutoFit: (() => void) | null = null;
 
@@ -43,7 +48,7 @@ onUnmounted(() => {
         <span class="stat">Depth {{ payload.maxDepth }}</span>
       </div>
       <div class="code-block">
-        <pre class="code-text">{{ payload.formatted }}</pre>
+        <pre class="code-text">{{ preview }}</pre>
       </div>
     </section>
     <div v-else class="empty">Waiting for XML content</div>

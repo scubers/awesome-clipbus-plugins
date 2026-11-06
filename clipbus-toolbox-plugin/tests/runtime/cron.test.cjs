@@ -34,7 +34,7 @@ test("detect '30 9 * * 1-5' returns 5 fields", () => {
   const payload = createCronPayload(textInput("30 9 * * 1-5"));
   assert.ok(payload, "should detect valid cron expression");
   const { attachment } = require(path.resolve(root, "src/features/cron-renderer/payload.ts"));
-  assert.equal(attachment.type, "plugin.toolbox.schedule");
+  assert.equal(attachment.type, "plugin.awesome.toolbox.schedule");
   assert.equal(payload.kind, "cron_preview");
   assert.equal(payload.fields.length, 5);
 });

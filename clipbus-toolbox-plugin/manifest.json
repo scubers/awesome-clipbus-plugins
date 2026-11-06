@@ -1,7 +1,7 @@
 {
   "schemaVersion": 6,
   "plugin": {
-    "id": "plugin.toolbox",
+    "id": "plugin.awesome.toolbox",
     "title": "Toolbox",
     "version": "0.1.0"
   },
@@ -129,7 +129,7 @@
     {
       "id": "base64-renderer",
       "title": "Base64 Decode",
-      "attachmentType": "plugin.toolbox.base64",
+      "attachmentType": "plugin.awesome.toolbox.base64",
       "height": {
         "min": 120,
         "max": 320
@@ -146,7 +146,7 @@
     {
       "id": "jwt-renderer",
       "title": "JWT Decoded",
-      "attachmentType": "plugin.toolbox.jwt",
+      "attachmentType": "plugin.awesome.toolbox.jwt",
       "height": {
         "min": 140,
         "max": 440
@@ -163,7 +163,7 @@
     {
       "id": "xml-renderer",
       "title": "XML Formatter",
-      "attachmentType": "plugin.toolbox.xml",
+      "attachmentType": "plugin.awesome.toolbox.xml",
       "height": {
         "min": 140,
         "max": 480
@@ -180,7 +180,7 @@
     {
       "id": "csv-table",
       "title": "CSV",
-      "attachmentType": "plugin.toolbox.csv",
+      "attachmentType": "plugin.awesome.toolbox.csv",
       "height": {
         "min": 160,
         "max": 460
@@ -197,7 +197,7 @@
     {
       "id": "timestamp-renderer",
       "title": "Unix Timestamp Converter",
-      "attachmentType": "plugin.toolbox.timestamp",
+      "attachmentType": "plugin.awesome.toolbox.timestamp",
       "height": {
         "min": 140,
         "max": 460
@@ -214,7 +214,7 @@
     {
       "id": "radix-renderer",
       "title": "Radix Converter",
-      "attachmentType": "plugin.toolbox.radix",
+      "attachmentType": "plugin.awesome.toolbox.radix",
       "height": {
         "min": 120,
         "max": 300
@@ -231,7 +231,7 @@
     {
       "id": "duration",
       "title": "Duration",
-      "attachmentType": "plugin.toolbox.duration",
+      "attachmentType": "plugin.awesome.toolbox.duration",
       "height": {
         "min": 140,
         "max": 300
@@ -248,7 +248,7 @@
     {
       "id": "entities-renderer",
       "title": "Extracted Entities",
-      "attachmentType": "plugin.toolbox.entities",
+      "attachmentType": "plugin.awesome.toolbox.entities",
       "height": {
         "min": 140,
         "max": 420
@@ -265,7 +265,7 @@
     {
       "id": "url-parsed",
       "title": "URL Details",
-      "attachmentType": "plugin.toolbox.url",
+      "attachmentType": "plugin.awesome.toolbox.url",
       "height": {
         "min": 140,
         "max": 500
@@ -282,7 +282,7 @@
     {
       "id": "ip-details",
       "title": "IP Address",
-      "attachmentType": "plugin.toolbox.ip",
+      "attachmentType": "plugin.awesome.toolbox.ip",
       "height": {
         "min": 140,
         "max": 380
@@ -299,7 +299,7 @@
     {
       "id": "geo-coordinates",
       "title": "Coordinates",
-      "attachmentType": "plugin.toolbox.geo",
+      "attachmentType": "plugin.awesome.toolbox.geo",
       "height": {
         "min": 120,
         "max": 340
@@ -316,7 +316,7 @@
     {
       "id": "mac-address",
       "title": "MAC Address",
-      "attachmentType": "plugin.toolbox.mac",
+      "attachmentType": "plugin.awesome.toolbox.mac",
       "height": {
         "min": 120,
         "max": 320
@@ -333,7 +333,7 @@
     {
       "id": "uuid-details",
       "title": "UUID",
-      "attachmentType": "plugin.toolbox.uuid",
+      "attachmentType": "plugin.awesome.toolbox.uuid",
       "height": {
         "min": 120,
         "max": 360
@@ -350,7 +350,7 @@
     {
       "id": "markdown-renderer",
       "title": "Markdown Preview",
-      "attachmentType": "plugin.toolbox.markdown",
+      "attachmentType": "plugin.awesome.toolbox.markdown",
       "height": {
         "min": 120,
         "max": 480
@@ -361,7 +361,7 @@
     {
       "id": "gradient-swatch",
       "title": "Gradient",
-      "attachmentType": "plugin.toolbox.gradient",
+      "attachmentType": "plugin.awesome.toolbox.gradient",
       "height": {
         "min": 260,
         "max": 260
@@ -377,7 +377,7 @@
     {
       "id": "cron-renderer",
       "title": "Cron Schedule",
-      "attachmentType": "plugin.toolbox.schedule",
+      "attachmentType": "plugin.awesome.toolbox.schedule",
       "height": {
         "min": 120,
         "max": 560
@@ -684,32 +684,26 @@
   ],
   "writes": {
     "attachmentTypes": [
-      "plugin.toolbox.base64",
-      "plugin.toolbox.jwt",
-      "plugin.toolbox.xml",
-      "plugin.toolbox.csv",
-      "plugin.toolbox.timestamp",
-      "plugin.toolbox.radix",
-      "plugin.toolbox.duration",
-      "plugin.toolbox.entities",
-      "plugin.toolbox.url",
-      "plugin.toolbox.ip",
-      "plugin.toolbox.geo",
-      "plugin.toolbox.mac",
-      "plugin.toolbox.uuid",
-      "plugin.toolbox.markdown",
-      "plugin.toolbox.gradient",
-      "plugin.toolbox.schedule"
+      "plugin.awesome.toolbox.base64",
+      "plugin.awesome.toolbox.jwt",
+      "plugin.awesome.toolbox.xml",
+      "plugin.awesome.toolbox.csv",
+      "plugin.awesome.toolbox.timestamp",
+      "plugin.awesome.toolbox.radix",
+      "plugin.awesome.toolbox.duration",
+      "plugin.awesome.toolbox.entities",
+      "plugin.awesome.toolbox.url",
+      "plugin.awesome.toolbox.ip",
+      "plugin.awesome.toolbox.geo",
+      "plugin.awesome.toolbox.mac",
+      "plugin.awesome.toolbox.uuid",
+      "plugin.awesome.toolbox.markdown",
+      "plugin.awesome.toolbox.gradient",
+      "plugin.awesome.toolbox.schedule"
     ],
     "searchScopes": [
-      "decoder",
-      "formatter",
-      "converter",
-      "extractor",
-      "url",
-      "query",
-      "preview",
-      "cron"
+      "base64",
+      "jwt"
     ]
   }
 }

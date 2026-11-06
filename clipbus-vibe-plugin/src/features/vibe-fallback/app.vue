@@ -8,7 +8,7 @@ import type { VibeAnimationInstance } from "./animations/types";
 import { resolveAnimationList, buildButtons, indexForButton, type AnimationMeta } from "./switching";
 
 // User-configurable animation list. Read-only setting (host writes, plugin reads).
-// The host stores plugin.vibe.animations and returns it as values.animations.
+// The host stores plugin.awesome.vibe.animations and returns it as values.animations.
 // Value = a JSON array of animation ids (or a comma/space-separated
 // string), e.g. ["text-loop","particle-core"]. Only the listed animations are
 // shown (one button each, in order) and the FIRST is displayed on load. Unset or

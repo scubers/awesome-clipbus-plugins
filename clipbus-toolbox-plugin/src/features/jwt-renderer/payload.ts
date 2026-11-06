@@ -3,7 +3,7 @@
 
 import { defineAttachment } from "@clipbus/plugin-sdk";
 
-const ATTACHMENT_TYPE = "plugin.toolbox.jwt";
+const ATTACHMENT_TYPE = "plugin.awesome.toolbox.jwt";
 
 export interface JwtFact {
   label: string;

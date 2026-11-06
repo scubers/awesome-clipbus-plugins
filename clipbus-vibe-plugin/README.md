@@ -2,6 +2,8 @@
 
 **Emotional fallback animation for Clipbus** — when no builtin detector or other plugin has attached a result to copied text, Vibe turns it into a premium Three.js particle animation: chaos → order.
 
+Plugin ID: **`plugin.awesome.vibe`**. This replaces `plugin.vibe`; re-install/re-add the new identity and move `plugin.vibe.animations` to `plugin.awesome.vibe.animations`. Existing capability preferences do not migrate automatically.
+
 ## How it works
 
 ### Fallback mechanism
@@ -65,7 +67,7 @@ Switching uses `ctx.renderer.update({ buttons })` and `ctx.renderer.onButton(eve
 
 ### Settings
 
-Vibe reads one read-only setting, **`plugin.vibe.animations`** — the list of animation ids to show, in order. The **first** entry is shown on load; each listed animation gets one button.
+Vibe reads one read-only setting, **`plugin.awesome.vibe.animations`** — the list of animation ids to show, in order. The **first** entry is shown on load; each listed animation gets one button.
 
 | Value | Effect |
 |---|---|
@@ -74,21 +76,21 @@ Vibe reads one read-only setting, **`plugin.vibe.animations`** — the list of a
 
 Valid ids: `particle-core`, `text-reveal`, `text-loop`. Unknown ids are ignored, duplicates collapsed. A comma/space-separated string (e.g. `"text-loop, particle-core"`) is also accepted.
 
-Plugins read settings with `ctx.settings.get<{ animations?: unknown }>()`. It returns `{ values }`, with the plugin prefix removed: the host key `plugin.vibe.animations` becomes `values.animations`. Settings are read-only. To configure the host's shared JSON store, edit the file and reload the plugin:
+Plugins read settings with `ctx.settings.get<{ animations?: unknown }>()`. It returns `{ values }`, with the plugin prefix removed: the host key `plugin.awesome.vibe.animations` becomes `values.animations`. Settings are read-only. To configure the host's shared JSON store, edit the file and reload the plugin:
 
 ```
 ~/Library/Application Support/Clipbus/ExternalSettings/settings.json   (…/ClipbusDebug/… for debug build)
 ```
 
 ```json
-{ "plugin.vibe.animations": ["text-loop", "particle-core"] }
+{ "plugin.awesome.vibe.animations": ["text-loop", "particle-core"] }
 ```
 
 Then reload Vibe (Settings → Plugins → Developer Plugins → Reload) or restart Clipbus. The in-card switch is per-session only and is not written back.
 
 ### Adding more animations
 
-The registry (`src/features/vibe-fallback/animations/index.ts`) accepts any object implementing `VibeAnimation`. Append it to the array — when `plugin.vibe.animations` is unset the button bar lists all registered animations automatically; otherwise only the ids in that setting are shown.
+The registry (`src/features/vibe-fallback/animations/index.ts`) accepts any object implementing `VibeAnimation`. Append it to the array — when `plugin.awesome.vibe.animations` is unset the button bar lists all registered animations automatically; otherwise only the ids in that setting are shown.
 
 ## Notes
 

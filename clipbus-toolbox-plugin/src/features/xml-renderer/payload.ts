@@ -2,9 +2,9 @@
 // NO `import … from "node:*"` here: this file is imported by app.vue (browser) too.
 
 import { defineAttachment } from "@clipbus/plugin-sdk";
+import { XMLValidator } from "fast-xml-parser";
 
-const ATTACHMENT_TYPE = "plugin.toolbox.xml";
-const MAX_INPUT = 20000;
+const ATTACHMENT_TYPE = "plugin.awesome.toolbox.xml";
 const INDENT = "  ";
 
 export interface XmlPayload {
@@ -150,14 +150,7 @@ function formatXml(source: string): {
   attributeCount: number;
   maxDepth: number;
 } {
-  let truncated = false;
-  let input = source.trim();
-  if (input.length > MAX_INPUT) {
-    input = input.slice(0, MAX_INPUT);
-    truncated = true;
-  }
-
-  const tokens = tokenize(input);
+  const tokens = tokenize(source.trim());
   let depth = 0;
   let elementCount = 0;
   let attributeCount = 0;
@@ -196,8 +189,7 @@ function formatXml(source: string): {
     }
   }
 
-  let formatted = lines.join("\n");
-  if (truncated) formatted += "\n... (input too large, truncated)";
+  const formatted = lines.join("\n");
   return { formatted, elementCount, attributeCount, maxDepth };
 }
 
@@ -222,7 +214,7 @@ export function createXmlPayload(input: unknown): XmlPayload | null {
   if (content?.kind !== "text" || typeof content.text !== "string") return null;
 
   const raw = content.text.trim();
-  if (!looksLikeXml(raw)) return null;
+  if (!looksLikeXml(raw) || XMLValidator.validate(raw) !== true) return null;
 
   const { formatted, elementCount, attributeCount, maxDepth } = formatXml(raw);
 

@@ -3,7 +3,7 @@
 
 import { defineAttachment } from "@clipbus/plugin-sdk";
 
-export const ATTACHMENT_TYPE = "plugin.toolbox.duration";
+export const ATTACHMENT_TYPE = "plugin.awesome.toolbox.duration";
 
 export interface DurationComponents {
   years?: number;

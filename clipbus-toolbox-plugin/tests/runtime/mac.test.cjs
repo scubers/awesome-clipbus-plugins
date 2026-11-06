@@ -34,13 +34,13 @@ test('mac-address page references dist/ui/renderers/ path', () => {
   assert.ok(renderer.page.startsWith('dist/ui/renderers/'), `unexpected page: ${renderer.page}`);
 });
 
-test('manifest declares attachment type plugin.toolbox.mac', () => {
-  assert.ok(manifest.writes.attachmentTypes.includes('plugin.toolbox.mac'));
+test('manifest declares attachment type plugin.awesome.toolbox.mac', () => {
+  assert.ok(manifest.writes.attachmentTypes.includes('plugin.awesome.toolbox.mac'));
 });
 
-test('mac-address renderer attachmentType is plugin.toolbox.mac', () => {
+test('mac-address renderer attachmentType is plugin.awesome.toolbox.mac', () => {
   const r = manifest.renderers.find((r) => r.id === 'mac-address');
-  assert.equal(r.attachmentType, 'plugin.toolbox.mac');
+  assert.equal(r.attachmentType, 'plugin.awesome.toolbox.mac');
 });
 
 // ---------------------------------------------------------------------------
@@ -65,7 +65,7 @@ test('detector fires on colon format "00:1A:2B:3C:4D:5E"', async t => {
   await det(makeInput('00:1A:2B:3C:4D:5E'), host.ctx);
   const attachments = host.paramsOf('item.setAttachments');
   assert.equal(attachments.length, 1);
-  assert.equal(attachments[0].type, 'plugin.toolbox.mac');
+  assert.equal(attachments[0].type, 'plugin.awesome.toolbox.mac');
 });
 
 test('detector fires on hyphen format "00-1a-2b-3c-4d-5e"', async t => {
@@ -75,7 +75,7 @@ test('detector fires on hyphen format "00-1a-2b-3c-4d-5e"', async t => {
   await det(makeInput('00-1a-2b-3c-4d-5e'), host.ctx);
   const attachments = host.paramsOf('item.setAttachments');
   assert.equal(attachments.length, 1);
-  assert.equal(attachments[0].type, 'plugin.toolbox.mac');
+  assert.equal(attachments[0].type, 'plugin.awesome.toolbox.mac');
 });
 
 test('detector fires on Cisco dot format "001A.2B3C.4D5E"', async t => {
@@ -85,7 +85,7 @@ test('detector fires on Cisco dot format "001A.2B3C.4D5E"', async t => {
   await det(makeInput('001A.2B3C.4D5E'), host.ctx);
   const attachments = host.paramsOf('item.setAttachments');
   assert.equal(attachments.length, 1);
-  assert.equal(attachments[0].type, 'plugin.toolbox.mac');
+  assert.equal(attachments[0].type, 'plugin.awesome.toolbox.mac');
 });
 
 test('detector fires on lowercase colon "ff:ee:dd:cc:bb:aa"', async t => {
@@ -257,9 +257,9 @@ test('createMacPayload: Cisco dot "001A.2B3C.4D5E" → same forms as colon input
 // Payload: ATTACHMENT_TYPE constant consistency
 // ---------------------------------------------------------------------------
 
-test('ATTACHMENT_TYPE constant equals plugin.toolbox.mac', () => {
+test('ATTACHMENT_TYPE constant equals plugin.awesome.toolbox.mac', () => {
   const { ATTACHMENT_TYPE } = require(path.resolve(root, 'src/features/mac-address/payload.ts'));
-  assert.equal(ATTACHMENT_TYPE, 'plugin.toolbox.mac');
+  assert.equal(ATTACHMENT_TYPE, 'plugin.awesome.toolbox.mac');
 });
 
 // ---------------------------------------------------------------------------
@@ -283,13 +283,10 @@ test('decodeMacPayload returns null for bad payloads', () => {
 // Search projection
 // ---------------------------------------------------------------------------
 
-test('built MAC detector writes extractor search text and label', async t => {
+test('built MAC detector writes only its attachment', async t => {
   const { registry, launch } = await setupPlugin(t);
   const host = fakeHost(launch);
   await registry.detectors['mac-detector'](makeInput('00:1A:2B:3C:4D:5E'), host.ctx);
-  const [search] = host.paramsOf('item.setSearchExtension');
-  assert.ok(search);
-  assert.equal(search.scope, 'extractor');
-  assert.equal(search.entries[0].label, 'MAC Address');
-  assert.ok(search.entries[0].text.includes('00:1a:2b:3c:4d:5e'));
+  assert.equal(host.paramsOf('item.setAttachments').length, 1);
+  assert.deepEqual(host.paramsOf('item.setSearchExtension'), []);
 });

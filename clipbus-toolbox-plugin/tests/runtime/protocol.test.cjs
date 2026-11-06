@@ -18,7 +18,7 @@ const samples = [
   ['url-detector', 'https://example.com/?utm_source=email&id=42', 'url', 'url_parsed'],
   ['url-detector', 'tag=one&tag=two&lang=zh-CN', 'url', 'url_parsed'],
   ['ip-detector', '192.168.1.10', 'ip', 'ip_details'],
-  ['geo-detector', '37.7749, -122.4194', 'geo', 'geo_coordinates'],
+  ['geo-detector', '37.7749° N, 122.4194° W', 'geo', 'geo_coordinates'],
   ['mac-detector', '00:1A:2B:3C:4D:5E', 'mac', 'mac_address'],
   ['uuid-detector', '550e8400-e29b-41d4-a716-446655440000', 'uuid', 'uuid_details'],
   ['markdown-detector', '# Heading\n\n**Bold** with `inline code`', 'markdown', 'markdown_preview'],
@@ -26,7 +26,7 @@ const samples = [
   ['cron-detector', '30 9 * * 1-5', 'schedule', 'cron_preview'],
 ];
 
-test('every delivered detector writes declared payloads on copy, recopy, edit and manual detection', async t => {
+test('every delivered detector writes declared payloads without indexes on copy, recopy, edit and manual detection', async t => {
   const { registry, launch } = await setupPlugin(t);
   assert.deepEqual(Object.keys(registry.detectors).sort(), manifest.detectors.map(d => d.id).sort());
   assert.deepEqual(Object.keys(registry.actions).sort(), manifest.actions.map(a => a.id).sort());
@@ -34,7 +34,7 @@ test('every delivered detector writes declared payloads on copy, recopy, edit an
     const runs = [];
     for (const trigger of ['copy', 'recopy', 'edit', 'manual']) {
       const host = fakeHost(launch);
-      const reference = { type: `plugin.toolbox.${suffix}`, key: 'primary', updatedAt: 1, own: true };
+      const reference = { type: `plugin.awesome.toolbox.${suffix}`, key: 'primary', updatedAt: 1, own: true };
       await registry.detectors[id]({ item: itemSnapshot('text', { attachments: trigger === 'recopy' ? [reference] : [] }), content: textContent(text), trigger }, host.ctx);
       const [attachment] = host.paramsOf('item.setAttachments');
       assert.equal(attachment.type, reference.type, id);
@@ -42,10 +42,7 @@ test('every delivered detector writes declared payloads on copy, recopy, edit an
       assert.equal(attachment.entries.length, 1);
       assert.equal(attachment.entries[0].payload.kind, kind, id);
       assert.ok(Buffer.byteLength(JSON.stringify(attachment.entries[0].payload)) <= PLUGIN_WRITE_LIMITS.maximumPayloadBytes);
-      const [search] = host.paramsOf('item.setSearchExtension');
-      assert.ok(manifest.writes.searchScopes.includes(search.scope), id);
-      assert.ok(search.entries[0].text.length > 0);
-      assert.ok(Buffer.byteLength(search.entries[0].text) <= PLUGIN_WRITE_LIMITS.maximumSearchTextBytes);
+      assert.deepEqual(host.paramsOf('item.setSearchExtension'), [], id);
       runs.push(host.calls);
     }
     for (const run of runs.slice(1)) assert.deepEqual(run, runs[0], id);
@@ -88,7 +85,7 @@ test('decimal radix is opt-in and timestamps always take priority', async t => {
       const host = fakeHost(launch, { 'settings.get': { values: { decimalRadix: enabled } } });
       await registry.detectors['radix-detector']({ item: itemSnapshot('text'), content: textContent(text), trigger }, host.ctx);
       assert.equal(host.paramsOf('item.setAttachments').length, expected ? 1 : 0, text);
-      assert.equal(host.paramsOf('item.setSearchExtension').length, expected ? 1 : 0, text);
+      assert.deepEqual(host.paramsOf('item.setSearchExtension'), [], text);
     }
   }
 });

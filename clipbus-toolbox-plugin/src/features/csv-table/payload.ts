@@ -16,7 +16,7 @@ export interface CsvPayload {
   };
 }
 
-const ATTACHMENT_TYPE = "plugin.toolbox.csv";
+const ATTACHMENT_TYPE = "plugin.awesome.toolbox.csv";
 
 // Map raw delimiter char to a human-readable label.
 function delimiterLabel(delim: string): string {
@@ -26,85 +26,68 @@ function delimiterLabel(delim: string): string {
   return delim;
 }
 
-// Parse a single CSV record respecting RFC 4180 quoting.
-// Returns an array of field strings.
-function parseRecord(line: string, delim: string): string[] {
-  const fields: string[] = [];
-  let i = 0;
-  while (i < line.length) {
-    if (line[i] === '"') {
-      // Quoted field
-      let field = "";
-      i++; // skip opening quote
-      while (i < line.length) {
-        if (line[i] === '"') {
-          if (line[i + 1] === '"') {
-            // Escaped quote
-            field += '"';
-            i += 2;
-          } else {
-            // Closing quote
-            i++;
-            break;
-          }
-        } else {
-          field += line[i];
-          i++;
-        }
-      }
-      fields.push(field);
-      // skip delimiter after closing quote
-      if (line[i] === delim) i++;
-    } else {
-      // Unquoted field: read until delimiter or end
-      const start = i;
-      while (i < line.length && line[i] !== delim) i++;
-      fields.push(line.slice(start, i).trim());
-      if (line[i] === delim) i++;
-    }
-  }
-  return fields;
-}
-
 interface ParseResult {
   delimiter: string;
   headers: string[];
   rows: string[][];
 }
 
-// Parse CSV text. Returns null if content doesn't look like a tabular CSV.
+/** Parse complete records, including escaped quotes, multiline cells and trailing empty cells. */
+function parseRecords(text: string, delimiter: string): string[][] | null {
+  const records: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let quoted = false;
+  let closedQuote = false;
+  const finishField = () => {
+    row.push(closedQuote ? field : field.trim());
+    field = "";
+    closedQuote = false;
+  };
+  const finishRecord = () => {
+    finishField();
+    if (row.length > 1 || row[0] !== "") records.push(row);
+    row = [];
+  };
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (quoted) {
+      if (char === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else { quoted = false; closedQuote = true; }
+      } else {
+        field += char;
+      }
+    } else if (char === delimiter) {
+      finishField();
+    } else if (char === "\n" || char === "\r") {
+      if (char === "\r" && text[i + 1] === "\n") i++;
+      finishRecord();
+    } else if (closedQuote) {
+      return null;
+    } else if (char === '"') {
+      if (field !== "") return null;
+      quoted = true;
+    } else {
+      field += char;
+    }
+  }
+  if (quoted) return null;
+  if (field !== "" || row.length > 0 || closedQuote) finishRecord();
+  return records;
+}
+
+/** Require a header, at least one data row, and consistent columns in every record. */
 export function parseCsv(text: string): ParseResult | null {
-  // Split into non-empty lines
-  const allLines = text.split("\n");
-  const nonEmptyLines = allLines.filter((l) => l.trim().length > 0);
-  if (nonEmptyLines.length < 2) return null;
-
-  // Detect delimiter from the first non-empty line.
-  const firstLine = nonEmptyLines[0];
-  const commaCount = (firstLine.match(/,/g) ?? []).length;
-  const tabCount = (firstLine.match(/\t/g) ?? []).length;
-  const semiCount = (firstLine.match(/;/g) ?? []).length;
-
-  let delimiter = ",";
-  const maxCount = Math.max(commaCount, tabCount, semiCount);
-  if (maxCount === 0) return null; // No delimiters at all — not a CSV
-  if (tabCount === maxCount) delimiter = "\t";
-  else if (semiCount === maxCount && semiCount > commaCount) delimiter = ";";
-
-  // Parse all non-empty lines into records
-  const records = nonEmptyLines.map((line) => parseRecord(line, delimiter));
-  const headers = records[0];
-  if (headers.length < 2) return null;
-
-  const dataRows = records.slice(1);
-
-  // Majority check: more than half of data rows must match header column count
-  const matchingCount = dataRows.filter(
-    (row) => row.length === headers.length
-  ).length;
-  if (matchingCount < dataRows.length / 2) return null;
-
-  return { delimiter, headers, rows: dataRows };
+  const source = text.replace(/^\uFEFF/, "");
+  for (const delimiter of ["\t", ",", ";"]) {
+    const records = parseRecords(source, delimiter);
+    if (!records || records.length < 2) continue;
+    const headers = records[0];
+    if (headers.length < 2 || records.some(row => row.length !== headers.length)) continue;
+    return { delimiter, headers, rows: records.slice(1) };
+  }
+  return null;
 }
 
 export function createCsvPayload(input: unknown): CsvPayload | null {
@@ -117,6 +100,9 @@ export function createCsvPayload(input: unknown): CsvPayload | null {
   if (!parsed) return null;
 
   const { delimiter, headers, rows } = parsed;
+  // Comma-space prose is ambiguous; only quoted records opt in to that form.
+  const firstLine = content.text.split(/\r?\n/).find(line => line.trim()) ?? "";
+  if (delimiter === "," && /,\s/.test(firstLine) && !firstLine.includes('"')) return null;
   const rowCount = rows.length;
   const colCount = headers.length;
   const headline = `${colCount} columns × ${rowCount} rows`;

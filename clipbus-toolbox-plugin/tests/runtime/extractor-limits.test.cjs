@@ -21,16 +21,14 @@ test('URL cards preserve query titles and tracker-dependent copy buttons before 
   }
 });
 
-test('long multibyte query search stays within byte limits while the payload retains every value', async t => {
+test('long multibyte query values remain complete without creating a search index', async t => {
   const { registry, launch } = await setupPlugin(t);
   const value = '你'.repeat(4000);
   const host = fakeHost(launch);
   await registry.detectors['url-detector']({ item: itemSnapshot('text'), content: textContent(`q=${encodeURIComponent(value)}&b=2`), trigger: 'copy' }, host.ctx);
   const [attachment] = host.paramsOf('item.setAttachments');
   assert.equal(attachment.entries[0].payload.query[0].value, value);
-  const [search] = host.paramsOf('item.setSearchExtension');
-  assert.equal(search.scope, 'query');
-  assert.ok(Buffer.byteLength(search.entries[0].text) <= PLUGIN_WRITE_LIMITS.maximumSearchTextBytes);
+  assert.deepEqual(host.paramsOf('item.setSearchExtension'), []);
 });
 
 test('URL results exceeding the payload byte limit produce no partial writes', async t => {

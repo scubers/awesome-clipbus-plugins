@@ -43,7 +43,7 @@ test('detector detects SGVsbG8sIFdvcmxkIQ== and returns correct decoded text', a
   const input = { item: sampleItem, content: { kind: 'text', text: 'SGVsbG8sIFdvcmxkIQ==' }, attachments: [] };
   const artifact = createBase64Payload(input);
   assert.ok(artifact, 'artifact should not be null for valid base64');
-  assert.equal(attachment.type, 'plugin.toolbox.base64');
+  assert.equal(attachment.type, 'plugin.awesome.toolbox.base64');
   const payload = artifact;
   assert.equal(payload.kind, 'base64_preview');
   assert.equal(payload.decoded, 'Hello, World!');

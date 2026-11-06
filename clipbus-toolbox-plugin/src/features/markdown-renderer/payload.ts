@@ -3,8 +3,11 @@
 // Pure string processing only — no Node-specific globals needed.
 
 import { defineAttachment } from "@clipbus/plugin-sdk";
+import { createXmlPayload } from "../xml-renderer/payload.ts";
+import { createCsvPayload } from "../csv-table/payload.ts";
+import { createCronPayload } from "../cron-renderer/payload.ts";
 
-export const ATTACHMENT_TYPE = "plugin.toolbox.markdown";
+export const ATTACHMENT_TYPE = "plugin.awesome.toolbox.markdown";
 
 export interface MarkdownPayload {
   kind: "markdown_preview";
@@ -232,7 +235,17 @@ export function detectMarkdownPayload(input: unknown): MarkdownPayload | null {
 
   const src = content.text.trim();
   if (src.length === 0) return null;
-  if (countSignalKinds(src) < 2) return null;
+  // Structured data has its own card even if strings contain Markdown punctuation.
+  try {
+    const parsed: unknown = JSON.parse(src);
+    if (parsed !== null && typeof parsed === "object") return null;
+  } catch {
+    // Not JSON; continue with the remaining structured formats.
+  }
+  if (createXmlPayload(input) || createCsvPayload(input) || createCronPayload(input)) return null;
+  const listLines = src.match(/^[ \t]*(?:[-*+]|\d+\.)\s+\S/gm) ?? [];
+  const fencedBlock = /^\x60{3}[^\n]*\n[\s\S]*?\n\x60{3}[ \t]*$/m.test(src);
+  if (!fencedBlock && listLines.length < 2 && countSignalKinds(src) < 2) return null;
 
   return createMarkdownPayload(src);
 }

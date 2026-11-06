@@ -1,6 +1,6 @@
 import { defineAttachment } from "@clipbus/plugin-sdk";
 
-export const ATTACHMENT_TYPE = "plugin.toolbox.geo" as const;
+export const ATTACHMENT_TYPE = "plugin.awesome.toolbox.geo" as const;
 
 // ── Payload shape ─────────────────────────────────────────────────────────────
 

@@ -4,6 +4,8 @@
 
 开发者剪贴板工具箱：**16 个 detector、16 个 renderer、24 个 Action**。使用 SDK 3.2、插件协议 V2、manifest schema 6；Vibe 继续独立安装。
 
+插件 ID 为 **`plugin.awesome.toolbox`**，附件类型和外部设置键使用相同前缀。
+
 ## 自动卡片
 
 每项 detector 与 renderer 一一配套，输入均为文本。
@@ -12,19 +14,19 @@
 |---|---|---|
 | `base64-detector` | `base64-renderer` | 可读 UTF-8 Base64 / URL-safe Base64 解码预览 |
 | `jwt-detector` | `jwt-renderer` | JWT Header、Payload、声明、过期信息；本地解码，不验证签名 |
-| `xml-detector` | `xml-renderer` | XML 缩进、元素/属性计数、深度 |
-| `csv-detector` | `csv-table` | 逗号、制表符、分号表格；Markdown / JSON 导出 |
+| `xml-detector` | `xml-renderer` | 验证 XML 标签配对及属性语法后格式化，显示计数和深度 |
+| `csv-detector` | `csv-table` | 逗号/制表符/分号表格；所有行列数一致，支持合法引号、多行单元格，保守排除未加引号的逗号空格表头 |
 | `timestamp-detector` | `timestamp-renderer` | 2001–2099 年的 10/13 位 Unix 时间戳；本地、UTC、ISO、多时区 |
 | `radix-detector` | `radix-renderer` | DEC/HEX/OCT/BIN、位数、可打印 ASCII |
 | `duration-detector` | `duration` | ISO 8601 时长分解与总秒数；年/月按近似值计算 |
 | `entities-detector` | `entities-renderer` | 正文中至少两个去重后的邮箱 / IPv4；排除 URL 及 URL 内的地址 |
-| `url-detector` | `url-parsed` | URL 结构、query pair、追踪参数清理；支持至少两对参数的裸 query |
+| `url-detector` | `url-parsed` | 带 query 的单个 URL，或至少两对参数的裸 query；保留重复参数并清理追踪参数 |
 | `ip-detector` | `ip-details` | 完整 IPv4/IPv6 或 CIDR；地址范围、规范形式、网段信息 |
-| `geo-detector` | `geo-coordinates` | 经纬度、度分秒、可复制的地图链接 |
+| `geo-detector` | `geo-coordinates` | 默认要求度数/方位标记；显示经纬度、度分秒及地图链接 |
 | `mac-detector` | `mac-address` | 带分隔符的 MAC、格式转换、OUI/NIC、地址标志 |
 | `uuid-detector` | `uuid-details` | UUID 规范化、版本/变体、v1/v7 内嵌时间戳 |
-| `markdown-detector` | `markdown-renderer` | 安全 Markdown 子集；至少两种不同语法信号才触发 |
-| `gradient-detector` | `gradient-swatch` | 完整 CSS 渐变函数与色标预览 |
+| `markdown-detector` | `markdown-renderer` | 安全 Markdown；完整围栏、多项列表或两种语法信号触发，让位于 JSON/XML/CSV/Cron |
+| `gradient-detector` | `gradient-swatch` | 通过 CSS 语法校验且包含可识别色标的渐变函数 |
 | `cron-detector` | `cron-renderer` | 五字段 Cron 解释、未来五次本地触发时间；不执行调度 |
 
 卡片外框由宿主绘制，页面使用宿主主题和内容尺寸适配。预览工作台保留 20 个真实组件样例。
@@ -42,24 +44,39 @@
 
 文本排序采用忽略大小写的自然顺序；字符操作保留 emoji 等完整字素。JSON Action 拒绝非法 JSON，JSON → YAML 返回完整结果，不使用截断预览。JSON 转换通过 JavaScript 解析和序列化，数字格式与精度遵循 JavaScript 语义；宿主 builtin JSON 卡片则保留原始数字词法。
 
-## 自动触发规则
+## 自动触发与搜索规则
 
-- 普通十进制整数默认不出进制卡；显式 `0x` / `0b` / `0o` 输入正常识别。
-- 有效 Unix 时间戳始终优先，即使开启十进制进制检测，也不会同时出现进制卡。
-- 完整单个 IP/CIDR 显示详情；正文至少两个去重后的邮箱 / IPv4 显示提取列表；正文只有单个地址时两者都不触发。
-- URL 列表、JSON 卡片、颜色卡片交给宿主 builtin；Toolbox 只额外提供 URL 参数检查与追踪清理。
+- 普通十进制整数默认不出进制卡；显式 `0x` / `0b` / `0o` 正常识别，有效时间戳始终优先。
+- 普通 URL 交给 builtin，只有带参数时 Toolbox 才补卡；拒绝内部空白/控制字符，避免把后面的说明文字并入 URL。
+- CSV 所有记录必须列数一致、引号合法。未加引号的“逗号加空格”表头保守视为普通文本；自动预览请使用常规分隔格式或引号表头。
+- 完整 IP/CIDR 显示详情；正文至少两个去重后的邮箱 / IPv4 显示提取列表；正文单个地址不触发两者。
+- 纯小数坐标对需显式开启；默认要求度数或 N/S/E/W 方位标记。
+- Base64/XML 仅截断视觉预览，复制使用完整结果。超过 SDK 附件预算时不出卡，不产生不完整的复制结果。
 
-需要开启普通十进制进制卡时，将下列键合并到宿主 external settings JSON，然后 Reload Toolbox：
+**全部 16 个 detector 默认不写搜索扩展。** 卡片展示不依赖搜索索引。XML、CSV、时间戳、进制、时长、实体、URL/Query、IP、坐标、MAC、UUID、Markdown、渐变、Cron 均不追加索引。
+
+仅 Base64/JWT 可显式开启解码内容索引，分别使用 `base64` / `jwt` scope。每条最多 4 KiB UTF-8，不切断 Unicode 码点。搜索扩展在启用宿主云同步时参与同步，附件本身仍为本机数据。manifest 声明这两个 scope 只是允许写入，并不自动建立索引。关闭选项后，以当前 ID 重新检测/重复复制，会清掉对应 detector 的旧索引。
+
+只将需要开启的选项合并到宿主 external settings JSON，再 Reload Toolbox。四项默认均为 false：
 
 ```json
-{ "plugin.toolbox.decimalRadix": true }
+{
+  "plugin.awesome.toolbox.decimalRadix": true,
+  "plugin.awesome.toolbox.decimalCoordinates": true,
+  "plugin.awesome.toolbox.indexBase64": true,
+  "plugin.awesome.toolbox.indexJwt": true
+}
 ```
 
-macOS 文件为 `~/Library/Application Support/Clipbus/ExternalSettings/settings.json`，Debug 版使用 `ClipbusDebug`。插件只读此配置；各 detector、renderer、Action 的独立开关与顺序继续由宿主管理。
+macOS 文件为 `~/Library/Application Support/Clipbus/ExternalSettings/settings.json`，Debug 版使用 `ClipbusDebug`。插件只读这些设置，各能力的独立开关和排序仍由宿主管理。
 
 ## 从原七个插件迁移
 
-从本仓库安装时，子目录填写 **`clipbus-toolbox-plugin`**；开发插件则 Add Path 到本目录。新身份为 `plugin.toolbox`，Vibe 仍使用独立的 `plugin.vibe`。
+旧 `plugin.toolbox` 现改为 **`plugin.awesome.toolbox`**，旧 `plugin.vibe` 现改为 **`plugin.awesome.vibe`**。安装/重新添加新身份后再停用旧身份。能力开关、顺序及已保存 Flow 不会随 ID 自动迁移。需要时将 `plugin.toolbox.decimalRadix` 迁至新前缀，并将 `plugin.vibe.animations` 迁至 `plugin.awesome.vibe.animations`。
+
+ID 改名也会改变附件/搜索扩展的 owner。新 ID 重新检测**不会清理旧 ID 的历史搜索记录**。要彻底去掉旧 scope，需要宿主按旧 owner 清理，或在停用前让原 ID 的 detector 提交空输出；不能假定卸载/Reload 会清理历史。新插件无权写入其他身份的记录，也不会修改用户数据库。
+
+从本仓库安装时，子目录填写 **`clipbus-toolbox-plugin`**；开发插件则 Add Path 到本目录。新身份为 `plugin.awesome.toolbox`，Vibe 仍使用独立的 `plugin.awesome.vibe`。
 
 | 原插件 | 合并去向 |
 |---|---|

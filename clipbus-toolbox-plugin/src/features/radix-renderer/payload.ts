@@ -4,7 +4,7 @@
 
 import { defineAttachment } from "@clipbus/plugin-sdk";
 
-const ATTACHMENT_TYPE = "plugin.toolbox.radix";
+const ATTACHMENT_TYPE = "plugin.awesome.toolbox.radix";
 
 export type InputBase = "dec" | "hex" | "bin" | "oct";
 

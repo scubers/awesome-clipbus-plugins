@@ -14,7 +14,6 @@ export interface Base64Payload {
 }
 
 const MIN_LENGTH = 8;
-const MAX_DISPLAY_CHARS = 800;
 
 const BASE64_STANDARD_RE = /^[A-Za-z0-9+/]+=*$/;
 const BASE64_URL_SAFE_RE = /^[A-Za-z0-9\-_]+=*$/;
@@ -94,7 +93,7 @@ export function createBase64Payload(input: unknown): Base64Payload | null {
     version: 1,
     originalSnippet: raw.length > 80 ? raw.slice(0, 80) + "…" : raw,
     originalLength: stripped.length,
-    decoded: decoded.length > MAX_DISPLAY_CHARS ? decoded.slice(0, MAX_DISPLAY_CHARS) + "…" : decoded,
+    decoded,
     decodedLength: decoded.length,
     isText,
     encoding,
@@ -112,4 +111,4 @@ export function decodeBase64Payload(value: unknown): Base64Payload | null {
 }
 
 
-export const attachment = defineAttachment<Base64Payload>("plugin.toolbox.base64");
+export const attachment = defineAttachment<Base64Payload>("plugin.awesome.toolbox.base64");

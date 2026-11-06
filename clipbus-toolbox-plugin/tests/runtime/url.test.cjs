@@ -55,7 +55,7 @@ test('createUrlPayload parses full URL with host, port, query, hash', () => {
     trigger: 'copy',
   });
   assert.ok(payload, 'payload should not be null for valid URL');
-  assert.equal(ATTACHMENT_TYPE, 'plugin.toolbox.url');
+  assert.equal(ATTACHMENT_TYPE, 'plugin.awesome.toolbox.url');
   assert.equal(payload.kind, 'url_parsed');
   assert.equal(payload.inputType, 'url');
   assert.equal(payload.host, 'example.com');

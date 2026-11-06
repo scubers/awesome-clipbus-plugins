@@ -14,6 +14,11 @@ const card = useCard(attachment);
 const payload = computed(() =>
   decodeBase64Payload(card.attachment.value.payload)
 );
+const preview = computed(() => {
+  const text = payload.value?.decoded ?? "";
+  const chars = Array.from(text);
+  return chars.length > 800 ? chars.slice(0, 800).join("") + "…" : text;
+});
 
 let unsub: (() => void) | null = null;
 let stopAutoFit: (() => void) | null = null;
@@ -43,7 +48,7 @@ onUnmounted(() => {
       </div>
       <div class="decoded-block">
         <div class="decoded-label">Decoded</div>
-        <pre class="decoded-text">{{ payload.decoded }}</pre>
+        <pre class="decoded-text">{{ preview }}</pre>
       </div>
     </section>
     <div v-else class="empty">Waiting for Base64 content</div>

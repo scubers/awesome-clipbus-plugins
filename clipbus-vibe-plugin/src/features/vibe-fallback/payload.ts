@@ -1,6 +1,6 @@
 import { defineAttachment, type PluginDetectInput } from "@clipbus/plugin-sdk";
 
-export const ATTACHMENT_TYPE = "plugin.vibe.fallback";
+export const ATTACHMENT_TYPE = "plugin.awesome.vibe.fallback";
 const MAX_TEXT = 280;
 
 export interface VibePayload {

@@ -1,4 +1,4 @@
-import type { DetectorHandler } from "@clipbus/plugin-sdk/runtime";
+import { PLUGIN_WRITE_LIMITS, type DetectorHandler } from "@clipbus/plugin-sdk/runtime";
 import { attachment, createRadixPayload } from "./payload.ts";
 import { createTimestampPayload } from "../timestamp-renderer/payload.ts";
 
@@ -11,10 +11,7 @@ export function createRadixDetector(): DetectorHandler {
       const { values } = await ctx.settings.get<{ decimalRadix?: boolean }>();
       if (values?.decimalRadix !== true) return;
     }
+    if (Buffer.byteLength(JSON.stringify(payload)) > PLUGIN_WRITE_LIMITS.maximumPayloadBytes) return;
     await attachment.set(ctx, [{ key: "primary", payload }]);
-    await ctx.item.setSearchExtension({
-      scope: "converter",
-      entries: [{ key: "primary", text: `${payload.decimal} ${payload.hex} ${payload.binary}`.slice(0, 200), label: "Radix Conversion" }],
-    });
   };
 }

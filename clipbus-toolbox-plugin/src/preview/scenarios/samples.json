@@ -121,7 +121,7 @@
       "colCount": 3,
       "display": {
         "typeLabel": "CSV Table",
-        "headline": "3 columns \u00d7 3 rows",
+        "headline": "3 columns × 3 rows",
         "facts": [
           {
             "label": "Rows",
@@ -484,17 +484,17 @@
   },
   {
     "id": "geo-coordinates-sf",
-    "label": "Coordinates: San Francisco decimal",
+    "label": "Coordinates: San Francisco with hemisphere markers",
     "view": "geo-coordinates",
     "payload": {
       "kind": "geo_coordinates",
       "version": 1,
-      "input": "37.7749, -122.4194",
+      "input": "37.7749° N, 122.4194° W",
       "lat": 37.7749,
       "lng": -122.4194,
       "decimal": "37.7749, -122.4194",
-      "latDms": "37\u00b046'29.6\"N",
-      "lngDms": "122\u00b025'9.8\"W",
+      "latDms": "37°46'29.6\"N",
+      "lngDms": "122°25'9.8\"W",
       "hemisphere": "N / W",
       "osmUrl": "https://www.openstreetmap.org/?mlat=37.7749&mlon=-122.4194#map=12/37.7749/-122.4194",
       "googleUrl": "https://maps.google.com/?q=37.7749,-122.4194"
@@ -520,7 +520,7 @@
   },
   {
     "id": "gradient-swatch-linear",
-    "label": "Gradient: Blue\u2192Purple",
+    "label": "Gradient: Blue→Purple",
     "view": "gradient-swatch",
     "payload": {
       "kind": "gradient_swatch",

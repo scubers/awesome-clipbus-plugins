@@ -38,11 +38,11 @@ test('duration renderer page references renderers/ path', () => {
   assert.ok(renderer.page.startsWith('dist/ui/renderers/'), `unexpected page: ${renderer.page}`);
 });
 
-test('duration-detector attachmentTypes contains plugin.toolbox.duration', () => {
+test('duration-detector attachmentTypes contains plugin.awesome.toolbox.duration', () => {
   const detector = manifest.detectors.find((d) => d.id === 'duration-detector');
   assert.ok(
-    manifest.writes.attachmentTypes.includes('plugin.toolbox.duration'),
-    'expected plugin.toolbox.duration in attachmentTypes'
+    manifest.writes.attachmentTypes.includes('plugin.awesome.toolbox.duration'),
+    'expected plugin.awesome.toolbox.duration in attachmentTypes'
   );
 });
 

@@ -4,6 +4,8 @@ English | [中文](./README_zh.md)
 
 One Clipbus plugin for developer clipboard inspectors, previews and composable text transformations. It contributes **16 detectors, 16 renderers and 24 Actions**, using SDK 3.2 and protocol V2 (manifest schema 6).
 
+Plugin ID: **`plugin.awesome.toolbox`**. Attachment types and external settings use this same prefix.
+
 ## Automatic cards
 
 Each row lists paired detector/renderer IDs. All detectors accept text.
@@ -12,19 +14,19 @@ Each row lists paired detector/renderer IDs. All detectors accept text.
 |---|---|---|
 | `base64-detector` | `base64-renderer` | Standard / URL-safe Base64 that decodes to readable UTF-8; decoded text preview |
 | `jwt-detector` | `jwt-renderer` | JWT header, payload, claims and expiry; local decoding only, no signature verification |
-| `xml-detector` | `xml-renderer` | Indented XML, element/attribute counts and depth |
-| `csv-detector` | `csv-table` | Comma, tab or semicolon tables; Markdown and JSON export |
+| `xml-detector` | `xml-renderer` | Syntax-validated XML with matching tags/quoted attributes; indented output, counts and depth |
+| `csv-detector` | `csv-table` | Strict, consistent comma/tab/semicolon records, including quoted multiline cells; rejects ambiguous unquoted comma-space headers |
 | `timestamp-detector` | `timestamp-renderer` | 10/13-digit Unix timestamps in 2001–2099; local, UTC, ISO and world clocks |
 | `radix-detector` | `radix-renderer` | Integer DEC/HEX/OCT/BIN conversions, bit count and printable ASCII |
 | `duration-detector` | `duration` | ISO 8601 durations; breakdown and total seconds, approximate for years/months |
 | `entities-detector` | `entities-renderer` | At least two unique emails / IPv4 addresses in text; excludes URLs and addresses inside them |
-| `url-detector` | `url-parsed` | URL components, query pairs and tracking-parameter cleanup; also naked queries with at least two pairs |
+| `url-detector` | `url-parsed` | A single URL with query parameters, or a naked query with at least two pairs; duplicate pairs and tracking cleanup |
 | `ip-detector` | `ip-details` | A whole IPv4/IPv6 address or CIDR; scope, normalized forms and network details |
-| `geo-detector` | `geo-coordinates` | Decimal coordinates, DMS forms and copyable map links |
+| `geo-detector` | `geo-coordinates` | Coordinates with degree/hemisphere markers by default; DMS forms and map links |
 | `mac-detector` | `mac-address` | Separated MAC address forms, OUI/NIC split and address flags |
 | `uuid-detector` | `uuid-details` | UUID normalization, version/variant and embedded v1/v7 timestamps |
-| `markdown-detector` | `markdown-renderer` | Safe Markdown subset; requires at least two distinct syntax signals |
-| `gradient-detector` | `gradient-swatch` | Complete CSS gradient functions and color stops |
+| `markdown-detector` | `markdown-renderer` | Safe Markdown; paired fences, multi-item lists or two syntax signals; JSON/XML/CSV/Cron take priority |
+| `gradient-detector` | `gradient-swatch` | CSS-validated gradient functions with recognizable color stops |
 | `cron-detector` | `cron-renderer` | Five-field cron explanation and next five local run times; does not schedule jobs |
 
 The Host supplies the outer card chrome. Pages use the Host theme and scoped content sizing. Previews include 20 scenarios mounting the actual components.
@@ -42,24 +44,39 @@ Every Action consumes the current Flow text and returns text without a form or i
 
 Text sorting uses natural, case-insensitive ordering. Character operations preserve grapheme clusters such as emoji. JSON Actions reject invalid JSON; JSON-to-YAML returns the full conversion rather than a truncated preview. JSON transformations parse and serialize values, so numeric formatting and precision follow JavaScript semantics; the builtin JSON card preserves original number lexemes.
 
-## Detection policy
+## Detection and search policy
 
-- Ordinary decimal integers do not create radix cards by default. Explicit `0x`, `0b` and `0o` integers do.
-- Valid Unix timestamps always take priority over decimal radix detection, including when decimal radix is enabled.
-- A whole IP/CIDR creates an IP detail card. Text containing at least two unique emails / IPv4 addresses creates a batch extraction card. A single address embedded in prose creates neither card.
-- URL lists, JSON cards and color cards belong to the builtin Host. Toolbox keeps URL parameter inspection and tracking cleanup as a separate developer tool.
+- Ordinary decimal integers do not create radix cards by default. Explicit `0x`, `0b` and `0o` integers do. Valid Unix timestamps always take priority over decimal radix.
+- Plain URLs stay with the builtin Host. Toolbox only adds a card for query parameters, and rejects internal whitespace/control characters instead of treating following prose as a URL path.
+- CSV records must all have the same number of columns and valid quoting. Unquoted comma-space headers are treated conservatively as prose; use ordinary delimiter-separated or quoted headers for automatic preview.
+- Whole IP/CIDR inputs create IP detail cards. Text containing at least two unique emails / IPv4 addresses creates batch extraction; a single address embedded in prose creates neither.
+- Plain decimal coordinate pairs are opt-in. Degree signs or hemisphere letters identify coordinates by default.
+- Base64 and XML previews are shortened visually, but their copy buttons use the complete result. Results over the SDK attachment budget are omitted rather than copied partially.
 
-To opt in to ordinary decimal radix cards, merge this key into the Host's external settings JSON and reload Toolbox:
+**Search extensions are off by default for all 16 detectors.** Cards do not require a search index. XML, CSV, timestamps, radix, durations, entities, URLs/queries, IP, coordinates, MAC, UUID, Markdown, gradients and Cron never add search entries.
+
+Only Base64 and JWT have explicit opt-ins to index decoded content, using semantic scopes `base64` / `jwt`. Each optional entry contains at most 4 KiB of UTF-8 text without splitting code points. Search extensions participate in Host cloud sync when enabled; attachments remain local. The manifest's two declared scopes are only a write allowlist and do not create indexes themselves. Disabling an opt-in and re-detecting/recopying clears that detector's previous index under the current plugin ID.
+
+Merge only the options you want into the Host's external settings JSON, then reload Toolbox. All four default to false:
 
 ```json
-{ "plugin.toolbox.decimalRadix": true }
+{
+  "plugin.awesome.toolbox.decimalRadix": true,
+  "plugin.awesome.toolbox.decimalCoordinates": true,
+  "plugin.awesome.toolbox.indexBase64": true,
+  "plugin.awesome.toolbox.indexJwt": true
+}
 ```
 
-For macOS, the store is `~/Library/Application Support/Clipbus/ExternalSettings/settings.json` (`ClipbusDebug` for debug builds). Toolbox only reads this setting. The Host also owns the individual detector, renderer and Action enable/order preferences.
+For macOS, the store is `~/Library/Application Support/Clipbus/ExternalSettings/settings.json` (`ClipbusDebug` for debug builds). Toolbox only reads these settings. The Host owns individual capability enable/order preferences.
 
 ## Migration from the former seven plugins
 
-Install this repository with subdirectory **`clipbus-toolbox-plugin`**, or add this directory as a developer plugin. The plugin identity is `plugin.toolbox`; Vibe remains a separate `plugin.vibe` plugin.
+The former `plugin.toolbox` ID is now **`plugin.awesome.toolbox`**; `plugin.vibe` is now **`plugin.awesome.vibe`**. Install/re-add the new identities and retire the old ones. Capability preferences and saved Flow references do not automatically follow an ID change. Copy the old `plugin.toolbox.decimalRadix` setting to `plugin.awesome.toolbox.decimalRadix` if needed, and move `plugin.vibe.animations` to `plugin.awesome.vibe.animations`.
+
+An ID change also changes the owner of stored attachments/search extensions. A new-ID re-detection does **not** erase old-ID search records. To remove old scopes completely, the Host must clear the former owners, or the original-ID detectors must commit empty output before retirement. Uninstalling/reloading alone must not be assumed to clean history. This plugin cannot write another identity's records and does not modify the user's database.
+
+Install this repository with subdirectory **`clipbus-toolbox-plugin`**, or add this directory as a developer plugin. The plugin identity is `plugin.awesome.toolbox`; Vibe remains a separate `plugin.awesome.vibe` plugin.
 
 | Former plugin | Destination |
 |---|---|
@@ -81,7 +98,7 @@ Use the builtin Actions for these removed duplicates:
 | `base64-encode` / `base64-decode` | `base64_encode` / `base64_decode` |
 | `json-escape` / `json-unescape` | `json_escape` / `json_unescape` |
 
-Retained Action local IDs are unchanged, but saved Flows must be rebuilt/re-saved with `plugin.toolbox` references. Replace the six removed Actions with their builtin counterparts. Check boundary behavior: builtin URL encoding also escapes `!'()*`. This repository does not rewrite Host settings or saved Flows automatically.
+Retained Action local IDs are unchanged, but saved Flows must be rebuilt/re-saved with `plugin.awesome.toolbox` references. Replace the six removed Actions with their builtin counterparts. Check boundary behavior: builtin URL encoding also escapes `!'()*`. This repository does not rewrite Host settings or saved Flows automatically.
 
 Disable/remove the former plugin installations after installing Toolbox to avoid duplicate cards and Actions. Re-detect existing entries to populate Toolbox's new attachment namespace. Existing capability preferences under the former plugin identities are not migrated automatically.
 

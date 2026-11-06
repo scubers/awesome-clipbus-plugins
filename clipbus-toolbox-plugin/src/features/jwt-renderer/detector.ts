@@ -1,17 +1,19 @@
-import type { DetectorHandler } from "@clipbus/plugin-sdk/runtime";
-import { PLUGIN_WRITE_LIMITS } from "@clipbus/plugin-sdk";
+import { PLUGIN_WRITE_LIMITS, type DetectorHandler } from "@clipbus/plugin-sdk/runtime";
 import { attachment, createJwtPayload } from "./payload.ts";
+import { searchSnippet } from "../../shared/search.ts";
 
 export function createJwtDetector(): DetectorHandler {
   return async (input, ctx) => {
     const payload = createJwtPayload(input);
     if (payload === null) return;
-    // Pretty-printed nested claims can exceed the payload limit even for valid input.
     if (Buffer.byteLength(JSON.stringify(payload)) > PLUGIN_WRITE_LIMITS.maximumPayloadBytes) return;
     await attachment.set(ctx, [{ key: "primary", payload }]);
-    await ctx.item.setSearchExtension({
-      scope: "decoder",
-      entries: [{ key: "primary", text: payload.payloadPretty.slice(0, 200), label: "JWT" }],
-    });
+    const { values } = await ctx.settings.get<{ indexJwt?: boolean }>();
+    if (values?.indexJwt === true) {
+      await ctx.item.setSearchExtension({
+        scope: "jwt",
+        entries: [{ key: "primary", text: searchSnippet(payload.payloadPretty), label: "JWT" }],
+      });
+    }
   };
 }

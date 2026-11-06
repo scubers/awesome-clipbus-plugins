@@ -1,6 +1,6 @@
 import { defineAttachment } from "@clipbus/plugin-sdk";
 
-export const ATTACHMENT_TYPE = "plugin.toolbox.url" as const;
+export const ATTACHMENT_TYPE = "plugin.awesome.toolbox.url" as const;
 
 export interface UrlPayload {
   kind: "url_parsed";
@@ -109,7 +109,7 @@ export function parseQueryString(text: string): { key: string; value: string }[]
  */
 export function parseUrl(text: string): URL | null {
   const s = text.trim();
-  if (!s) return null;
+  if (!s || /[\s\u0000-\u001f\u007f]/.test(s)) return null;
   // Require scheme + '//' (authority-based URL)
   if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(s)) return null;
   try {

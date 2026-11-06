@@ -34,13 +34,13 @@ test('uuid-details page references dist/ui/renderers/ path', () => {
   assert.ok(renderer.page.startsWith('dist/ui/renderers/'), `unexpected page: ${renderer.page}`);
 });
 
-test('manifest declares attachment type plugin.toolbox.uuid', () => {
-  assert.ok(manifest.writes.attachmentTypes.includes('plugin.toolbox.uuid'));
+test('manifest declares attachment type plugin.awesome.toolbox.uuid', () => {
+  assert.ok(manifest.writes.attachmentTypes.includes('plugin.awesome.toolbox.uuid'));
 });
 
-test('uuid-details renderer attachmentType is plugin.toolbox.uuid', () => {
+test('uuid-details renderer attachmentType is plugin.awesome.toolbox.uuid', () => {
   const r = manifest.renderers.find((r) => r.id === 'uuid-details');
-  assert.equal(r.attachmentType, 'plugin.toolbox.uuid');
+  assert.equal(r.attachmentType, 'plugin.awesome.toolbox.uuid');
 });
 
 // ---------------------------------------------------------------------------
@@ -65,7 +65,7 @@ test('detector fires on standard v4 UUID', async t => {
   await det(makeInput('550e8400-e29b-41d4-a716-446655440000'), host.ctx);
   const attachments = host.paramsOf('item.setAttachments');
   assert.equal(attachments.length, 1);
-  assert.equal(attachments[0].type, 'plugin.toolbox.uuid');
+  assert.equal(attachments[0].type, 'plugin.awesome.toolbox.uuid');
 });
 
 test('detector fires on braced uppercase v1 UUID', async t => {
@@ -76,7 +76,7 @@ test('detector fires on braced uppercase v1 UUID', async t => {
   await det(makeInput('{6BA7B810-9DAD-11D1-80B4-00C04FD430C8}'), host.ctx);
   const attachments = host.paramsOf('item.setAttachments');
   assert.equal(attachments.length, 1);
-  assert.equal(attachments[0].type, 'plugin.toolbox.uuid');
+  assert.equal(attachments[0].type, 'plugin.awesome.toolbox.uuid');
   const p = attachments[0].entries[0].payload;
   assert.equal(p.canonical, '6ba7b810-9dad-11d1-80b4-00c04fd430c8');
 });
@@ -263,9 +263,9 @@ test('createUuidPayload: v7 UUID timestamp matches parseInt of first 12 hex digi
 // Payload: ATTACHMENT_TYPE constant consistency
 // ---------------------------------------------------------------------------
 
-test('ATTACHMENT_TYPE constant equals plugin.toolbox.uuid', () => {
+test('ATTACHMENT_TYPE constant equals plugin.awesome.toolbox.uuid', () => {
   const { ATTACHMENT_TYPE } = require(path.resolve(root, 'src/features/uuid-details/payload.ts'));
-  assert.equal(ATTACHMENT_TYPE, 'plugin.toolbox.uuid');
+  assert.equal(ATTACHMENT_TYPE, 'plugin.awesome.toolbox.uuid');
 });
 
 // ---------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 import { defineAttachment } from "@clipbus/plugin-sdk";
+// The browser distribution embeds grammar data and also bundles into the Node CJS runtime.
+import { lexer } from "css-tree/dist/csstree.esm";
 
-export const ATTACHMENT_TYPE = "plugin.toolbox.gradient";
+export const ATTACHMENT_TYPE = "plugin.awesome.toolbox.gradient";
 
 export interface GradientPayload {
   kind: "gradient_swatch";
@@ -123,6 +125,11 @@ export function createGradientPayload(input: unknown): GradientPayload | null {
 
   const gradient = content.text.trim();
   if (!isGradientString(gradient)) return null;
+  try {
+    if (!lexer.matchProperty("background-image", gradient).matched) return null;
+  } catch {
+    return null;
+  }
 
   // Extract type and repeating flag
   const prefixMatch = gradient.match(/^(repeating-)?(linear|radial|conic)-gradient\s*\(/i);
@@ -137,12 +144,14 @@ export function createGradientPayload(input: unknown): GradientPayload | null {
 
   // Determine angleOrShape from the first depth-0 comma segment
   const segments = splitDepthZero(inner);
+  if (segments.filter(hasColorToken).length < 2) return null;
   let angleOrShape: string | null = null;
   if (segments.length > 0 && !hasColorToken(segments[0])) {
     angleOrShape = segments[0] || null;
   }
 
   const stops = extractStops(inner);
+  if (stops.length === 0) return null;
 
   return {
     kind: "gradient_swatch",

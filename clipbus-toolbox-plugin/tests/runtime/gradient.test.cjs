@@ -39,12 +39,12 @@ test('gradient-swatch page references renderers/ path', () => {
 });
 
 test('gradient attachment type is declared for writes', () => {
-  assert.ok(manifest.writes.attachmentTypes.includes('plugin.toolbox.gradient'));
+  assert.ok(manifest.writes.attachmentTypes.includes('plugin.awesome.toolbox.gradient'));
 });
 
-test('gradient-swatch renderer attachmentType is plugin.toolbox.gradient', () => {
+test('gradient-swatch renderer attachmentType is plugin.awesome.toolbox.gradient', () => {
   const renderer = manifest.renderers.find((r) => r.id === 'gradient-swatch');
-  assert.equal(renderer.attachmentType, 'plugin.toolbox.gradient');
+  assert.equal(renderer.attachmentType, 'plugin.awesome.toolbox.gradient');
 });
 
 // ---------------------------------------------------------------------------

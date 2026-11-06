@@ -3,7 +3,7 @@
 ## 仓库与权威文档
 
 这是 Clipbus 插件合集：一个顶层 `clipbus-*-plugin/` 对应一个独立插件。
-当前仅分发 `clipbus-toolbox-plugin/`（工具箱）与 `clipbus-vibe-plugin/`（独立动画）。工具能力统一加入 Toolbox；JSON/颜色卡片及 URL/Base64/JSON 字符串编解码优先使用宿主 builtin。
+当前仅分发 `clipbus-toolbox-plugin/`（工具箱）与 `clipbus-vibe-plugin/`（独立动画）。插件 ID 分别为 `plugin.awesome.toolbox` 与 `plugin.awesome.vibe`。工具能力统一加入 Toolbox；JSON/颜色卡片及 URL/Base64/JSON 字符串编解码优先使用宿主 builtin。
 仓库不再保存模板副本。创建和升级插件时，由 Agent 临时获取官方模板 `https://github.com/scubers/clipbus-template-plugin` 作为工程参考，再依据目标插件实际安装的 SDK 文档实现或迁移。两个 skill 均可独立分发，不依赖本仓库、内置脚手架或另一个 skill。根目录没有 package.json 或 workspace；安装、构建、测试都在插件目录中执行。
 
 当前使用 `@clipbus/plugin-sdk ^3.2.0`、插件协议 V2、manifest schema 6。
@@ -69,6 +69,8 @@ Runtime 与卡片页不能联网；Runtime 不能启动子程序，包目录只�
 需要用户文件夹时才声明 `permissions.folders`，用 `ctx.plugin.folder(id)` 取授权路径；未授权返回 `null`。
 `system.openPath` 已删除；`ctx.system.openUrl` 仅供卡片页打开 `http`、`https`、`mailto`。
 `ctx.system.reveal` 只接受插件目录或已授权文件夹里的现存路径。实际授权与隔离需要配套 Host，preview 不验证这些限制。
+
+Toolbox detector 默认只写卡片附件，不为原文重复建立搜索扩展；只有显式开启的 Base64/JWT 解码搜索可写索引。
 
 ## 数据、事件与限额
 

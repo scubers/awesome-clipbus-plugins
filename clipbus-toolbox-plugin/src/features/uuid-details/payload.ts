@@ -1,6 +1,6 @@
 import { defineAttachment } from "@clipbus/plugin-sdk";
 
-export const ATTACHMENT_TYPE = "plugin.toolbox.uuid" as const;
+export const ATTACHMENT_TYPE = "plugin.awesome.toolbox.uuid" as const;
 
 // ── Payload shape ─────────────────────────────────────────────────────────────
 

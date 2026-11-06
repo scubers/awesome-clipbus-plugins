@@ -2,6 +2,8 @@
 
 **Clipbus 情绪兜底动画 renderer** — 当某条复制的文本没有宿主 builtin 或其他插件的检测结果时，Vibe 用 Three.js 粒子动画将其演绎成「混沌→秩序」的沉浸式视觉体验。
 
+插件 ID 为 **`plugin.awesome.vibe`**，替代旧 `plugin.vibe`。请安装/重新添加新身份，将 `plugin.vibe.animations` 迁至 `plugin.awesome.vibe.animations`；原有能力偏好不会自动迁移。
+
 ## 工作原理
 
 ### 兜底机制
@@ -63,7 +65,7 @@ Vibe 内置三个动画。Clipbus 在卡片下方渲染原生按钮栏，按**�
 
 ### 设置
 
-Vibe 读取一个只读设置项 **`plugin.vibe.animations`**——按顺序显示的动画 id 列表。**第一个**条目在加载时显示；每个列出的动画对应一个按钮。
+Vibe 读取一个只读设置项 **`plugin.awesome.vibe.animations`**——按顺序显示的动画 id 列表。**第一个**条目在加载时显示；每个列出的动画对应一个按钮。
 
 | 值 | 效果 |
 |---|---|
@@ -72,14 +74,14 @@ Vibe 读取一个只读设置项 **`plugin.vibe.animations`**——按顺序显�
 
 有效 id：`particle-core`、`text-reveal`、`text-loop`。未知 id 会被忽略，重复项会被合并。也接受逗号/空格分隔的字符串（如 `"text-loop, particle-core"`）。
 
-插件通过 `ctx.settings.get<{ animations?: unknown }>()` **只读**设置。返回值是 `{ values }`，键已去掉插件前缀：宿主文件里的 `plugin.vibe.animations` 对应 `values.animations`。配置方法：编辑宿主的 external-settings 文件，然后重载插件：
+插件通过 `ctx.settings.get<{ animations?: unknown }>()` **只读**设置。返回值是 `{ values }`，键已去掉插件前缀：宿主文件里的 `plugin.awesome.vibe.animations` 对应 `values.animations`。配置方法：编辑宿主的 external-settings 文件，然后重载插件：
 
 ```
 ~/Library/Application Support/Clipbus/ExternalSettings/settings.json   （debug 构建为 …/ClipbusDebug/…）
 ```
 
 ```json
-{ "plugin.vibe.animations": ["text-loop", "particle-core"] }
+{ "plugin.awesome.vibe.animations": ["text-loop", "particle-core"] }
 ```
 
 然后在 Clipbus 里重载 Vibe（Settings → Plugins → Developer Plugins → Reload）或重启 Clipbus。卡片内的切换仅当次会话有效，不会写回设置。

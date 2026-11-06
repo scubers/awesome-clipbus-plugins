@@ -11,11 +11,11 @@ const foreignReference = { type: 'plugin.decoder.base64', key: 'x', updatedAt: 2
 const validPayload = { kind: 'vibe_fallback', version: 1, text: 'hello world', charCount: 11 };
 
 describe('manifest', () => {
-  it('keeps plugin.vibe identity and declares V2 writes', () => {
-    assert.equal(manifest.plugin.id, 'plugin.vibe');
+  it('keeps plugin.awesome.vibe identity and declares V2 writes', () => {
+    assert.equal(manifest.plugin.id, 'plugin.awesome.vibe');
     assert.equal(manifest.schemaVersion, 6);
     assert.deepEqual(manifest.writes.attachmentTypes, [ATTACHMENT_TYPE]);
-    assert.ok(manifest.writes.attachmentTypes.every(type => type.startsWith('plugin.vibe.')));
+    assert.ok(manifest.writes.attachmentTypes.every(type => type.startsWith('plugin.awesome.vibe.')));
     assert.deepEqual(manifest.writes.searchScopes, []);
   });
 

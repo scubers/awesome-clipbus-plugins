@@ -8,7 +8,7 @@ export interface EntitiesPayload {
   totalCount: number;
 }
 
-export const ATTACHMENT_TYPE = "plugin.toolbox.entities";
+export const ATTACHMENT_TYPE = "plugin.awesome.toolbox.entities";
 
 const URL_RE = /\bhttps?:\/\/[^\s<>"'`)\]}]+/gi;
 const EMAIL_RE = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g;

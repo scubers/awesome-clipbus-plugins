@@ -7,9 +7,5 @@ export function createMarkdownDetector(): DetectorHandler {
     if (payload === null) return;
     if (Buffer.byteLength(JSON.stringify(payload)) > PLUGIN_WRITE_LIMITS.maximumPayloadBytes) return;
     await attachment.set(ctx, [{ key: "primary", payload }]);
-    await ctx.item.setSearchExtension({
-      scope: "preview",
-      entries: [{ key: "primary", text: input.content.kind === "text" ? input.content.text.trim().slice(0, 200) : "", label: "Markdown" }],
-    });
   };
 }

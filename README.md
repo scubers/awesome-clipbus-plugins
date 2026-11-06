@@ -70,10 +70,10 @@ build assets, or fixed plugin-structure validators. They do not require one anot
 
 Each plugin below lives in its own top-level directory and is fully self-contained (own `npm install`, own build) — there is no root `package.json` or shared build orchestration. The **Subdirectory** column can be pasted directly into the install form above.
 
-| Plugin | Subdirectory | Description | Demo |
-|--------|--------------|-------------|------|
-| [Toolbox](./clipbus-toolbox-plugin/README.md) | `clipbus-toolbox-plugin` | 16 detectors, 16 cards and 24 Actions: Base64/JWT, XML/CSV, timestamps/radix/durations, address inspectors, Markdown/gradients/Cron, and text transformations. Complements the Host's builtin JSON, color and encoding tools. | — |
-| [Vibe](./clipbus-vibe-plugin/README.md) | `clipbus-vibe-plugin` | Independent text fallback with three configurable Three.js particle animations. | — |
+| Plugin | Plugin ID | Subdirectory | Description |
+|--------|-----------|--------------|-------------|
+| [Toolbox](./clipbus-toolbox-plugin/README.md) | `plugin.awesome.toolbox` | `clipbus-toolbox-plugin` | 16 detectors, 16 cards and 24 Actions: Base64/JWT, XML/CSV, timestamps/radix/durations, address inspectors, Markdown/gradients/Cron, and text transformations. Complements the Host's builtin JSON, color and encoding tools. |
+| [Vibe](./clipbus-vibe-plugin/README.md) | `plugin.awesome.vibe` | `clipbus-vibe-plugin` | Independent text fallback with three configurable Three.js particle animations. |
 
 The former seven utility plugins are consolidated into Toolbox. See [migration and removed capabilities](./clipbus-toolbox-plugin/README.md#migration-from-the-former-seven-plugins) before replacing existing installations or saved Flows.
 

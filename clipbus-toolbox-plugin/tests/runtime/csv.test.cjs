@@ -42,7 +42,7 @@ test('csv-table page references renderers/ path', () => {
 test('each factory file exports expected function', () => {
   const { attachment, createCsvPayload, decodeCsvPayload } =
     require(path.resolve(root, 'src/features/csv-table/payload.ts'));
-  assert.equal(attachment.type, 'plugin.toolbox.csv');
+  assert.equal(attachment.type, 'plugin.awesome.toolbox.csv');
   assert.equal(typeof createCsvPayload, 'function');
   assert.equal(typeof decodeCsvPayload, 'function');
 
@@ -65,7 +65,7 @@ test('createCsvPayload detects comma-delimited CSV', () => {
   };
   const payload = createCsvPayload(input);
   assert.ok(payload, 'payload should not be null for valid CSV');
-  assert.equal(attachment.type, 'plugin.toolbox.csv');
+  assert.equal(attachment.type, 'plugin.awesome.toolbox.csv');
   assert.equal(payload.kind, 'csv_table');
   assert.equal(payload.colCount, 2);
   assert.equal(payload.rowCount, 2);

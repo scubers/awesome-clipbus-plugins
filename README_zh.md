@@ -64,10 +64,10 @@ Windows / macOS 新 clone 后即可直接使用，无需额外初始化。修改
 
 下表每个插件都是独立的顶层目录，完全自包含（各自 `npm install`、各自构建）——仓库根目录没有统一的 `package.json` 或构建编排。**子目录**列可直接复制进上方的安装表单。
 
-| 插件 | 子目录 | 描述 | 演示 |
-|------|--------|------|------|
-| [Toolbox 工具箱](./clipbus-toolbox-plugin/README_zh.md) | `clipbus-toolbox-plugin` | 16 个 detector、16 张卡片、24 个 Action：Base64/JWT、XML/CSV、时间戳/进制/时长、地址检查、Markdown/渐变/Cron、文本转换；与宿主 builtin JSON、颜色、编解码能力互补。 | — |
-| [Vibe](./clipbus-vibe-plugin/README_zh.md) | `clipbus-vibe-plugin` | 独立文本兜底插件，提供三种可配置的 Three.js 粒子动画。 | — |
+| 插件 | Plugin ID | 子目录 | 描述 |
+|------|-----------|--------|------|
+| [Toolbox 工具箱](./clipbus-toolbox-plugin/README_zh.md) | `plugin.awesome.toolbox` | `clipbus-toolbox-plugin` | 16 个 detector、16 张卡片、24 个 Action：Base64/JWT、XML/CSV、时间戳/进制/时长、地址检查、Markdown/渐变/Cron、文本转换；与宿主 builtin JSON、颜色、编解码能力互补。 |
+| [Vibe](./clipbus-vibe-plugin/README_zh.md) | `plugin.awesome.vibe` | `clipbus-vibe-plugin` | 独立文本兜底插件，提供三种可配置的 Three.js 粒子动画。 |
 
 原七个工具插件已合并为 Toolbox。替换现有安装或已保存 Flow 前，先看[迁移与移除功能说明](./clipbus-toolbox-plugin/README_zh.md#从原七个插件迁移)。
 

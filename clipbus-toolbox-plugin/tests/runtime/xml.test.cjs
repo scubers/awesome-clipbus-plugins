@@ -33,7 +33,7 @@ test("detect <a><b>1</b></a> → elementCount 2, formatted contains newline+inde
   const { createXmlPayload } = require(path.resolve(root, "src/features/xml-renderer/payload.ts"));
   const payload = createXmlPayload(textInput("<a><b>1</b></a>"));
   assert.ok(payload, "should detect XML");
-  assert.equal(attachment.type, "plugin.toolbox.xml");
+  assert.equal(attachment.type, "plugin.awesome.toolbox.xml");
   const p = payload;
   assert.equal(p.kind, "xml_preview");
   assert.equal(p.elementCount, 2);

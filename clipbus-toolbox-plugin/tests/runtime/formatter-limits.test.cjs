@@ -4,14 +4,12 @@ const assert = require('node:assert/strict');
 const { PLUGIN_INPUT_LIMITS, PLUGIN_WRITE_LIMITS } = require('@clipbus/plugin-sdk');
 const { fakeHost, itemSnapshot, manifest, setupPlugin, textContent, imageContent } = require('../support/plugin.cjs');
 
-test('CSV search headers respect the byte limit without splitting Unicode', async t => {
+test('large Unicode CSV headers stay in the attachment without an extra search index', async t => {
   const { registry, launch } = await setupPlugin(t);
   const host = fakeHost(launch);
   const header = '😀'.repeat(1500);
   await registry.detectors['csv-detector']({ item: itemSnapshot('text'), content: textContent(`${header},note\nAlice,hello`), trigger: 'copy' }, host.ctx);
-  const [search] = host.paramsOf('item.setSearchExtension');
-  assert.equal(search.entries[0].text, '😀'.repeat(PLUGIN_WRITE_LIMITS.maximumSearchTextBytes / 4));
-  assert.equal(Buffer.byteLength(search.entries[0].text), PLUGIN_WRITE_LIMITS.maximumSearchTextBytes);
+  assert.deepEqual(host.paramsOf('item.setSearchExtension'), []);
   const [attachment] = host.paramsOf('item.setAttachments');
   assert.equal(attachment.entries[0].payload.headers[0], header);
 });

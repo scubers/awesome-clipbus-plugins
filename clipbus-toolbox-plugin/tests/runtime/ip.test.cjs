@@ -34,13 +34,13 @@ test('ip-details page references dist/ui/renderers/ path', () => {
   assert.ok(renderer.page.startsWith('dist/ui/renderers/'), `unexpected page: ${renderer.page}`);
 });
 
-test('manifest declares attachment type plugin.toolbox.ip', () => {
-  assert.ok(manifest.writes.attachmentTypes.includes('plugin.toolbox.ip'));
+test('manifest declares attachment type plugin.awesome.toolbox.ip', () => {
+  assert.ok(manifest.writes.attachmentTypes.includes('plugin.awesome.toolbox.ip'));
 });
 
-test('ip-details renderer attachmentType is plugin.toolbox.ip', () => {
+test('ip-details renderer attachmentType is plugin.awesome.toolbox.ip', () => {
   const r = manifest.renderers.find((r) => r.id === 'ip-details');
-  assert.equal(r.attachmentType, 'plugin.toolbox.ip');
+  assert.equal(r.attachmentType, 'plugin.awesome.toolbox.ip');
 });
 
 // ---------------------------------------------------------------------------
@@ -65,7 +65,7 @@ test('detector fires on plain IPv4', async t => {
   await det(makeInput('192.168.1.10'), host.ctx);
   const attachments = host.paramsOf('item.setAttachments');
   assert.equal(attachments.length, 1);
-  assert.equal(attachments[0].type, 'plugin.toolbox.ip');
+  assert.equal(attachments[0].type, 'plugin.awesome.toolbox.ip');
 });
 
 test('detector fires on IPv4 CIDR', async t => {
@@ -75,7 +75,7 @@ test('detector fires on IPv4 CIDR', async t => {
   await det(makeInput('10.0.0.0/8'), host.ctx);
   const attachments = host.paramsOf('item.setAttachments');
   assert.equal(attachments.length, 1);
-  assert.equal(attachments[0].type, 'plugin.toolbox.ip');
+  assert.equal(attachments[0].type, 'plugin.awesome.toolbox.ip');
 });
 
 test('detector fires on plain IPv6', async t => {
@@ -85,7 +85,7 @@ test('detector fires on plain IPv6', async t => {
   await det(makeInput('2001:db8::1'), host.ctx);
   const attachments = host.paramsOf('item.setAttachments');
   assert.equal(attachments.length, 1);
-  assert.equal(attachments[0].type, 'plugin.toolbox.ip');
+  assert.equal(attachments[0].type, 'plugin.awesome.toolbox.ip');
 });
 
 test('detector fires on IPv6 loopback ::1', async t => {
@@ -219,9 +219,9 @@ test('createIpPayload: ::1 scope is Loopback', () => {
 // Payload: ATTACHMENT_TYPE constant consistency
 // ---------------------------------------------------------------------------
 
-test('ATTACHMENT_TYPE constant equals plugin.toolbox.ip', () => {
+test('ATTACHMENT_TYPE constant equals plugin.awesome.toolbox.ip', () => {
   const { ATTACHMENT_TYPE } = require(path.resolve(root, 'src/features/ip-details/payload.ts'));
-  assert.equal(ATTACHMENT_TYPE, 'plugin.toolbox.ip');
+  assert.equal(ATTACHMENT_TYPE, 'plugin.awesome.toolbox.ip');
 });
 
 // ---------------------------------------------------------------------------

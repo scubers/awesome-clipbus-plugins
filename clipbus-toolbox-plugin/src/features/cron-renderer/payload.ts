@@ -3,7 +3,7 @@
 
 import { defineAttachment } from "@clipbus/plugin-sdk";
 
-export const ATTACHMENT_TYPE = "plugin.toolbox.schedule";
+export const ATTACHMENT_TYPE = "plugin.awesome.toolbox.schedule";
 
 export interface CronField {
   name: string;
