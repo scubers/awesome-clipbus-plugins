@@ -1,15 +1,15 @@
 ---
-name: clipbus-template-sync
+name: clipbus-sdk-upgrade
 description: >-
-  升级既有 Clipbus 插件的 SDK、协议适配与工程配置。由 Agent 对照官方模板、
+  帮助既有 Clipbus 插件升级 SDK，并完成相关协议适配与工程配置迁移。由 Agent 对照官方模板、
   目标插件的实际实现和新旧 SDK 文档判断影响，完成迁移并运行各工程自身的验证。
   支持独立插件和插件合集，可独立分发，不要求本地模板、Git 工程或其他 skill。
   新建插件和新增业务功能不属于此工作流。
 ---
 
-# Clipbus 插件升级
+# Clipbus 插件 SDK 升级
 
-按用户指定的目标与范围升级既有插件。官方模板提供工程参考，实际安装的 SDK 文档提供接口依据，目标插件自身的构建与行为测试验证迁移结果。
+按用户指定的目标版本与范围升级既有插件的 SDK。官方模板提供工程参考，实际安装的 SDK 文档提供接口依据，目标插件自身的构建与行为测试验证迁移结果。
 
 ## 环境与资料
 
@@ -76,5 +76,5 @@ SDK 升级目标以用户要求为先；未指定时结合官方模板、SDK 发
 
 ## 分发与维护
 
-将 `SKILL.md` 与 `references/` 放在 `clipbus-template-sync/` 中即可独立分发，不需要同时安装其他 skill。
+将 `SKILL.md` 与 `references/` 放在 `clipbus-sdk-upgrade/` 中即可独立分发，不需要同时安装其他 skill。
 只沉淀可复用的判断经验，不保存某一版本的目录清单、SDK API 副本、限额数字或永久验证豁免。

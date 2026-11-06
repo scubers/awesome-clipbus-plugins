@@ -14,7 +14,7 @@ This file provides the entry points for Claude Code when working in this reposit
 ## 两个独立工作流
 
 - [clipbus-plugin-generator](.claude/skills/clipbus-plugin-generator/SKILL.md)：创建或扩展插件，参考当前模板与实际安装的 SDK 文档实现功能。
-- [clipbus-template-sync](.claude/skills/clipbus-template-sync/SKILL.md)：升级既有插件，依据目标实现、官方模板和新旧 SDK 文档判断迁移内容。
+- [clipbus-sdk-upgrade](.claude/skills/clipbus-sdk-upgrade/SKILL.md)：升级既有插件的 SDK，依据目标实现、官方模板和新旧 SDK 文档判断迁移内容。
 
 两个 skill 均只需自身的 SKILL.md 和 references，可脱离本仓库单独分发，不依赖另一个 skill 或内置脚手架。
 修改 skill 时同步 .agents/skills、.codex/skills、.claude/skills 三份，并运行 node .agents/scripts/check-skills.mjs。

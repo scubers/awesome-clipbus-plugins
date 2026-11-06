@@ -8,6 +8,21 @@ English | [中文](./README_zh.md)
 
 [clipbus.com](https://clipbus.com) · [Plugin docs](https://clipbus.com/plugin-doc)
 
+## Install the AI skills
+
+Use `clipbus-plugin-generator` to create or extend a plugin, and `clipbus-sdk-upgrade`
+to upgrade an existing plugin's SDK. From your own project directory, install both:
+
+```sh
+npx skills add https://github.com/scubers/awesome-clipbus-plugins \
+  --skill clipbus-plugin-generator \
+  --skill clipbus-sdk-upgrade
+```
+
+Keep just one `--skill` option to install that workflow on its own. Add `-g` for
+user-wide installation. No manual clone of this collection is required. See
+[Build and maintain plugins with AI](#build-and-maintain-plugins-with-ai) for usage.
+
 ## Install into Clipbus
 
 The primary way to use these plugins is installing straight from this repository — no clone, no local build required.
@@ -27,9 +42,10 @@ Clipbus's free tier includes 3 slots per capability type (detector / renderer / 
 
 ## Build and maintain plugins with AI
 
-To create or upgrade a plugin in your own project, install the relevant skill's
-`SKILL.md` and `references/` in your AI coding agent, open your target folder,
-and describe the task. Each skill can be distributed and used independently.
+Install the relevant skill with the [commands above](#install-the-ai-skills), open
+your target folder in your AI coding agent, and describe the task. For manual
+installation, keep each skill's `SKILL.md` and `references/` together in its own
+folder. Each skill can be distributed and used independently.
 Node.js, npm, Git, and access to the upstream template and npm registry are required.
 The agent reads the current official template and the installed SDK documentation,
 adapts the implementation to the project, and runs the project's own validation.
@@ -45,7 +61,7 @@ Keep all three copies updated together; CI checks that their contents match.
 Two skills under `.agents/skills/` provide purpose-built workflows:
 
 - **Create — [`clipbus-plugin-generator`](./.agents/skills/clipbus-plugin-generator/):** An instruction-based workflow for empty folders, standalone plugins, and collections. The agent consults the official template and installed SDK documentation, implements the feature, and runs the project's own checks. Existing plugin responsibilities guide reuse when relevant.
-- **Sync — [`clipbus-template-sync`](./.agents/skills/clipbus-template-sync/):** Upgrades standalone plugins or a selected collection by comparing their actual implementation with the official template and SDK documentation, adapting relevant changes, and running each project's own checks.
+- **Upgrade — [`clipbus-sdk-upgrade`](./.agents/skills/clipbus-sdk-upgrade/):** Upgrades the SDK and related protocol/configuration in standalone plugins or a selected collection by comparing their actual implementation with the official template and SDK documentation, adapting relevant changes, and running each project's own checks.
 
 Both skills contain instructions and references, with no bundled scaffold,
 build assets, or fixed plugin-structure validators. They do not require one another.

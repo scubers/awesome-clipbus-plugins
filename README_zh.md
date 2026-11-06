@@ -8,6 +8,20 @@
 
 [clipbus.com](https://clipbus.com) · [插件文档](https://clipbus.com/plugin-doc)
 
+## 安装 AI Skills
+
+`clipbus-plugin-generator` 用于创建或扩展插件，`clipbus-sdk-upgrade` 用于升级已有插件的 SDK。
+在你自己的工程目录执行以下命令，即可同时安装两个 skill：
+
+```sh
+npx skills add https://github.com/scubers/awesome-clipbus-plugins \
+  --skill clipbus-plugin-generator \
+  --skill clipbus-sdk-upgrade
+```
+
+只保留一个 `--skill` 参数即可单独安装对应工作流；添加 `-g` 可安装到用户级目录，供多个工程使用。
+无需手动 clone 本合集。使用方式见[用 AI 创建和维护插件](#用-ai-创建和维护插件)。
+
 ## 安装到 Clipbus
 
 使用这些插件的主要方式是直接从本仓库安装——无需 clone，无需本地构建。
@@ -27,8 +41,9 @@ Clipbus 免费版每类能力（detector / renderer / action）各有 3 个插�
 
 ## 用 AI 创建和维护插件
 
-在自己的工程创建或升级插件：把所需 skill 的 `SKILL.md` 和 `references/`
-安装到 AI Coding Agent，打开目标文件夹，直接描述任务即可。两个 skill 均可单独分发、独立使用。
+按[上面的命令](#安装-ai-skills)安装所需 skill，用 AI Coding Agent 打开目标文件夹，直接描述任务即可。
+手动安装时，把每个 skill 的 `SKILL.md` 和 `references/` 一起放在对应目录中。
+两个 skill 均可单独分发、独立使用。
 需要 Node.js、npm、Git，以及访问上游模板与 npm registry 的网络。
 Agent 阅读当前官方模板与实际安装的 SDK 文档，按工程情况实现功能并运行工程自身的验证。
 无需 clone 本合集，也无需准备本地模板。
@@ -41,7 +56,7 @@ Windows / macOS 新 clone 后即可直接使用，无需额外初始化。修改
 仓库在 `.agents/skills/` 中提供了两套专用工作流：
 
 - **Create — [`clipbus-plugin-generator`](./.agents/skills/clipbus-plugin-generator/)：**通过说明驱动 Agent，支持空目录、独立插件和插件合集。参考官方模板、读取实际安装的 SDK 文档、实现功能并运行工程自身的检查；有现有插件时按真实职责判断归属。
-- **Sync — [`clipbus-template-sync`](./.agents/skills/clipbus-template-sync/)：**支持独立插件和用户指定的插件合集。对照实际实现、官方模板和 SDK 文档判断升级影响，按需迁移，并运行各工程自身的检查。
+- **Upgrade — [`clipbus-sdk-upgrade`](./.agents/skills/clipbus-sdk-upgrade/)：**帮助独立插件和用户指定的插件合集升级 SDK。对照实际实现、官方模板和 SDK 文档判断升级影响，按需迁移，并运行各工程自身的检查。
 
 两个 skill 只包含说明与参考资料，不附带脚手架、构建资产或固定插件结构校验器，彼此没有安装依赖。
 

@@ -17,13 +17,13 @@
 在入口步骤之后，用两个简短条目说明仓库能力：
 
 1. `clipbus-plugin-generator`：根据自然语言创建或扩展插件；先勘察已有插件并判断合理归属，再实现、构建和验证，避免产生近重复插件。
-2. `clipbus-template-sync`：拉取官方模板与 Plugin SDK 更新，分析哪些共享改动会影响现有插件，并迁移和验证受影响插件。
+2. `clipbus-sdk-upgrade`：帮助现有插件升级 SDK，对照官方模板与 SDK 文档完成所需迁移和验证。
 
 英文 README 使用自然、简洁的英文表达；中文 README 保持同等信息量，不逐字硬译。skill 的真实位置写为 `.agents/skills/`，同时不需要展开内部阶段与实现细节。
 
 ## 验收标准
 
 - README 不再把 AI Coding 工作流限定为 Claude Code。
-- 两份 README 都提到 generator 与 template sync 两个 skill，并准确区分“创建/扩展”和“升级/维护”。
+- 两份 README 都提到 generator 与 SDK upgrade 两个 skill，并准确区分“创建/扩展”和“升级/维护”。
 - 两份 README 的章节结构与其他内容保持不变。
 - Markdown 相对链接和标题锚点不受影响。
