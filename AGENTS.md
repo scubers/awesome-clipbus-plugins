@@ -5,7 +5,7 @@
 这是 Clipbus 插件合集：一个顶层 `clipbus-*-plugin/` 对应一个独立插件。
 仓库不再保存模板副本。创建和升级插件时，由 Agent 临时获取官方模板 `https://github.com/scubers/clipbus-template-plugin` 作为工程参考，再依据目标插件实际安装的 SDK 文档实现或迁移。两个 skill 均可独立分发，不依赖本仓库、内置脚手架或另一个 skill。根目录没有 package.json 或 workspace；安装、构建、测试都在插件目录中执行。
 
-当前使用 `@clipbus/plugin-sdk ^3.1.0`、插件协议 V2、manifest schema 6。
+当前使用 `@clipbus/plugin-sdk ^3.2.0`、插件协议 V2、manifest schema 6。
 动手前先在目标目录 `npm install`，再读：
 
 - `node_modules/@clipbus/plugin-sdk/docs/README.md`：文档地图。
@@ -79,7 +79,7 @@ Runtime 写入必须 await，处理函数成功后提交；ctx 在调用结束�
 detector 每次成功执行整体替换自己的附件和搜索结果，包含 recopy。本次不写意味着清空，不应通过直接 return 跳过重复复制。
 页面/消息的交互状态使用独立类型，避免与 detector 输出产生重复卡片；编辑内容会清空所有附件。
 
-按 SDK 3.1 限额预算：单 payload 2 MiB、每插件每条目合计 64 个附件/10 条搜索扩展、单条搜索文本 4 KiB。按 UTF-8 字节检查，不按 JS 字符数。最终数字以 API.md 为准。
+按 SDK 3.2 限额预算：单 payload 2 MiB、每插件每条目合计 64 个附件/10 条搜索扩展、单条搜索文本 4 KiB。按 UTF-8 字节检查，不按 JS 字符数。最终数字以 API.md 为准。
 
 ## UI、preview 与验证
 

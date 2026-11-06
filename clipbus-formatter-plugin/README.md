@@ -19,7 +19,7 @@ Clipbus plugin that detects JSON, XML, and CSV data on the clipboard, formats it
 - **CSV Detector** (`csv-detector`): Identifies comma-separated values with consistent column counts and attaches `plugin.formatter.csv`.
 - **CSV Table** (`csv-table`): Renders the CSV data as a styled table with header row highlighting. Switch between Table and JSON views and copy Markdown or JSON. Height adapts automatically to fit the content.
 
-The plugin uses SDK 3.1 and protocol V2 (manifest schema 6). CSV search headers are limited to 4 KiB without splitting Unicode characters. CSV or expanded XML payloads above the SDK’s 2 MiB limit are omitted.
+The plugin uses SDK 3.2 and protocol V2 (manifest schema 6). CSV search headers are limited to 4 KiB without splitting Unicode characters. CSV or expanded XML payloads above the SDK’s 2 MiB limit are omitted.
 
 ## Development
 
