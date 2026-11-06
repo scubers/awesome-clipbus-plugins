@@ -3,6 +3,7 @@
 ## 仓库与权威文档
 
 这是 Clipbus 插件合集：一个顶层 `clipbus-*-plugin/` 对应一个独立插件。
+当前仅分发 `clipbus-toolbox-plugin/`（工具箱）与 `clipbus-vibe-plugin/`（独立动画）。工具能力统一加入 Toolbox；JSON/颜色卡片及 URL/Base64/JSON 字符串编解码优先使用宿主 builtin。
 仓库不再保存模板副本。创建和升级插件时，由 Agent 临时获取官方模板 `https://github.com/scubers/clipbus-template-plugin` 作为工程参考，再依据目标插件实际安装的 SDK 文档实现或迁移。两个 skill 均可独立分发，不依赖本仓库、内置脚手架或另一个 skill。根目录没有 package.json 或 workspace；安装、构建、测试都在插件目录中执行。
 
 当前使用 `@clipbus/plugin-sdk ^3.2.0`、插件协议 V2、manifest schema 6。

@@ -1,6 +1,6 @@
 # GIF Specs
 
-Recording spec for the three demo GIFs referenced from the [Plugins table](../README.md#plugins) in the root README. Recording itself is done by a human; this file only pins down script, timing, and export settings so the three clips read as one consistent series.
+Recording spec for the three planned demo GIFs for the [Plugins table](../README.md#plugins) in the root README. Recording itself is done by a human; this file only pins down script, timing, and export settings so the three clips read as one consistent series.
 
 ## Shared setup
 
@@ -34,7 +34,7 @@ Suggested combo: record with ScreenStudio (keystroke overlay baked in) → expor
 
 **Output**
 
-Save each GIF into `docs/gifs/` using the exact filename listed per clip below — the corresponding table row in `README.md` / `README_zh.md` links to that path.
+Save each GIF into `docs/gifs/` using the exact filename listed per clip below — add the corresponding README links after the recordings exist.
 
 ## Shared script shape
 
@@ -46,9 +46,9 @@ All three clips follow the same three-beat structure so the series reads as one 
 
 Total length: **10–15 seconds** per clip. No narration — keystroke overlay only (see tools above).
 
-## 1. Decoder — JWT decode
+## 1. Toolbox — JWT decode
 
-- **Plugin**: `clipbus-decoder-plugin`
+- **Plugin**: `clipbus-toolbox-plugin`
 - **Output path**: `docs/gifs/decoder.gif`
 - **Content to copy**: a sample JWT (three base64url segments separated by `.`). Use a throwaway/example token — never a real credential.
 - **Beats**:
@@ -57,15 +57,15 @@ Total length: **10–15 seconds** per clip. No narration — keystroke overlay o
   3. `4–13s` — Open the entry; the decoder card renders header + payload fields and expiry status. Show a one-click copy on a decoded field.
   4. `13–15s` — Hold on the fully rendered card.
 
-## 2. Preview — color swatch
+## 2. Toolbox — gradient preview
 
-- **Plugin**: `clipbus-preview-plugin`
+- **Plugin**: `clipbus-toolbox-plugin`
 - **Output path**: `docs/gifs/preview.gif`
-- **Content to copy**: a HEX color string (e.g. `#4F46E5`). A CSS gradient string (e.g. `linear-gradient(...)`) is an equally valid input to the same plugin if this clip is re-recorded later — pick one per clip, not both.
+- **Content to copy**: `linear-gradient(to right, #4F46E5, #06B6D4)`.
 - **Beats**:
-  1. `0–2s` — A terminal or text editor shows the color string; select it and copy (⌘C).
-  2. `2–4s` — Switch to Clipbus, summon history; the new entry appears.
-  3. `4–13s` — The color card renders: swatch fill, HEX/RGB/HSL values, WCAG contrast readout.
+  1. `0–2s` — Select and copy the complete gradient function.
+  2. `2–4s` — Switch to Clipbus and summon history.
+  3. `4–13s` — Show the gradient swatch, type and extracted stop colors; copy the gradient.
   4. `13–15s` — Hold on the rendered card.
 
 ## 3. Vibe — particle fallback
@@ -85,4 +85,4 @@ Total length: **10–15 seconds** per clip. No narration — keystroke overlay o
 - [ ] Same capture resolution across all three
 - [ ] Keystroke overlay style matches across all three
 - [ ] Each clip is 10–15s, starts on the copy action, ends on the fully rendered card
-- [ ] File saved to the exact output path listed above so the README links resolve
+- [ ] File saved to the exact output path listed above before adding README links

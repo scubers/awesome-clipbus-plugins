@@ -1,12 +1,12 @@
 # Vibe
 
-**Emotional fallback animation for Clipbus** — when no other plugin can render a copied text, Vibe turns it into a premium Three.js particle animation: chaos → order.
+**Emotional fallback animation for Clipbus** — when no builtin detector or other plugin has attached a result to copied text, Vibe turns it into a premium Three.js particle animation: chaos → order.
 
 ## How it works
 
 ### Fallback mechanism
 
-Vibe's detector checks the V2 attachment references in `input.item.attachments`. If another plugin has already attached a result (`own: false`), Vibe yields without writing. Otherwise, it attaches an animation payload to non-empty text. Its own references (`own: true`) allow a full write on recopy, so repeating a copy keeps the animation available.
+Vibe's detector checks the V2 attachment references in `input.item.attachments`. If a builtin detector or another plugin has already attached a result (`own: false`), Vibe yields without writing. Otherwise, it attaches an animation payload to non-empty text. Its own references (`own: true`) allow a full write on recopy, so repeating a copy keeps the animation available.
 
 The check uses the detector's item snapshot. Attachments added by another detector afterward are considered on the next detection; there is no runtime renderer visibility hook in protocol V2.
 

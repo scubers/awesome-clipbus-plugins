@@ -33,7 +33,7 @@ The primary way to use these plugins is installing straight from this repository
    | Field | Value |
    |---|---|
    | Repository URL | `https://github.com/scubers/awesome-clipbus-plugins` |
-   | Subdirectory | the plugin's directory name, e.g. `clipbus-decoder-plugin` — see the **Subdirectory** column in the [Plugins table](#plugins) below |
+   | Subdirectory | the plugin's directory name, e.g. `clipbus-toolbox-plugin` — see the **Subdirectory** column in the [Plugins table](#plugins) below |
    | Ref | leave blank to track `main`, or pin a branch/tag/commit |
 
 3. Click **Install**.
@@ -72,14 +72,10 @@ Each plugin below lives in its own top-level directory and is fully self-contain
 
 | Plugin | Subdirectory | Description | Demo |
 |--------|--------------|-------------|------|
-| [clipbus-decoder-plugin](./clipbus-decoder-plugin/README.md) | `clipbus-decoder-plugin` | Detect readable UTF-8 Base64, JWT, and `data:` URIs, plus 10 independent auto-run URL / HTML / Base64 / Unicode / JSON encode/decode actions designed for host-side cascades. | [GIF](./docs/gifs/decoder.gif) |
-| [clipbus-formatter-plugin](./clipbus-formatter-plugin/README.md) | `clipbus-formatter-plugin` | Detect and format JSON / XML, including pretty/minified/YAML JSON views, and render CSV/TSV as a table with JSON export. | — |
-| [clipbus-converter-plugin](./clipbus-converter-plugin/README.md) | `clipbus-converter-plugin` | Numeric, time, unit, and permission conversions, plus 10 independent auto-run naming-case actions that can be cascaded by the host. | — |
-| [clipbus-extractor-plugin](./clipbus-extractor-plugin/README.md) | `clipbus-extractor-plugin` | Extract and parse URLs, naked query strings, entities, IP/CIDR, coordinates, MAC addresses, and UUIDs; URL Details also strips tracking parameters and preserves duplicate query pairs. | — |
-| [clipbus-preview-plugin](./clipbus-preview-plugin/README.md) | `clipbus-preview-plugin` | Visual previews for colors (with WCAG contrast), CSS gradients, and sanitised Markdown. | [GIF](./docs/gifs/preview.gif) |
-| [clipbus-text-plugin](./clipbus-text-plugin/README.md) | `clipbus-text-plugin` | Nine independent auto-run text actions for JSON pretty-printing/minification, sorting, deduping, whitespace cleanup, ANSI stripping, and reversing or sorting characters/lines. | — |
-| [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | `clipbus-cron-plugin` | Detect 5-field cron expressions: a per-field explanation table, a one-sentence summary, and the next 5 fire times (live, local time), guarded to avoid misfiring on ordinary number rows. | — |
-| [clipbus-vibe-plugin](./clipbus-vibe-plugin/README.md) | `clipbus-vibe-plugin` | Emotional fallback for plain text with no structured match: three switchable Three.js particle animations — ① Particle Core: glyphs burst → noise drift → glowing Fibonacci sphere; ② Text Reveal: readable text (≥ 0.6 s, glyph-fit scaled) → light scan → edge disintegration → burst → polyhedral data crystal; ③ Text Loop: seamless 8-phase cycle — text → scatter → burst → drift cloud → sphere recall → stable sphere → deconstruct → text reassembly. A native button bar switches between them; which animations appear and their order are configurable via the `plugin.vibe.animations` setting (defaults to all three). | [GIF](./docs/gifs/vibe.gif) |
+| [Toolbox](./clipbus-toolbox-plugin/README.md) | `clipbus-toolbox-plugin` | 16 detectors, 16 cards and 24 Actions: Base64/JWT, XML/CSV, timestamps/radix/durations, address inspectors, Markdown/gradients/Cron, and text transformations. Complements the Host's builtin JSON, color and encoding tools. | — |
+| [Vibe](./clipbus-vibe-plugin/README.md) | `clipbus-vibe-plugin` | Independent text fallback with three configurable Three.js particle animations. | — |
+
+The former seven utility plugins are consolidated into Toolbox. See [migration and removed capabilities](./clipbus-toolbox-plugin/README.md#migration-from-the-former-seven-plugins) before replacing existing installations or saved Flows.
 
 The [official plugin template](https://github.com/scubers/clipbus-template-plugin) is maintained upstream. Agents retrieve it temporarily when needed; this repository does not keep a template copy.
 

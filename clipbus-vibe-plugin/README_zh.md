@@ -1,12 +1,12 @@
 # Vibe（情绪兜底动画）
 
-**Clipbus 情绪兜底动画 renderer** — 当某条复制的文本没有任何更专业的插件能够展示时，Vibe 用 Three.js 粒子动画将其演绎成「混沌→秩序」的沉浸式视觉体验。
+**Clipbus 情绪兜底动画 renderer** — 当某条复制的文本没有宿主 builtin 或其他插件的检测结果时，Vibe 用 Three.js 粒子动画将其演绎成「混沌→秩序」的沉浸式视觉体验。
 
 ## 工作原理
 
 ### 兜底机制
 
-Vibe 的 detector 检查 `input.item.attachments` 中的 V2 附件引用。若已有其他插件的附件（`own: false`），本次不写入，让位给对应插件；否则为非空文本写入动画附件。本插件自己的引用（`own: true`）不会阻止重复复制时完整重写，因此 recopy 会保留动画。
+Vibe 的 detector 检查 `input.item.attachments` 中的 V2 附件引用。若已有宿主 builtin 或其他插件的附件（`own: false`），本次不写入，让位给对应插件；否则为非空文本写入动画附件。本插件自己的引用（`own: true`）不会阻止重复复制时完整重写，因此 recopy 会保留动画。
 
 检查依据是 detector 的条目快照。其他 detector 在此后新增的附件会在下次检测时参与判断；协议 V2 已移除 Runtime renderer 的可见性回调。
 

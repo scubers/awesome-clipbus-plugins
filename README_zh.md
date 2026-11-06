@@ -32,7 +32,7 @@ npx skills add https://github.com/scubers/awesome-clipbus-plugins \
    | 字段 | 填写值 |
    |---|---|
    | 仓库地址 | `https://github.com/scubers/awesome-clipbus-plugins` |
-   | 子目录 | 插件的目录名，例如 `clipbus-decoder-plugin`——见下方[插件列表](#插件列表)中的**子目录**列 |
+   | 子目录 | 插件的目录名，例如 `clipbus-toolbox-plugin`——见下方[插件列表](#插件列表)中的**子目录**列 |
    | Ref | 留空即跟随 `main`，也可填 branch / tag / commit 固定版本 |
 
 3. 点击 **安装**。
@@ -66,14 +66,10 @@ Windows / macOS 新 clone 后即可直接使用，无需额外初始化。修改
 
 | 插件 | 子目录 | 描述 | 演示 |
 |------|--------|------|------|
-| [clipbus-decoder-plugin](./clipbus-decoder-plugin/README.md) | `clipbus-decoder-plugin` | 识别可读 UTF-8 Base64、JWT 与 `data:` URI，并提供 10 个独立、可由宿主级联的 URL / HTML / Base64 / Unicode / JSON 编解码 auto-run action | [GIF](./docs/gifs/decoder.gif) |
-| [clipbus-formatter-plugin](./clipbus-formatter-plugin/README.md) | `clipbus-formatter-plugin` | 识别并格式化 JSON / XML，支持 JSON 美化、压缩与 YAML 视图；将 CSV/TSV 渲染为表格并导出 JSON | — |
-| [clipbus-converter-plugin](./clipbus-converter-plugin/README.md) | `clipbus-converter-plugin` | 数值、时间、单位与权限转换，并提供 10 个独立、可由宿主级联的命名风格 auto-run action | — |
-| [clipbus-extractor-plugin](./clipbus-extractor-plugin/README.md) | `clipbus-extractor-plugin` | 提取与解析 URL、裸查询字符串、实体、IP/CIDR、坐标、MAC 和 UUID；URL Details 支持移除追踪参数并保留重复 query pair | — |
-| [clipbus-preview-plugin](./clipbus-preview-plugin/README.md) | `clipbus-preview-plugin` | 颜色（含 WCAG 对比度）、CSS 渐变与安全 Markdown 可视化预览 | [GIF](./docs/gifs/preview.gif) |
-| [clipbus-text-plugin](./clipbus-text-plugin/README.md) | `clipbus-text-plugin` | 9 个独立 auto-run 文本 action：JSON 美化/压缩、排序、去重、整理空白、移除 ANSI，以及反转或排序字符/行 | — |
-| [clipbus-cron-plugin](./clipbus-cron-plugin/README.md) | `clipbus-cron-plugin` | 识别 5 段 cron 表达式，逐字段中文释义表、一句执行概述,以及接下来 5 次触发时刻（实时本地时间）（带护栏避免误判普通数字行）| — |
-| [clipbus-vibe-plugin](./clipbus-vibe-plugin/README.md) | `clipbus-vibe-plugin` | 情绪兜底动画：当没有任何插件能展示某条纯文本时，提供三种可切换的 Three.js 粒子动画——①Particle Core：粒子自字形炸开、噪声漂移后重组为发光球体；②Text Reveal：文字完整可读（字号自适应卡片尺寸）→ 光扫描 → 边缘裂解 → 爆发 → 回收为多面体光核；③Text Loop：8 阶段无缝循环——文字→粒子化→爆发→漂浮能量云→旋涡回收成球→稳定悬浮→解构→重组文字（首尾完全衔接）；原生按钮栏切换，展示哪些动画及顺序可用 `plugin.vibe.animations` 设置项配置（默认全部三个） | [GIF](./docs/gifs/vibe.gif) |
+| [Toolbox 工具箱](./clipbus-toolbox-plugin/README_zh.md) | `clipbus-toolbox-plugin` | 16 个 detector、16 张卡片、24 个 Action：Base64/JWT、XML/CSV、时间戳/进制/时长、地址检查、Markdown/渐变/Cron、文本转换；与宿主 builtin JSON、颜色、编解码能力互补。 | — |
+| [Vibe](./clipbus-vibe-plugin/README_zh.md) | `clipbus-vibe-plugin` | 独立文本兜底插件，提供三种可配置的 Three.js 粒子动画。 | — |
+
+原七个工具插件已合并为 Toolbox。替换现有安装或已保存 Flow 前，先看[迁移与移除功能说明](./clipbus-toolbox-plugin/README_zh.md#从原七个插件迁移)。
 
 [官方插件模板](https://github.com/scubers/clipbus-template-plugin) 在上游独立维护。Agent 按需临时获取，本仓库不再保存模板副本。
 

@@ -1,0 +1,715 @@
+{
+  "schemaVersion": 6,
+  "plugin": {
+    "id": "plugin.toolbox",
+    "title": "Toolbox",
+    "version": "0.1.0"
+  },
+  "install": {
+    "entry": "scripts/install.mjs"
+  },
+  "runtime": {
+    "nodeEntry": "dist/plugin.cjs"
+  },
+  "detectors": [
+    {
+      "id": "base64-detector",
+      "title": "Base64 Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "jwt-detector",
+      "title": "JWT Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "xml-detector",
+      "title": "XML Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "csv-detector",
+      "title": "CSV Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "timestamp-detector",
+      "title": "Unix Timestamp Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "radix-detector",
+      "title": "Radix Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "duration-detector",
+      "title": "Duration Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "entities-detector",
+      "title": "Email / IPv4 Extraction Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "url-detector",
+      "title": "URL / Query String Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "ip-detector",
+      "title": "IP Address Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "geo-detector",
+      "title": "Coordinates Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "mac-detector",
+      "title": "MAC Address Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "uuid-detector",
+      "title": "UUID Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "markdown-detector",
+      "title": "Markdown Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "gradient-detector",
+      "title": "Gradient Detector",
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "cron-detector",
+      "title": "Cron Expression Detector",
+      "inputKinds": [
+        "text"
+      ]
+    }
+  ],
+  "renderers": [
+    {
+      "id": "base64-renderer",
+      "title": "Base64 Decode",
+      "attachmentType": "plugin.toolbox.base64",
+      "height": {
+        "min": 120,
+        "max": 320
+      },
+      "page": "dist/ui/renderers/base64-renderer/index.html",
+      "tint": "#0F766E",
+      "buttons": [
+        {
+          "id": "copy",
+          "title": "Copy Decoded Result"
+        }
+      ]
+    },
+    {
+      "id": "jwt-renderer",
+      "title": "JWT Decoded",
+      "attachmentType": "plugin.toolbox.jwt",
+      "height": {
+        "min": 140,
+        "max": 440
+      },
+      "page": "dist/ui/renderers/jwt-renderer/index.html",
+      "tint": "#7C3AED",
+      "buttons": [
+        {
+          "id": "copy",
+          "title": "Copy Payload"
+        }
+      ]
+    },
+    {
+      "id": "xml-renderer",
+      "title": "XML Formatter",
+      "attachmentType": "plugin.toolbox.xml",
+      "height": {
+        "min": 140,
+        "max": 480
+      },
+      "page": "dist/ui/renderers/xml-renderer/index.html",
+      "tint": "#7C3AED",
+      "buttons": [
+        {
+          "id": "copy-xml",
+          "title": "Copy Formatted XML"
+        }
+      ]
+    },
+    {
+      "id": "csv-table",
+      "title": "CSV",
+      "attachmentType": "plugin.toolbox.csv",
+      "height": {
+        "min": 160,
+        "max": 460
+      },
+      "page": "dist/ui/renderers/csv-table/index.html",
+      "tint": "#0F766E",
+      "buttons": [
+        {
+          "id": "copy",
+          "title": "Copy as Markdown Table"
+        }
+      ]
+    },
+    {
+      "id": "timestamp-renderer",
+      "title": "Unix Timestamp Converter",
+      "attachmentType": "plugin.toolbox.timestamp",
+      "height": {
+        "min": 140,
+        "max": 460
+      },
+      "tint": "#0F766E",
+      "page": "dist/ui/renderers/timestamp-renderer/index.html",
+      "buttons": [
+        {
+          "id": "copy-iso",
+          "title": "Copy ISO 8601"
+        }
+      ]
+    },
+    {
+      "id": "radix-renderer",
+      "title": "Radix Converter",
+      "attachmentType": "plugin.toolbox.radix",
+      "height": {
+        "min": 120,
+        "max": 300
+      },
+      "tint": "#4F46E5",
+      "page": "dist/ui/renderers/radix-renderer/index.html",
+      "buttons": [
+        {
+          "id": "copy-all",
+          "title": "Copy all radix"
+        }
+      ]
+    },
+    {
+      "id": "duration",
+      "title": "Duration",
+      "attachmentType": "plugin.toolbox.duration",
+      "height": {
+        "min": 140,
+        "max": 300
+      },
+      "tint": "#7C3AED",
+      "page": "dist/ui/renderers/duration/index.html",
+      "buttons": [
+        {
+          "id": "copy-seconds",
+          "title": "Copy Seconds"
+        }
+      ]
+    },
+    {
+      "id": "entities-renderer",
+      "title": "Extracted Entities",
+      "attachmentType": "plugin.toolbox.entities",
+      "height": {
+        "min": 140,
+        "max": 420
+      },
+      "page": "dist/ui/renderers/entities-renderer/index.html",
+      "tint": "#2563EB",
+      "buttons": [
+        {
+          "id": "copy-all",
+          "title": "Copy All"
+        }
+      ]
+    },
+    {
+      "id": "url-parsed",
+      "title": "URL Details",
+      "attachmentType": "plugin.toolbox.url",
+      "height": {
+        "min": 140,
+        "max": 500
+      },
+      "page": "dist/ui/renderers/url-parsed/index.html",
+      "tint": "#2563EB",
+      "buttons": [
+        {
+          "id": "copy",
+          "title": "Copy query params (JSON)"
+        }
+      ]
+    },
+    {
+      "id": "ip-details",
+      "title": "IP Address",
+      "attachmentType": "plugin.toolbox.ip",
+      "height": {
+        "min": 140,
+        "max": 380
+      },
+      "page": "dist/ui/renderers/ip-details/index.html",
+      "tint": "#0891B2",
+      "buttons": [
+        {
+          "id": "copy-input",
+          "title": "Copy IP"
+        }
+      ]
+    },
+    {
+      "id": "geo-coordinates",
+      "title": "Coordinates",
+      "attachmentType": "plugin.toolbox.geo",
+      "height": {
+        "min": 120,
+        "max": 340
+      },
+      "page": "dist/ui/renderers/geo-coordinates/index.html",
+      "tint": "#16A34A",
+      "buttons": [
+        {
+          "id": "copy-decimal",
+          "title": "Copy Coordinates"
+        }
+      ]
+    },
+    {
+      "id": "mac-address",
+      "title": "MAC Address",
+      "attachmentType": "plugin.toolbox.mac",
+      "height": {
+        "min": 120,
+        "max": 320
+      },
+      "page": "dist/ui/renderers/mac-address/index.html",
+      "tint": "#7C3AED",
+      "buttons": [
+        {
+          "id": "copy-input",
+          "title": "Copy MAC"
+        }
+      ]
+    },
+    {
+      "id": "uuid-details",
+      "title": "UUID",
+      "attachmentType": "plugin.toolbox.uuid",
+      "height": {
+        "min": 120,
+        "max": 360
+      },
+      "page": "dist/ui/renderers/uuid-details/index.html",
+      "tint": "#7C3AED",
+      "buttons": [
+        {
+          "id": "copy-canonical",
+          "title": "Copy UUID"
+        }
+      ]
+    },
+    {
+      "id": "markdown-renderer",
+      "title": "Markdown Preview",
+      "attachmentType": "plugin.toolbox.markdown",
+      "height": {
+        "min": 120,
+        "max": 480
+      },
+      "page": "dist/ui/renderers/markdown-renderer/index.html",
+      "tint": "#0EA5E9"
+    },
+    {
+      "id": "gradient-swatch",
+      "title": "Gradient",
+      "attachmentType": "plugin.toolbox.gradient",
+      "height": {
+        "min": 260,
+        "max": 260
+      },
+      "page": "dist/ui/renderers/gradient-swatch/index.html",
+      "buttons": [
+        {
+          "id": "copy-gradient",
+          "title": "Copy Gradient"
+        }
+      ]
+    },
+    {
+      "id": "cron-renderer",
+      "title": "Cron Schedule",
+      "attachmentType": "plugin.toolbox.schedule",
+      "height": {
+        "min": 120,
+        "max": 560
+      },
+      "tint": "#B45309",
+      "page": "dist/ui/renderers/cron-renderer/index.html"
+    }
+  ],
+  "actions": [
+    {
+      "id": "html-encode",
+      "title": "HTML Encode",
+      "keywords": [
+        "html",
+        "entity",
+        "encode",
+        "escape"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "html-decode",
+      "title": "HTML Decode",
+      "keywords": [
+        "html",
+        "entity",
+        "decode",
+        "unescape"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "unicode-escape",
+      "title": "Unicode Escape",
+      "keywords": [
+        "unicode",
+        "escape",
+        "encode"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "unicode-unescape",
+      "title": "Unicode Unescape",
+      "keywords": [
+        "unicode",
+        "unescape",
+        "decode"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "uppercase",
+      "title": "Uppercase",
+      "keywords": [
+        "uppercase",
+        "upper",
+        "case"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "lowercase",
+      "title": "Lowercase",
+      "keywords": [
+        "lowercase",
+        "lower",
+        "case"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "camelCase",
+      "title": "camelCase",
+      "keywords": [
+        "camel",
+        "case",
+        "naming"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "pascalCase",
+      "title": "PascalCase",
+      "keywords": [
+        "pascal",
+        "case",
+        "naming"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "snakeCase",
+      "title": "snake_case",
+      "keywords": [
+        "snake",
+        "case",
+        "naming"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "kebabCase",
+      "title": "kebab-case",
+      "keywords": [
+        "kebab",
+        "case",
+        "naming"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "constantCase",
+      "title": "CONSTANT_CASE",
+      "keywords": [
+        "constant",
+        "case",
+        "naming"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "titleCase",
+      "title": "Title Case",
+      "keywords": [
+        "title",
+        "case",
+        "naming"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "sentenceCase",
+      "title": "Sentence case",
+      "keywords": [
+        "sentence",
+        "case",
+        "naming"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "dotCase",
+      "title": "dot.case",
+      "keywords": [
+        "dot",
+        "case",
+        "naming"
+      ],
+      "inputKinds": [
+        "text"
+      ]
+    },
+    {
+      "id": "text-sort",
+      "title": "Sort Lines",
+      "inputKinds": [
+        "text"
+      ],
+      "keywords": [
+        "sort",
+        "order",
+        "lines"
+      ]
+    },
+    {
+      "id": "text-dedup",
+      "title": "Remove Duplicate Lines",
+      "inputKinds": [
+        "text"
+      ],
+      "keywords": [
+        "dedup",
+        "unique",
+        "duplicates"
+      ]
+    },
+    {
+      "id": "text-trim",
+      "title": "Tidy Whitespace",
+      "inputKinds": [
+        "text"
+      ],
+      "keywords": [
+        "trim",
+        "whitespace",
+        "spaces"
+      ]
+    },
+    {
+      "id": "text-strip-ansi",
+      "title": "Strip ANSI Codes",
+      "inputKinds": [
+        "text"
+      ],
+      "keywords": [
+        "ansi",
+        "escape",
+        "terminal",
+        "color",
+        "strip"
+      ]
+    },
+    {
+      "id": "text-reverse-lines",
+      "title": "Reverse Lines",
+      "inputKinds": [
+        "text"
+      ],
+      "keywords": [
+        "reverse",
+        "lines",
+        "flip"
+      ]
+    },
+    {
+      "id": "text-reverse-characters",
+      "title": "Reverse Characters",
+      "inputKinds": [
+        "text"
+      ],
+      "keywords": [
+        "reverse",
+        "characters",
+        "text",
+        "flip"
+      ]
+    },
+    {
+      "id": "text-sort-characters",
+      "title": "Sort Characters",
+      "inputKinds": [
+        "text"
+      ],
+      "keywords": [
+        "sort",
+        "characters",
+        "order"
+      ]
+    },
+    {
+      "id": "text-pretty-json",
+      "title": "Pretty JSON",
+      "inputKinds": [
+        "text"
+      ],
+      "keywords": [
+        "json",
+        "pretty",
+        "format",
+        "indent"
+      ]
+    },
+    {
+      "id": "text-minify-json",
+      "title": "Minify JSON",
+      "inputKinds": [
+        "text"
+      ],
+      "keywords": [
+        "json",
+        "minify",
+        "compact"
+      ]
+    },
+    {
+      "id": "json-to-yaml",
+      "title": "JSON to YAML",
+      "inputKinds": [
+        "text"
+      ],
+      "keywords": [
+        "json",
+        "yaml",
+        "convert"
+      ]
+    }
+  ],
+  "writes": {
+    "attachmentTypes": [
+      "plugin.toolbox.base64",
+      "plugin.toolbox.jwt",
+      "plugin.toolbox.xml",
+      "plugin.toolbox.csv",
+      "plugin.toolbox.timestamp",
+      "plugin.toolbox.radix",
+      "plugin.toolbox.duration",
+      "plugin.toolbox.entities",
+      "plugin.toolbox.url",
+      "plugin.toolbox.ip",
+      "plugin.toolbox.geo",
+      "plugin.toolbox.mac",
+      "plugin.toolbox.uuid",
+      "plugin.toolbox.markdown",
+      "plugin.toolbox.gradient",
+      "plugin.toolbox.schedule"
+    ],
+    "searchScopes": [
+      "decoder",
+      "formatter",
+      "converter",
+      "extractor",
+      "url",
+      "query",
+      "preview",
+      "cron"
+    ]
+  }
+}

@@ -1,35 +1,17 @@
-# Vibe Plugin Development Guide
+# Vibe development guide
 
-*English · [中文](./GUIDE_zh.md)*
-
-This directory is the Vibe plugin. It targets `@clipbus/plugin-sdk ^2.0.0`, plugin protocol V2 and manifest schema 5. Read [AGENTS.md](./AGENTS.md), then the installed SDK's `docs/README.md` and `API.md`. The installed API reference takes precedence over repository examples. Do not inspect or modify SDK implementation source.
+Feature scope and usage are in [README.md](./README.md); Chinese instructions are in [GUIDE_zh.md](./GUIDE_zh.md).
 
 ## Install and preview
 
-Use the Node version required by the installed SDK. Run these commands in `clipbus-vibe-plugin/`:
+Run commands in `clipbus-vibe-plugin/`, not the repository root:
 
 ```sh
 npm install
 npm run dev
 ```
 
-The SDK preview workbench mounts the actual Vibe Vue component and Three.js animations. Its four scenarios retain the original plain-text and short-word examples and demonstrate an ordered animation list and a single-animation setting. The workbench provides theme and width controls, the native card shell and buttons, startup snapshots and a host-call log.
-
-Settings in a preview scenario use the plugin-local shape:
-
-```ts
-settings: { animations: ["text-loop", "particle-core"] }
-```
-
-The host stores the same setting under `plugin.vibe.animations`. `ctx.settings.get<{ animations?: unknown }>()` returns `{ values }`; read `values.animations`. See [README.md](./README.md) for the host file location and animation behavior.
-
-## Runtime and card wiring
-
-The detector reads `input.item.attachments`, whose entries are references `{ type, key, updatedAt, own }`. Foreign references cause the detector to yield without writing. Own references allow a complete write on recopy. Successful no-write calls clear the detector's previous output. The snapshot check cannot account for another detector's later writes until the next detection.
-
-`payload.ts` defines the typed attachment contract and pure payload functions. The detector awaits `vibeAttachment.set(ctx, [{ key, payload }])`. Its type is declared in `writes.attachmentTypes`; Vibe writes no search extensions.
-
-The manifest declares the renderer page, title, tint, buttons and fixed height `{ min: 220, max: 220 }`. Cards have no Runtime registry entry. The page imports `ctx` from `@clipbus/plugin-sdk/view` and uses `useCard(vibeAttachment)` for startup data and item/environment events. It publishes buttons through `ctx.renderer.update` and reads `event.id` from `ctx.renderer.onButton`. Unmounting cancels subscriptions and disposes the active animation.
+The Vite workbench opens `/src/preview/preview-host/index.html`. Select a scenario and switch dark/light themes; it mounts the real Vue feature component. Preview records Host calls, but does not enforce real Host isolation, write declarations or commit budgets.
 
 ## Build and verify
 
@@ -37,21 +19,16 @@ The manifest declares the renderer page, title, tint, buttons and fixed height `
 npm run verify
 ```
 
-This runs manifest validation, type checking, lint, Runtime/UI builds, build wiring checks, built-manifest validation and Node tests. Tests preserve payload and animation-switching vectors, run the built detector through `tests/support/plugin.cjs`, and validate real V2 scenarios with the SDK's `computeBootstrap`.
+The gate validates the manifest, typechecks, lints, builds the CommonJS Runtime and each manifest renderer page, checks registry/page wiring, validates the built files, and runs Node `.cjs` tests. Business parser vectors remain alongside tests of the delivered `dist/plugin.cjs`.
 
-`npm run build` rebuilds `dist/` in this directory, which is the path Clipbus loads. `npm test` requires built Runtime artifacts. The shared UI build and verification scripts are manifest-driven; changes to shared infrastructure belong in the repository's maintained sources.
+Build outputs live in ignored `dist/`. The install hook uses the committed lockfile with `npm ci`, then builds with the Host-provided npm invocation. Do not edit generated build output.
 
-## Debug inside Clipbus
+## Load in Clipbus
 
-1. Open Settings → Plugins → Developer Plugins → Add Path and select this directory.
-2. Reload rereads the manifest. Run Install reruns the installation hook.
-3. After source edits, rebuild this directory's `dist/` and reload. Verify cross-plugin detection ordering in the actual host.
+Settings → Plugins → Developer Plugins → Add Path: select this directory, which contains `manifest.json`. Reload re-reads configuration; Run Install re-runs the install hook. Rebuild this exact directory after source changes. Re-detect an existing entry when checking new detector output.
 
-## Files
+## Extend the plugin
 
-- `manifest.json`: plugin identity, declared writes, detector and card defaults.
-- `src/plugin.ts`: Runtime detector registration.
-- `src/features/vibe-fallback/`: payload contract, detector, card, switching logic and the three animation implementations.
-- `src/shared/composables/useCard.ts`: shared V2 card subscriptions.
-- `src/preview/`: real preview scenarios and component mounting.
-- `tests/runtime/`, `tests/integration/`, `tests/support/`: business checks, preview validation and Runtime harness.
+Read `node_modules/@clipbus/plugin-sdk/docs/README.md` and `API.md` first. Keep manifest IDs, Runtime handlers, declared writes, renderer source folders, actual component previews and tests aligned. Every output page has an independent folder. Readonly package files and shared payload modules must respect the installed SDK's environment constraints.
+
+The project was checked against the [official template](https://github.com/scubers/clipbus-template-plugin), commit `6008c5a269ea0ceb79e0d51ac678d55c3c69f72c`; local build configuration remains adapted to these actual features.

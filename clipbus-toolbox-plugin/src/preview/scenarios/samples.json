@@ -1,0 +1,589 @@
+[
+  {
+    "id": "base64-renderer-hello",
+    "label": "Base64: Hello, World!",
+    "view": "base64-renderer",
+    "payload": {
+      "kind": "base64_preview",
+      "version": 1,
+      "originalSnippet": "SGVsbG8sIFdvcmxkIQ==",
+      "originalLength": 20,
+      "decoded": "Hello, World!",
+      "decodedLength": 13,
+      "isText": true,
+      "encoding": "standard"
+    },
+    "card": {
+      "title": "Base64 Decode",
+      "buttons": [
+        {
+          "id": "copy",
+          "title": "Copy Decoded Result"
+        }
+      ]
+    }
+  },
+  {
+    "id": "base64-renderer-json",
+    "label": "Base64: JSON payload",
+    "view": "base64-renderer",
+    "payload": {
+      "kind": "base64_preview",
+      "version": 1,
+      "originalSnippet": "eyJ1c2VyIjoiYWxpY2UiLCJyb2xlIjoiYWRtaW4ifQ==",
+      "originalLength": 44,
+      "decoded": "{\"user\":\"alice\",\"role\":\"admin\"}",
+      "decodedLength": 30,
+      "isText": true,
+      "encoding": "standard"
+    },
+    "card": {
+      "title": "Base64 Decode",
+      "buttons": [
+        {
+          "id": "copy",
+          "title": "Copy Decoded Result"
+        }
+      ]
+    }
+  },
+  {
+    "id": "jwt-renderer-canonical",
+    "label": "JWT: HS256 canonical token",
+    "view": "jwt-renderer",
+    "payload": {
+      "kind": "jwt_preview",
+      "version": 1,
+      "alg": "HS256",
+      "typ": "JWT",
+      "headerPretty": "{\n  \"alg\": \"HS256\",\n  \"typ\": \"JWT\"\n}",
+      "payloadPretty": "{\n  \"sub\": \"1234567890\",\n  \"name\": \"John Doe\",\n  \"iat\": 1516239022\n}",
+      "claimFacts": [
+        {
+          "label": "sub",
+          "value": "1234567890"
+        },
+        {
+          "label": "name",
+          "value": "John Doe"
+        }
+      ],
+      "expIso": null,
+      "isExpired": null,
+      "relativeLabel": null,
+      "signaturePresent": true
+    }
+  },
+  {
+    "id": "xml-renderer-catalog",
+    "label": "XML: book catalog",
+    "view": "xml-renderer",
+    "payload": {
+      "kind": "xml_preview",
+      "version": 1,
+      "formatted": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<catalog>\n  <book id=\"bk101\">\n    <author>Gambardella, Matthew</author>\n    <title>XML Developer's Guide</title>\n    <genre>Computer</genre>\n    <price>44.95</price>\n  </book>\n  <book id=\"bk102\">\n    <author>Ralls, Kim</author>\n    <title>Midnight Rain</title>\n    <genre>Fantasy</genre>\n    <price>5.95</price>\n  </book>\n</catalog>",
+      "elementCount": 10,
+      "attributeCount": 2,
+      "maxDepth": 3
+    }
+  },
+  {
+    "id": "csv-table-basic",
+    "label": "CSV Table",
+    "view": "csv-table",
+    "payload": {
+      "kind": "csv_table",
+      "version": 1,
+      "delimiter": ",",
+      "headers": [
+        "name",
+        "role",
+        "note"
+      ],
+      "rows": [
+        [
+          "Alice",
+          "Engineer",
+          "works on infra"
+        ],
+        [
+          "Bob",
+          "Designer",
+          "handles, UX & motion"
+        ],
+        [
+          "Carol",
+          "PM",
+          "leads roadmap"
+        ]
+      ],
+      "rowCount": 3,
+      "colCount": 3,
+      "display": {
+        "typeLabel": "CSV Table",
+        "headline": "3 columns \u00d7 3 rows",
+        "facts": [
+          {
+            "label": "Rows",
+            "value": "3"
+          },
+          {
+            "label": "Columns",
+            "value": "3"
+          },
+          {
+            "label": "Delimiter",
+            "value": "comma"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "timestamp-renderer-seconds",
+    "label": "Unix Timestamp: 1700000000 (seconds)",
+    "view": "timestamp-renderer",
+    "payload": {
+      "kind": "timestamp_preview",
+      "version": 1,
+      "original": "1700000000",
+      "unit": "seconds",
+      "epochMs": 1700000000000,
+      "iso": "2023-11-14T22:13:20.000Z",
+      "utc": "Tue, 14 Nov 2023 22:13:20 GMT",
+      "local": "2023/11/15 06:13:20",
+      "weekday": "Tuesday",
+      "zones": [
+        {
+          "label": "UTC",
+          "time": "Tue 11-14 22:13",
+          "offset": "GMT+0"
+        },
+        {
+          "label": "Los Angeles",
+          "time": "Tue 11-14 14:13",
+          "offset": "GMT-8"
+        },
+        {
+          "label": "New York",
+          "time": "Tue 11-14 17:13",
+          "offset": "GMT-5"
+        },
+        {
+          "label": "London",
+          "time": "Tue 11-14 22:13",
+          "offset": "GMT+0"
+        },
+        {
+          "label": "Paris",
+          "time": "Tue 11-14 23:13",
+          "offset": "GMT+1"
+        },
+        {
+          "label": "Kolkata",
+          "time": "Wed 11-15 03:43",
+          "offset": "GMT+5:30"
+        },
+        {
+          "label": "Shanghai",
+          "time": "Wed 11-15 06:13",
+          "offset": "GMT+8"
+        },
+        {
+          "label": "Tokyo",
+          "time": "Wed 11-15 07:13",
+          "offset": "GMT+9"
+        },
+        {
+          "label": "Sydney",
+          "time": "Wed 11-15 09:13",
+          "offset": "GMT+11"
+        }
+      ]
+    }
+  },
+  {
+    "id": "duration-sample",
+    "label": "ISO 8601 Duration: P1Y2M10DT2H30M",
+    "view": "duration",
+    "payload": {
+      "kind": "duration_preview",
+      "version": 1,
+      "original": "P1Y2M10DT2H30M",
+      "components": {
+        "years": 1,
+        "months": 2,
+        "days": 10,
+        "hours": 2,
+        "minutes": 30
+      },
+      "humanBreakdown": "1 year, 2 months, 10 days, 2 hours, 30 minutes",
+      "totalSeconds": 37690200,
+      "approximate": true
+    }
+  },
+  {
+    "id": "radix-renderer-sample",
+    "label": "Radix: 0xff hexadecimal",
+    "view": "radix-renderer",
+    "payload": {
+      "kind": "radix_preview",
+      "version": 1,
+      "inputBase": "hex",
+      "decimal": "255",
+      "hex": "0xff",
+      "octal": "0o377",
+      "binary": "0b11111111",
+      "bits": 8,
+      "asciiChar": null,
+      "isNegative": false
+    }
+  },
+  {
+    "id": "entities-renderer-mixed",
+    "label": "Extracted Entities: Email + IPv4",
+    "view": "entities-renderer",
+    "payload": {
+      "kind": "entities_preview",
+      "version": 1,
+      "emails": [
+        "john@example.com"
+      ],
+      "ips": [
+        "192.168.1.1"
+      ],
+      "totalCount": 2
+    }
+  },
+  {
+    "id": "url-parsed-basic",
+    "label": "URL: tracking params removed",
+    "view": "url-parsed",
+    "payload": {
+      "kind": "url_parsed",
+      "version": 1,
+      "inputType": "url",
+      "input": "https://example.com/article?utm_source=newsletter&utm_medium=email&fbclid=AbC123&id=42",
+      "href": "https://example.com/article?utm_source=newsletter&utm_medium=email&fbclid=AbC123&id=42",
+      "scheme": "https",
+      "username": "",
+      "host": "example.com",
+      "port": "",
+      "path": "/article",
+      "query": [
+        {
+          "key": "utm_source",
+          "value": "newsletter"
+        },
+        {
+          "key": "utm_medium",
+          "value": "email"
+        },
+        {
+          "key": "fbclid",
+          "value": "AbC123"
+        },
+        {
+          "key": "id",
+          "value": "42"
+        }
+      ],
+      "queryJson": "{\n  \"utm_source\": \"newsletter\",\n  \"utm_medium\": \"email\",\n  \"fbclid\": \"AbC123\",\n  \"id\": \"42\"\n}",
+      "hasDuplicateKeys": false,
+      "hash": "",
+      "cleanHref": "https://example.com/article?id=42",
+      "trackingParams": [
+        {
+          "key": "utm_source",
+          "value": "newsletter"
+        },
+        {
+          "key": "utm_medium",
+          "value": "email"
+        },
+        {
+          "key": "fbclid",
+          "value": "AbC123"
+        }
+      ],
+      "display": {
+        "typeLabel": "URL",
+        "headline": "example.com",
+        "facts": [
+          {
+            "label": "Scheme",
+            "value": "https"
+          },
+          {
+            "label": "Host",
+            "value": "example.com"
+          },
+          {
+            "label": "Path",
+            "value": "/article"
+          }
+        ]
+      }
+    },
+    "card": {
+      "title": "URL Details",
+      "buttons": [
+        {
+          "id": "copy-clean",
+          "title": "Copy clean URL"
+        },
+        {
+          "id": "copy",
+          "title": "Copy query params (JSON)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "url-parsed-query-string",
+    "label": "Query String: duplicate keys",
+    "view": "url-parsed",
+    "payload": {
+      "kind": "url_parsed",
+      "version": 1,
+      "inputType": "query",
+      "input": "tag=one&tag=two&lang=zh-CN",
+      "href": "",
+      "scheme": "",
+      "username": "",
+      "host": "",
+      "port": "",
+      "path": "",
+      "query": [
+        {
+          "key": "tag",
+          "value": "one"
+        },
+        {
+          "key": "tag",
+          "value": "two"
+        },
+        {
+          "key": "lang",
+          "value": "zh-CN"
+        }
+      ],
+      "queryJson": "{\n  \"tag\": \"two\",\n  \"lang\": \"zh-CN\"\n}",
+      "hasDuplicateKeys": true,
+      "hash": "",
+      "cleanHref": "",
+      "trackingParams": [],
+      "display": {
+        "typeLabel": "Query String",
+        "headline": "3 parameters",
+        "facts": [
+          {
+            "label": "Pairs",
+            "value": "3"
+          },
+          {
+            "label": "Duplicate keys",
+            "value": "Yes"
+          }
+        ]
+      }
+    },
+    "card": {
+      "title": "Query String",
+      "buttons": [
+        {
+          "id": "copy",
+          "title": "Copy as JSON"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ip-details-v4",
+    "label": "IP Address: IPv4 private host",
+    "view": "ip-details",
+    "payload": {
+      "kind": "ip_details",
+      "version": 1,
+      "input": "192.168.1.10",
+      "inputType": "ipv4",
+      "ipVersion": 4,
+      "integer": 3232235786,
+      "hex": "0xC0A8010A",
+      "binary": "11000000.10101000.00000001.00001010",
+      "reverseDns": "10.1.168.192.in-addr.arpa",
+      "scope": "Private",
+      "legacyClass": "C"
+    }
+  },
+  {
+    "id": "ip-details-v4cidr",
+    "label": "IP Address: IPv4 CIDR /24",
+    "view": "ip-details",
+    "payload": {
+      "kind": "ip_details",
+      "version": 1,
+      "input": "192.168.1.0/24",
+      "inputType": "ipv4cidr",
+      "ipVersion": 4,
+      "prefix": 24,
+      "netmask": "255.255.255.0",
+      "wildcardMask": "0.0.0.255",
+      "networkAddress": "192.168.1.0",
+      "broadcastAddress": "192.168.1.255",
+      "firstUsable": "192.168.1.1",
+      "lastUsable": "192.168.1.254",
+      "totalAddresses": 256,
+      "usableHostCount": 254,
+      "scope": "Private",
+      "legacyClass": "C"
+    }
+  },
+  {
+    "id": "ip-details-v6",
+    "label": "IP Address: IPv6 global unicast",
+    "view": "ip-details",
+    "payload": {
+      "kind": "ip_details",
+      "version": 1,
+      "input": "2001:db8::1",
+      "inputType": "ipv6",
+      "ipVersion": 6,
+      "expanded": "2001:0db8:0000:0000:0000:0000:0000:0001",
+      "compressed": "2001:db8::1",
+      "scope": "Global Unicast"
+    }
+  },
+  {
+    "id": "mac-address-unicast",
+    "label": "MAC Address: unicast universal",
+    "view": "mac-address",
+    "payload": {
+      "kind": "mac_address",
+      "version": 1,
+      "input": "00:1A:2B:3C:4D:5E",
+      "octets": [
+        0,
+        26,
+        43,
+        60,
+        77,
+        94
+      ],
+      "colonLower": "00:1a:2b:3c:4d:5e",
+      "colonUpper": "00:1A:2B:3C:4D:5E",
+      "hyphen": "00-1A-2B-3C-4D-5E",
+      "ciscoDot": "001A.2B3C.4D5E",
+      "bare": "001a2b3c4d5e",
+      "oui": "00:1A:2B",
+      "nic": "3C:4D:5E",
+      "cast": "Unicast (individual)",
+      "administration": "Universal (OUI/vendor-assigned)",
+      "special": null
+    }
+  },
+  {
+    "id": "geo-coordinates-sf",
+    "label": "Coordinates: San Francisco decimal",
+    "view": "geo-coordinates",
+    "payload": {
+      "kind": "geo_coordinates",
+      "version": 1,
+      "input": "37.7749, -122.4194",
+      "lat": 37.7749,
+      "lng": -122.4194,
+      "decimal": "37.7749, -122.4194",
+      "latDms": "37\u00b046'29.6\"N",
+      "lngDms": "122\u00b025'9.8\"W",
+      "hemisphere": "N / W",
+      "osmUrl": "https://www.openstreetmap.org/?mlat=37.7749&mlon=-122.4194#map=12/37.7749/-122.4194",
+      "googleUrl": "https://maps.google.com/?q=37.7749,-122.4194"
+    }
+  },
+  {
+    "id": "uuid-details-v4",
+    "label": "UUID: random v4",
+    "view": "uuid-details",
+    "payload": {
+      "kind": "uuid_details",
+      "version": 1,
+      "input": "550e8400-e29b-41d4-a716-446655440000",
+      "canonical": "550e8400-e29b-41d4-a716-446655440000",
+      "urn": "urn:uuid:550e8400-e29b-41d4-a716-446655440000",
+      "uuidVersion": 4,
+      "versionLabel": "Random (v4)",
+      "special": null,
+      "variant": "RFC 4122/9562",
+      "timestamp": null,
+      "node": null
+    }
+  },
+  {
+    "id": "gradient-swatch-linear",
+    "label": "Gradient: Blue\u2192Purple",
+    "view": "gradient-swatch",
+    "payload": {
+      "kind": "gradient_swatch",
+      "version": 1,
+      "gradient": "linear-gradient(to right, #3b82f6, #8b5cf6)",
+      "gradientType": "linear",
+      "repeating": false,
+      "stops": [
+        "#3b82f6",
+        "#8b5cf6"
+      ],
+      "angleOrShape": "to right"
+    }
+  },
+  {
+    "id": "markdown-renderer-sample",
+    "label": "Markdown: Combined Example",
+    "view": "markdown-renderer",
+    "payload": {
+      "kind": "markdown_preview",
+      "version": 1,
+      "html": "<h1>Markdown Preview</h1>\n<p>A sample paragraph with <strong>bold</strong> and <em>italic</em> text, plus <code>inline code</code>.</p>\n<ul><li>Unordered list item A</li><li>Unordered list item B</li></ul>\n<blockquote><p>A blockquote example</p></blockquote>\n<pre><code class=\"language-ts\">const x: number = 42;</code></pre>\n<p><a href=\"https://example.com\">External link example</a></p>",
+      "sourceChars": 243,
+      "lineCount": 14,
+      "headingCount": 1
+    }
+  },
+  {
+    "id": "cron-weekdays-morning",
+    "label": "Weekdays at 9:30",
+    "view": "cron-renderer",
+    "payload": {
+      "kind": "cron_preview",
+      "version": 1,
+      "expression": "30 9 * * 1-5",
+      "fields": [
+        {
+          "name": "Minute",
+          "raw": "30",
+          "description": "minute 30"
+        },
+        {
+          "name": "Hour",
+          "raw": "9",
+          "description": "hour 9"
+        },
+        {
+          "name": "Day",
+          "raw": "*",
+          "description": "every day"
+        },
+        {
+          "name": "Month",
+          "raw": "*",
+          "description": "every month"
+        },
+        {
+          "name": "Weekday",
+          "raw": "1-5",
+          "description": "Mon through Fri"
+        }
+      ],
+      "summary": "Mon through Fri, hour 9 minute 30"
+    }
+  }
+]
