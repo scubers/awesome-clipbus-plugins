@@ -1,6 +1,6 @@
 # Preview
 
-Uses SDK 2.x, plugin protocol V2 and manifest schema v5.
+Uses SDK 3.1, plugin protocol V2 and manifest schema 6.
 
 Clipbus plugin that detects color values and Markdown text on the clipboard, rendering a rich color swatch with WCAG contrast analysis or a sanitised HTML preview card.
 
