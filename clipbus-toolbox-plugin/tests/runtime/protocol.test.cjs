@@ -24,6 +24,7 @@ const samples = [
   ['markdown-detector', '# Heading\n\n**Bold** with `inline code`', 'markdown', 'markdown_preview'],
   ['gradient-detector', 'linear-gradient(to right, red, blue)', 'gradient', 'gradient_swatch'],
   ['cron-detector', '30 9 * * 1-5', 'schedule', 'cron_preview'],
+  ['rich-text-detector', 'Formatted text', 'markdown', 'rich_text_preview'],
 ];
 
 test('every delivered detector writes declared payloads and revokes disabled indexes on recopy', async t => {
@@ -33,7 +34,9 @@ test('every delivered detector writes declared payloads and revokes disabled ind
   for (const [id, text, suffix, kind] of samples) {
     const runs = [];
     for (const trigger of ['copy', 'recopy', 'edit', 'manual']) {
-      const host = fakeHost(launch);
+      const host = fakeHost(launch, id === 'rich-text-detector' ? {
+        'item.getRichText': { richText: { html: { document: '<p><strong>Formatted text</strong></p>' } } },
+      } : {});
       const reference = { type: `plugin.awesome.toolbox.${suffix}`, key: 'primary', updatedAt: 1, own: true };
       await registry.detectors[id]({ item: itemSnapshot('text', { attachments: trigger === 'recopy' ? [reference] : [] }), content: textContent(text), trigger }, host.ctx);
       const [attachment] = host.paramsOf('item.replaceAttachments');
@@ -69,11 +72,15 @@ test('combined detection stays within per-plugin item budgets', async t => {
 
 test('all detectors ignore images and unrelated text', async t => {
   const { registry, launch } = await setupPlugin(t);
-  for (const detector of Object.values(registry.detectors)) {
+  for (const [id, detector] of Object.entries(registry.detectors)) {
     for (const content of [textContent('ordinary unrelated prose'), imageContent]) {
       const host = fakeHost(launch);
       await detector({ item: itemSnapshot(content.kind), content, trigger: 'edit' }, host.ctx);
-      assert.deepEqual(host.calls, []);
+      if (id === 'rich-text-detector' && content.kind === 'text') {
+        assert.deepEqual(host.paramsOf('item.replaceAttachments'), [{ type: 'plugin.awesome.toolbox.markdown', entries: [] }]);
+      } else {
+        assert.deepEqual(host.calls, []);
+      }
     }
   }
 });

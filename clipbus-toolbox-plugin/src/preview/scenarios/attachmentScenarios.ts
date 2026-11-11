@@ -14,6 +14,8 @@ export const attachmentScenarios: PreviewScenario[] = samples.map(sample => {
       createdAt: 1, lastCopiedAt: 1, attachments: [reference],
     },
     attachment: { ...reference, payload: sample.payload, ...(sample.card ? { card: sample.card } : {}) },
+    ...(sample.content ? { content: sample.content as PreviewScenario["content"] } : {}),
+    ...(sample.richText ? { richText: sample.richText as PreviewScenario["richText"] } : {}),
     renderer: { title: declared.title, tint: declared.tint, buttons: declared.buttons },
     height: declared.height,
   };

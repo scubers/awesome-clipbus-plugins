@@ -1,4 +1,4 @@
-import { forwardConsole, reportInputState, autoFit } from "@clipbus/plugin-sdk/dom";
+import { forwardConsole, reportInputState } from "@clipbus/plugin-sdk/dom";
 forwardConsole();
 reportInputState();
 import { createApp } from "vue";
@@ -6,5 +6,4 @@ import App from "./app.vue";
 import "../../shared/base.css";
 const app = createApp(App);
 app.mount("#app");
-const stopAutoFit = autoFit({ min: 120, max: 480, target: document.querySelector<HTMLElement>(".shell") ?? undefined });
-if (import.meta.hot) import.meta.hot.dispose(() => { stopAutoFit(); app.unmount(); });
+if (import.meta.hot) import.meta.hot.dispose(() => app.unmount());

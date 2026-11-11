@@ -1,23 +1,58 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { autoFit } from "@clipbus/plugin-sdk/dom";
+import { ctx } from "@clipbus/plugin-sdk/view";
 import { useCard } from "../../shared/composables/useCard";
-import { attachment, decodeMarkdownPayload } from "./payload";
+import { attachment, decodeFormattedTextPayload } from "./payload";
+import { htmlFragment, sanitizedFragment } from "../rich-text/html";
 
 const card = useCard(attachment);
-const payload = computed(() => decodeMarkdownPayload(card.attachment.value.payload));
+const payload = computed(() => decodeFormattedTextPayload(card.attachment.value.payload));
+const state = ref<"loading" | "ready" | "rtf" | "missing" | "error">(
+  payload.value?.kind === "rich_text_preview" ? "loading" : "ready",
+);
+const bodyEl = ref<HTMLElement | null>(null);
 const rootEl = ref<HTMLElement | null>(null);
 let stopAutoFit: (() => void) | null = null;
-onMounted(() => {
-  stopAutoFit = autoFit({ min: 120, max: 480, target: rootEl.value ?? undefined });
+
+function openLinks(event: MouseEvent): void {
+  const link = (event.target as HTMLElement).closest<HTMLAnchorElement>("a[href]");
+  if (!link) return;
+  event.preventDefault();
+  ctx.system.openUrl({ url: link.href }).catch((error: unknown) => ctx.log.warn("open link failed", error));
+}
+
+onMounted(async () => {
+  stopAutoFit = autoFit({ min: 120, max: 520, target: rootEl.value ?? undefined });
+  if (payload.value?.kind !== "rich_text_preview") return;
+  bodyEl.value?.addEventListener("click", openLinks);
+  if (payload.value.format !== "html") {
+    state.value = "rtf";
+    return;
+  }
+  try {
+    const { richText } = await ctx.item.getRichText();
+    if (!richText?.html) {
+      state.value = "missing";
+      return;
+    }
+    bodyEl.value?.replaceChildren(sanitizedFragment(htmlFragment(richText.html), document));
+    state.value = "ready";
+  } catch (error) {
+    ctx.log.warn("rich text loading failed", error);
+    state.value = "error";
+  }
 });
-onUnmounted(() => stopAutoFit?.());
+onUnmounted(() => {
+  stopAutoFit?.();
+  bodyEl.value?.removeEventListener("click", openLinks);
+});
 </script>
 
 <template>
   <div class="viewport">
     <main ref="rootEl" class="shell">
-      <section v-if="payload" class="content">
+      <section v-if="payload?.kind === 'markdown_preview'" class="content">
         <div class="meta-row">
           <span class="meta-item">{{ payload.sourceChars }} chars</span>
           <span class="meta-sep">·</span>
@@ -27,7 +62,14 @@ onUnmounted(() => stopAutoFit?.());
         </div>
         <div class="md-body" v-html="payload.html"></div>
       </section>
-      <div v-else class="empty">Awaiting Markdown content</div>
+      <template v-else-if="payload?.kind === 'rich_text_preview'">
+        <div v-show="state === 'ready'" ref="bodyEl" class="rich-body"></div>
+        <p v-if="state === 'loading'" class="empty">Loading rich text…</p>
+        <p v-else-if="state === 'rtf'" class="empty">This item only has RTF. An HTML preview is not available.</p>
+        <p v-else-if="state === 'missing'" class="empty">The original rich text is no longer available.</p>
+        <p v-else-if="state === 'error'" class="empty">Rich text could not be loaded.</p>
+      </template>
+      <div v-else class="empty">Awaiting formatted text</div>
     </main>
   </div>
 </template>
@@ -160,6 +202,22 @@ onUnmounted(() => stopAutoFit?.());
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+.rich-body { overflow-wrap: break-word; line-height: 1.6; }
+.rich-body :deep(p), .rich-body :deep(blockquote), .rich-body :deep(pre),
+.rich-body :deep(ul), .rich-body :deep(ol), .rich-body :deep(table) { margin: 0 0 10px; }
+.rich-body :deep(h1), .rich-body :deep(h2), .rich-body :deep(h3),
+.rich-body :deep(h4), .rich-body :deep(h5), .rich-body :deep(h6) { margin: 0 0 8px; line-height: 1.35; }
+.rich-body :deep(h1) { font-size: 20px; }
+.rich-body :deep(h2) { font-size: 17px; }
+.rich-body :deep(h3) { font-size: 15px; }
+.rich-body :deep(ul), .rich-body :deep(ol) { padding-left: 24px; }
+.rich-body :deep(blockquote) { padding-left: 10px; border-left: 3px solid var(--clipbus-border, #cbd5e1); }
+.rich-body :deep(pre) { padding: 8px; overflow-x: auto; white-space: pre-wrap; background: var(--clipbus-surface-elevated, #f1f5f9); }
+.rich-body :deep(code) { font-family: "SF Mono", "Menlo", monospace; font-size: 12px; }
+.rich-body :deep(a) { color: var(--clipbus-accent, #2563eb); text-underline-offset: 2px; }
+.rich-body :deep(table) { border-collapse: collapse; max-width: 100%; }
+.rich-body :deep(th), .rich-body :deep(td) { border: 1px solid var(--clipbus-border, #cbd5e1); padding: 4px 7px; }
 
 .empty {
   padding: 20px;

@@ -13,6 +13,7 @@ import { createGeoDetector } from "./features/geo-coordinates/detector.ts";
 import { createMacDetector } from "./features/mac-address/detector.ts";
 import { createUuidDetector } from "./features/uuid-details/detector.ts";
 import { createMarkdownDetector } from "./features/markdown-renderer/detector.ts";
+import { createRichTextDetector } from "./features/rich-text/detector.ts";
 import { createGradientDetector } from "./features/gradient-swatch/detector.ts";
 import { createCronDetector } from "./features/cron-renderer/detector.ts";
 import { escapeActions } from "./features/escape-tool/action.ts";
@@ -42,6 +43,7 @@ export default definePlugin({
     "mac-detector": createMacDetector(),
     "uuid-detector": createUuidDetector(),
     "markdown-detector": createMarkdownDetector(),
+    "rich-text-detector": createRichTextDetector(),
     "gradient-detector": createGradientDetector(),
     "cron-detector": createCronDetector(),
   },

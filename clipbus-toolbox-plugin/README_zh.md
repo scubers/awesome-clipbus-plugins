@@ -2,13 +2,13 @@
 
 [English](./README.md) | 中文
 
-开发者剪贴板工具箱：**16 个 detector、16 个 renderer、24 个 Action**。使用 SDK 3.2、插件协议 V2、manifest schema 6；Vibe 继续独立安装。
+开发者剪贴板工具箱：**17 个 detector、16 个 renderer、24 个 Action**。使用 SDK 3.3、插件协议 V2、manifest schema 6；Vibe 继续独立安装。
 
 插件 ID 为 **`plugin.awesome.toolbox`**，附件类型和外部设置键使用相同前缀。
 
 ## 自动卡片
 
-每项 detector 与 renderer 一一配套，输入均为文本。
+每项能力的输入均为文本；Markdown 与富文本 detector 共用 Formatted Text 卡片。
 
 | Detector | Renderer | 功能 |
 |---|---|---|
@@ -26,10 +26,13 @@
 | `mac-detector` | `mac-address` | 带分隔符的 MAC、格式转换、OUI/NIC、地址标志 |
 | `uuid-detector` | `uuid-details` | UUID 规范化、版本/变体、v1/v7 内嵌时间戳 |
 | `markdown-detector` | `markdown-renderer` | 安全 Markdown；完整围栏、多项列表或两种语法信号触发，让位于 JSON/XML/CSV/Cron |
+| `rich-text-detector` | `markdown-renderer` | 按需读取并安全清理已保存的 HTML 富文本，保留常见格式、结构与安全链接 |
 | `gradient-detector` | `gradient-swatch` | 通过 CSS 语法校验且包含可识别色标的渐变函数 |
 | `cron-detector` | `cron-renderer` | 五字段 Cron 解释、未来五次本地触发时间；不执行调度 |
 
-卡片外框由宿主绘制，页面使用宿主主题和内容尺寸适配。预览工作台保留 20 个真实组件样例。
+卡片外框由宿主绘制，页面使用宿主主题和内容尺寸适配。预览工作台保留 22 个真实组件样例。
+
+**Formatted Text** 卡片同时支持 Markdown 与富文本。富文本附件只保存很小的格式标记，不重复存储 HTML 或 Base64 RTF；打开卡片时才通过 `item.getRichText` 读取原始 HTML，按宿主的 UTF-8 字节选区截取，移除脚本、事件属性与远程图片，并通过宿主打开安全的 HTTP(S)/mailto 链接。RTF-only 条目显示说明，不引入 RTF 渲染器。此能力不写搜索索引、不需要网络权限，也不增加附件类型。
 
 ## Action
 
@@ -53,7 +56,7 @@
 - 纯小数坐标对需显式开启；默认要求度数或 N/S/E/W 方位标记。
 - Base64/XML 仅截断视觉预览，复制使用完整结果。超过 SDK 附件预算时不出卡，不产生不完整的复制结果。
 
-**全部 16 个 detector 默认不写搜索扩展。** 卡片展示不依赖搜索索引。XML、CSV、时间戳、进制、时长、实体、URL/Query、IP、坐标、MAC、UUID、Markdown、渐变、Cron 均不追加索引。
+**全部 17 个 detector 默认不写搜索扩展。** 卡片展示不依赖搜索索引。XML、CSV、时间戳、进制、时长、实体、URL/Query、IP、坐标、MAC、UUID、Markdown、富文本、渐变、Cron 均不追加索引。
 
 仅 Base64/JWT 可显式开启解码内容索引，分别使用 `base64` / `jwt` scope。每条最多 4 KiB UTF-8，不切断 Unicode 码点。搜索扩展与附件都只保存在本机，不随历史云同步。manifest 声明这两个 scope 只是允许写入，并不自动建立索引。关闭选项后重复复制会显式以空组替换对应 detector 的旧索引；完整重检也会清理旧的检测产出。
 
@@ -84,7 +87,7 @@ ID 改名也会改变附件/搜索扩展的 owner。新 ID 重新检测**不会�
 | Formatter | XML/CSV 卡片；YAML 改为 `json-to-yaml` Action |
 | Converter | 时间戳、进制、时长卡片及命名转换 Action |
 | Extractor | URL 参数、邮箱/IP 提取与地址检查器 |
-| Preview | Markdown 与渐变卡片 |
+| Preview | Markdown、富文本与渐变卡片 |
 | Text Tools | 原九个 Action 全部保留 |
 | Cron | Cron 卡片 |
 

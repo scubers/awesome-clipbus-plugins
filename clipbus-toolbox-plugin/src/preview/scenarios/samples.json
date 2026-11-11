@@ -585,5 +585,37 @@
       ],
       "summary": "Mon through Fri, hour 9 minute 30"
     }
+  },
+  {
+    "id": "rich-text-renderer-html",
+    "label": "Rich Text: Formatted HTML",
+    "view": "markdown-renderer",
+    "payload": {
+      "kind": "rich_text_preview",
+      "version": 1,
+      "format": "html"
+    },
+    "content": {
+      "kind": "text",
+      "text": "Rich text preview\nBold, italic, and colored text."
+    },
+    "richText": {
+      "html": {
+        "document": "<!doctype html><html><body><h2>Rich text preview</h2><p><strong>Bold</strong>, <em>italic</em>, and <span style=\"color: #db2777\">colored text</span>.</p><ul><li>Preserved structure</li><li>No duplicated HTML in the attachment</li></ul><p><a href=\"https://example.com\">A safe link</a></p><script>alert('not rendered')</script><img src=\"https://example.com/tracker.png\"></body></html>"
+      }
+    }
+  },
+  {
+    "id": "rich-text-renderer-rtf",
+    "label": "Rich Text: RTF-only fallback",
+    "view": "markdown-renderer",
+    "payload": {
+      "kind": "rich_text_preview",
+      "version": 1,
+      "format": "rtf"
+    },
+    "richText": {
+      "rtfBase64": "e30="
+    }
   }
 ]

@@ -2,7 +2,7 @@
 
 English | [中文](./README_zh.md)
 
-One Clipbus plugin for developer clipboard inspectors, previews and composable text transformations. It contributes **16 detectors, 16 renderers and 24 Actions**, using SDK 3.2 and protocol V2 (manifest schema 6).
+One Clipbus plugin for developer clipboard inspectors, previews and composable text transformations. It contributes **17 detectors, 16 renderers and 24 Actions**, using SDK 3.3 and protocol V2 (manifest schema 6).
 
 Plugin ID: **`plugin.awesome.toolbox`**. Attachment types and external settings use this same prefix.
 
@@ -26,10 +26,13 @@ Each row lists paired detector/renderer IDs. All detectors accept text.
 | `mac-detector` | `mac-address` | Separated MAC address forms, OUI/NIC split and address flags |
 | `uuid-detector` | `uuid-details` | UUID normalization, version/variant and embedded v1/v7 timestamps |
 | `markdown-detector` | `markdown-renderer` | Safe Markdown; paired fences, multi-item lists or two syntax signals; JSON/XML/CSV/Cron take priority |
+| `rich-text-detector` | `markdown-renderer` | Saved HTML rich text, loaded on demand and sanitized; preserves common formatting, structure and safe links |
 | `gradient-detector` | `gradient-swatch` | CSS-validated gradient functions with recognizable color stops |
 | `cron-detector` | `cron-renderer` | Five-field cron explanation and next five local run times; does not schedule jobs |
 
-The Host supplies the outer card chrome. Pages use the Host theme and scoped content sizing. Previews include 20 scenarios mounting the actual components.
+The Host supplies the outer card chrome. Pages use the Host theme and scoped content sizing. Previews include 22 scenarios mounting the actual components.
+
+The shared **Formatted Text** card handles Markdown and rich text. Rich-text attachments contain only a small format marker, never another copy of the HTML or Base64 RTF. The card fetches the original HTML with `item.getRichText` when displayed, honors the Host's UTF-8 fragment offsets, removes scripts/event handlers/remote images, and opens safe HTTP(S)/mailto links through the Host. RTF-only items show an explanatory fallback because this card does not include an RTF renderer. No search index, network permission or additional attachment type is used.
 
 ## Actions
 
@@ -53,7 +56,7 @@ Text sorting uses natural, case-insensitive ordering. Character operations prese
 - Plain decimal coordinate pairs are opt-in. Degree signs or hemisphere letters identify coordinates by default.
 - Base64 and XML previews are shortened visually, but their copy buttons use the complete result. Results over the SDK attachment budget are omitted rather than copied partially.
 
-**Search extensions are off by default for all 16 detectors.** Cards do not require a search index. XML, CSV, timestamps, radix, durations, entities, URLs/queries, IP, coordinates, MAC, UUID, Markdown, gradients and Cron never add search entries.
+**Search extensions are off by default for all 17 detectors.** Cards do not require a search index. XML, CSV, timestamps, radix, durations, entities, URLs/queries, IP, coordinates, MAC, UUID, Markdown, rich text, gradients and Cron never add search entries.
 
 Only Base64 and JWT have explicit opt-ins to index decoded content, using semantic scopes `base64` / `jwt`. Each optional entry contains at most 4 KiB of UTF-8 text without splitting code points. Search extensions and attachments remain on this device and do not follow history cloud sync. The manifest's two declared scopes are only a write allowlist and do not create indexes themselves. Disabling an opt-in and recopying explicitly replaces that detector's previous scope with an empty group; full re-detection also clears old detector output.
 
@@ -84,7 +87,7 @@ Install this repository with subdirectory **`clipbus-toolbox-plugin`**, or add t
 | Formatter | XML/CSV cards in Toolbox; YAML becomes `json-to-yaml` |
 | Converter | Timestamp/radix/duration cards and naming Actions in Toolbox |
 | Extractor | URL parameters, email/IP extraction and address inspectors in Toolbox |
-| Preview | Markdown and gradient cards in Toolbox |
+| Preview | Markdown, rich-text and gradient cards in Toolbox |
 | Text Tools | All nine Actions in Toolbox |
 | Cron | Cron card in Toolbox |
 

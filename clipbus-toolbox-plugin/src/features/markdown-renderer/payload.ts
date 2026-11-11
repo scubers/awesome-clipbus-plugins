@@ -2,7 +2,7 @@
 // NO `import … from "node:*"` here: this file is imported by app.vue (browser) too.
 // Pure string processing only — no Node-specific globals needed.
 
-import { defineAttachment } from "@clipbus/plugin-sdk";
+import { defineAttachment, type PluginRichTextPayload } from "@clipbus/plugin-sdk";
 import { createXmlPayload } from "../xml-renderer/payload.ts";
 import { createCsvPayload } from "../csv-table/payload.ts";
 import { createCronPayload } from "../cron-renderer/payload.ts";
@@ -18,7 +18,28 @@ export interface MarkdownPayload {
   headingCount: number;
 }
 
-export const attachment = defineAttachment<MarkdownPayload>(ATTACHMENT_TYPE);
+export interface RichTextPayload {
+  kind: "rich_text_preview";
+  version: 1;
+  format: "html" | "rtf";
+}
+
+export type FormattedTextPayload = MarkdownPayload | RichTextPayload;
+
+export const attachment = defineAttachment<FormattedTextPayload>(ATTACHMENT_TYPE);
+
+/** Only a marker is persisted; the original markup stays in the Host's item. */
+export function createRichTextPayload(richText: PluginRichTextPayload | null | undefined): RichTextPayload | null {
+  if (!richText) return null;
+  return { kind: "rich_text_preview", version: 1, format: richText.html ? "html" : "rtf" };
+}
+
+export function decodeFormattedTextPayload(value: unknown): FormattedTextPayload | null {
+  const payload = value as Partial<FormattedTextPayload> | null;
+  if (payload?.kind === "rich_text_preview" && payload.version === 1 &&
+    (payload.format === "html" || payload.format === "rtf")) return payload as RichTextPayload;
+  return decodeMarkdownPayload(value);
+}
 
 // ── Signal detection (for detector heuristic) ────────────────────────────────
 
