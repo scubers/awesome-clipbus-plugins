@@ -63,7 +63,7 @@ test('detector fires on colon format "00:1A:2B:3C:4D:5E"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['mac-detector'];
   await det(makeInput('00:1A:2B:3C:4D:5E'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   assert.equal(attachments[0].type, 'plugin.awesome.toolbox.mac');
 });
@@ -73,7 +73,7 @@ test('detector fires on hyphen format "00-1a-2b-3c-4d-5e"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['mac-detector'];
   await det(makeInput('00-1a-2b-3c-4d-5e'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   assert.equal(attachments[0].type, 'plugin.awesome.toolbox.mac');
 });
@@ -83,7 +83,7 @@ test('detector fires on Cisco dot format "001A.2B3C.4D5E"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['mac-detector'];
   await det(makeInput('001A.2B3C.4D5E'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   assert.equal(attachments[0].type, 'plugin.awesome.toolbox.mac');
 });
@@ -93,7 +93,7 @@ test('detector fires on lowercase colon "ff:ee:dd:cc:bb:aa"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['mac-detector'];
   await det(makeInput('ff:ee:dd:cc:bb:aa'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
 });
 
@@ -106,7 +106,7 @@ test('detector rejects bare 12-hex "001A2B3C4D5E"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['mac-detector'];
   await det(makeInput('001A2B3C4D5E'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -115,7 +115,7 @@ test('detector rejects 5-group colon "00:1A:2B:3C:4D"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['mac-detector'];
   await det(makeInput('00:1A:2B:3C:4D'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -124,7 +124,7 @@ test('detector rejects non-hex character "00:1A:2B:3C:4D:5G"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['mac-detector'];
   await det(makeInput('00:1A:2B:3C:4D:5G'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -133,7 +133,7 @@ test('detector rejects plain text "hello"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['mac-detector'];
   await det(makeInput('hello'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -142,7 +142,7 @@ test('detector rejects prose containing a MAC "mac 00:1a:2b:3c:4d:5e"', async t 
   const host = fakeHost(launch);
   const det = registry.detectors['mac-detector'];
   await det(makeInput('mac 00:1a:2b:3c:4d:5e'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -151,7 +151,7 @@ test('detector rejects mixed separators "00:1A-2B:3C:4D:5E"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['mac-detector'];
   await det(makeInput('00:1A-2B:3C:4D:5E'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -160,7 +160,7 @@ test('detector rejects empty string', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['mac-detector'];
   await det(makeInput(''), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -173,7 +173,7 @@ test('detector rejects image content kind', async t => {
     content: imageContent,
     trigger: 'copy',
   }, host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -287,6 +287,6 @@ test('built MAC detector writes only its attachment', async t => {
   const { registry, launch } = await setupPlugin(t);
   const host = fakeHost(launch);
   await registry.detectors['mac-detector'](makeInput('00:1A:2B:3C:4D:5E'), host.ctx);
-  assert.equal(host.paramsOf('item.setAttachments').length, 1);
-  assert.deepEqual(host.paramsOf('item.setSearchExtension'), []);
+  assert.equal(host.paramsOf('item.replaceAttachments').length, 1);
+  assert.deepEqual(host.paramsOf('item.replaceSearchExtension'), []);
 });

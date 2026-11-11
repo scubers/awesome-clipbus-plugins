@@ -26,7 +26,7 @@ const samples = [
   ['cron-detector', '30 9 * * 1-5', 'schedule', 'cron_preview'],
 ];
 
-test('every delivered detector writes declared payloads without indexes on copy, recopy, edit and manual detection', async t => {
+test('every delivered detector writes declared payloads and revokes disabled indexes on recopy', async t => {
   const { registry, launch } = await setupPlugin(t);
   assert.deepEqual(Object.keys(registry.detectors).sort(), manifest.detectors.map(d => d.id).sort());
   assert.deepEqual(Object.keys(registry.actions).sort(), manifest.actions.map(a => a.id).sort());
@@ -36,14 +36,19 @@ test('every delivered detector writes declared payloads without indexes on copy,
       const host = fakeHost(launch);
       const reference = { type: `plugin.awesome.toolbox.${suffix}`, key: 'primary', updatedAt: 1, own: true };
       await registry.detectors[id]({ item: itemSnapshot('text', { attachments: trigger === 'recopy' ? [reference] : [] }), content: textContent(text), trigger }, host.ctx);
-      const [attachment] = host.paramsOf('item.setAttachments');
+      const [attachment] = host.paramsOf('item.replaceAttachments');
       assert.equal(attachment.type, reference.type, id);
       assert.ok(manifest.writes.attachmentTypes.includes(attachment.type));
       assert.equal(attachment.entries.length, 1);
       assert.equal(attachment.entries[0].payload.kind, kind, id);
       assert.ok(Buffer.byteLength(JSON.stringify(attachment.entries[0].payload)) <= PLUGIN_WRITE_LIMITS.maximumPayloadBytes);
-      assert.deepEqual(host.paramsOf('item.setSearchExtension'), [], id);
-      runs.push(host.calls);
+      const searches = host.paramsOf('item.replaceSearchExtension');
+      if (trigger === 'recopy' && ['base64-detector', 'jwt-detector'].includes(id)) {
+        assert.deepEqual(searches, [{ scope: suffix, entries: [] }], id);
+      } else {
+        assert.deepEqual(searches, [], id);
+      }
+      runs.push(host.paramsOf('item.replaceAttachments'));
     }
     for (const run of runs.slice(1)) assert.deepEqual(run, runs[0], id);
   }
@@ -57,8 +62,8 @@ test('combined detection stays within per-plugin item budgets', async t => {
     for (const detector of Object.values(registry.detectors)) {
       await detector({ item: itemSnapshot('text'), content: textContent(text), trigger: 'manual' }, host.ctx);
     }
-    assert.ok(host.paramsOf('item.setAttachments').flatMap(p => p.entries).length <= PLUGIN_WRITE_LIMITS.maximumAttachmentsPerItem, text);
-    assert.ok(host.paramsOf('item.setSearchExtension').flatMap(p => p.entries).length <= PLUGIN_WRITE_LIMITS.maximumSearchEntriesPerItem, text);
+    assert.ok(host.paramsOf('item.replaceAttachments').flatMap(p => p.entries).length <= PLUGIN_WRITE_LIMITS.maximumAttachmentsPerItem, text);
+    assert.ok(host.paramsOf('item.replaceSearchExtension').flatMap(p => p.entries).length <= PLUGIN_WRITE_LIMITS.maximumSearchEntriesPerItem, text);
   }
 });
 
@@ -84,8 +89,11 @@ test('decimal radix is opt-in and timestamps always take priority', async t => {
     for (const trigger of ['copy', 'recopy']) {
       const host = fakeHost(launch, { 'settings.get': { values: { decimalRadix: enabled } } });
       await registry.detectors['radix-detector']({ item: itemSnapshot('text'), content: textContent(text), trigger }, host.ctx);
-      assert.equal(host.paramsOf('item.setAttachments').length, expected ? 1 : 0, text);
-      assert.deepEqual(host.paramsOf('item.setSearchExtension'), [], text);
+      const clearsDisabledDecimal = trigger === 'recopy' && !enabled && ['255', '-255'].includes(text);
+      const attachments = host.paramsOf('item.replaceAttachments');
+      assert.equal(attachments.length, expected || clearsDisabledDecimal ? 1 : 0, text);
+      if (clearsDisabledDecimal) assert.deepEqual(attachments[0].entries, []);
+      assert.deepEqual(host.paramsOf('item.replaceSearchExtension'), [], text);
     }
   }
 });
@@ -102,7 +110,7 @@ test('IP details and batch extraction keep distinct input boundaries', async t =
     for (const [id, expected] of [['ip-detector', details], ['entities-detector', extraction]]) {
       const host = fakeHost(launch);
       await registry.detectors[id]({ item: itemSnapshot('text'), content: textContent(text), trigger: 'copy' }, host.ctx);
-      assert.equal(host.paramsOf('item.setAttachments').length, expected ? 1 : 0, `${id}: ${text}`);
+      assert.equal(host.paramsOf('item.replaceAttachments').length, expected ? 1 : 0, `${id}: ${text}`);
     }
   }
 });

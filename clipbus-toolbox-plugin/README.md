@@ -55,7 +55,7 @@ Text sorting uses natural, case-insensitive ordering. Character operations prese
 
 **Search extensions are off by default for all 16 detectors.** Cards do not require a search index. XML, CSV, timestamps, radix, durations, entities, URLs/queries, IP, coordinates, MAC, UUID, Markdown, gradients and Cron never add search entries.
 
-Only Base64 and JWT have explicit opt-ins to index decoded content, using semantic scopes `base64` / `jwt`. Each optional entry contains at most 4 KiB of UTF-8 text without splitting code points. Search extensions participate in Host cloud sync when enabled; attachments remain local. The manifest's two declared scopes are only a write allowlist and do not create indexes themselves. Disabling an opt-in and re-detecting/recopying clears that detector's previous index under the current plugin ID.
+Only Base64 and JWT have explicit opt-ins to index decoded content, using semantic scopes `base64` / `jwt`. Each optional entry contains at most 4 KiB of UTF-8 text without splitting code points. Search extensions and attachments remain on this device and do not follow history cloud sync. The manifest's two declared scopes are only a write allowlist and do not create indexes themselves. Disabling an opt-in and recopying explicitly replaces that detector's previous scope with an empty group; full re-detection also clears old detector output.
 
 Merge only the options you want into the Host's external settings JSON, then reload Toolbox. All four default to false:
 

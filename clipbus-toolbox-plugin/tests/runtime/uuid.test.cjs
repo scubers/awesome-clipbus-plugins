@@ -63,7 +63,7 @@ test('detector fires on standard v4 UUID', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['uuid-detector'];
   await det(makeInput('550e8400-e29b-41d4-a716-446655440000'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   assert.equal(attachments[0].type, 'plugin.awesome.toolbox.uuid');
 });
@@ -74,7 +74,7 @@ test('detector fires on braced uppercase v1 UUID', async t => {
   const det = registry.detectors['uuid-detector'];
   // Braced + uppercase v1 UUID; should normalise to lowercase canonical
   await det(makeInput('{6BA7B810-9DAD-11D1-80B4-00C04FD430C8}'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   assert.equal(attachments[0].type, 'plugin.awesome.toolbox.uuid');
   const p = attachments[0].entries[0].payload;
@@ -86,7 +86,7 @@ test('detector fires on urn:uuid: prefixed UUID', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['uuid-detector'];
   await det(makeInput('urn:uuid:6ba7b810-9dad-11d1-80b4-00c04fd430c8'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   const p = attachments[0].entries[0].payload;
   assert.equal(p.canonical, '6ba7b810-9dad-11d1-80b4-00c04fd430c8');
@@ -97,7 +97,7 @@ test('detector fires on v7 UUID', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['uuid-detector'];
   await det(makeInput('01906a75-7d10-7ba8-8490-0000deadbeef'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   const p = attachments[0].entries[0].payload;
   assert.equal(p.uuidVersion, 7);
@@ -108,7 +108,7 @@ test('detector fires on Nil UUID', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['uuid-detector'];
   await det(makeInput('00000000-0000-0000-0000-000000000000'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   const p = attachments[0].entries[0].payload;
   assert.equal(p.special, 'Nil UUID');
@@ -119,7 +119,7 @@ test('detector fires on Max UUID', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['uuid-detector'];
   await det(makeInput('ffffffff-ffff-ffff-ffff-ffffffffffff'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   const p = attachments[0].entries[0].payload;
   assert.equal(p.special, 'Max UUID');
@@ -134,7 +134,7 @@ test('detector rejects plain text "hello"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['uuid-detector'];
   await det(makeInput('hello'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -143,7 +143,7 @@ test('detector rejects bare 32-hex without hyphens', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['uuid-detector'];
   await det(makeInput('550e8400e29b41d4a716446655440000'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -152,7 +152,7 @@ test('detector rejects short UUID (missing last group)', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['uuid-detector'];
   await det(makeInput('550e8400-e29b-41d4-a716'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -161,7 +161,7 @@ test('detector rejects prose containing a UUID', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['uuid-detector'];
   await det(makeInput('id is 550e8400-e29b-41d4-a716-446655440000 here'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -174,7 +174,7 @@ test('detector rejects image content kind', async t => {
     content: imageContent,
     trigger: 'copy',
   }, host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 

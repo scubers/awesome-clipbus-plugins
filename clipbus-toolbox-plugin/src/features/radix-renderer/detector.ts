@@ -9,9 +9,12 @@ export function createRadixDetector(): DetectorHandler {
     if (payload.inputBase === "dec") {
       if (createTimestampPayload(input)) return;
       const { values } = await ctx.settings.get<{ decimalRadix?: boolean }>();
-      if (values?.decimalRadix !== true) return;
+      if (values?.decimalRadix !== true) {
+        if (input.trigger === "recopy") await attachment.replace(ctx, []);
+        return;
+      }
     }
     if (Buffer.byteLength(JSON.stringify(payload)) > PLUGIN_WRITE_LIMITS.maximumPayloadBytes) return;
-    await attachment.set(ctx, [{ key: "primary", payload }]);
+    await attachment.replace(ctx, [{ key: "primary", payload }]);
   };
 }

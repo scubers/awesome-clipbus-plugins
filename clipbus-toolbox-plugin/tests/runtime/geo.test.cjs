@@ -72,9 +72,19 @@ test('decimal coordinate detection requires an explicit opt-in', async t => {
   const host = fakeHost(launch, { 'settings.get': { values: { decimalCoordinates: true } } });
   const det = registry.detectors['geo-detector'];
   await det(makeInput('37.7749, -122.4194'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   assert.equal(attachments[0].type, 'plugin.awesome.toolbox.geo');
+});
+
+test('disabled decimal coordinate detection clears its previous attachment on recopy', async t => {
+  const { registry, launch } = await setupPlugin(t);
+  const host = fakeHost(launch, { 'settings.get': { values: { decimalCoordinates: false } } });
+  const det = registry.detectors['geo-detector'];
+  await det({ ...makeInput('37.7749, -122.4194'), trigger: 'recopy' }, host.ctx);
+  assert.deepEqual(host.paramsOf('item.replaceAttachments'), [
+    { type: 'plugin.awesome.toolbox.geo', entries: [] },
+  ]);
 });
 
 test('detector fires on "40.7128° N, 74.0060° W"', async t => {
@@ -82,7 +92,7 @@ test('detector fires on "40.7128° N, 74.0060° W"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['geo-detector'];
   await det(makeInput('40.7128° N, 74.0060° W'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   assert.equal(attachments[0].type, 'plugin.awesome.toolbox.geo');
 });
@@ -96,7 +106,7 @@ test('detector rejects "hello"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['geo-detector'];
   await det(makeInput('hello'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -105,7 +115,7 @@ test('detector rejects bare integer pair "1, 2"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['geo-detector'];
   await det(makeInput('1, 2'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -114,7 +124,7 @@ test('detector rejects out-of-range "200, 300"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['geo-detector'];
   await det(makeInput('200, 300'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -123,7 +133,7 @@ test('detector rejects out-of-range "-91, 0"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['geo-detector'];
   await det(makeInput('-91, 0'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -132,7 +142,7 @@ test('detector rejects 3-number CSV "1.0,2.0,3.0"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['geo-detector'];
   await det(makeInput('1.0,2.0,3.0'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -141,7 +151,7 @@ test('detector rejects prose "meet at 37.7, -122.4 ok"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['geo-detector'];
   await det(makeInput('meet at 37.7, -122.4 ok'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 

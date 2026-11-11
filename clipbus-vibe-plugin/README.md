@@ -8,7 +8,7 @@ Plugin ID: **`plugin.awesome.vibe`**. This replaces `plugin.vibe`; re-install/re
 
 ### Fallback mechanism
 
-Vibe's detector checks the V2 attachment references in `input.item.attachments`. If a builtin detector or another plugin has already attached a result (`own: false`), Vibe yields without writing. Otherwise, it attaches an animation payload to non-empty text. Its own references (`own: true`) allow a full write on recopy, so repeating a copy keeps the animation available.
+Vibe's detector checks the V2 attachment references in `input.item.attachments`. If a builtin detector or another plugin has already attached a result (`own: false`), Vibe yields. On recopy, unwritten groups survive, so Vibe explicitly clears its own earlier fallback when a foreign result is present. Otherwise, it attaches an animation payload to non-empty text; its own references (`own: true`) allow a full replacement on recopy.
 
 The check uses the detector's item snapshot. Attachments added by another detector afterward are considered on the next detection; there is no runtime renderer visibility hook in protocol V2.
 
@@ -94,6 +94,6 @@ The registry (`src/features/vibe-fallback/animations/index.ts`) accepts any obje
 
 ## Notes
 
-- The four preview scenarios preserve the plain-text and short-word samples and demonstrate ordered and single-animation settings. Runtime tests cover foreign attachment references and own-only recopy; host detection ordering still requires a real Clipbus environment.
+- The four preview scenarios preserve the plain-text and short-word samples and demonstrate ordered and single-animation settings. Runtime tests cover foreign attachment references, own-only recopy and explicit fallback clearing; host detection ordering still requires a real Clipbus environment.
 - The card background is intentionally dark (deep-space radial gradient). This is a deliberate design choice for the animation, not a theming error.
 - The host stores attachments locally; Vibe declares its attachment type in `writes.attachmentTypes`.

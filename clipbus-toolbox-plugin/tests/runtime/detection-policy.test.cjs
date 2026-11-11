@@ -29,8 +29,13 @@ test('ambiguous or invalid text does not create specialist cards', async t => {
     for (const trigger of ['copy', 'recopy', 'edit', 'manual']) {
       const host = fakeHost(launch);
       await registry.detectors[id]({ item: itemSnapshot('text'), content: textContent(text), trigger }, host.ctx);
-      assert.deepEqual(host.paramsOf('item.setAttachments'), [], `${id}: ${text}`);
-      assert.deepEqual(host.paramsOf('item.setSearchExtension'), [], `${id}: ${text}`);
+      const attachments = host.paramsOf('item.replaceAttachments');
+      if (id === 'geo-detector' && trigger === 'recopy') {
+        assert.deepEqual(attachments, [{ type: 'plugin.awesome.toolbox.geo', entries: [] }], `${id}: ${text}`);
+      } else {
+        assert.deepEqual(attachments, [], `${id}: ${text}`);
+      }
+      assert.deepEqual(host.paramsOf('item.replaceSearchExtension'), [], `${id}: ${text}`);
     }
   }
 });
@@ -44,8 +49,8 @@ test('strong Markdown blocks and explicit coordinates keep their previews', asyn
   ]) {
     const host = fakeHost(launch);
     await registry.detectors[id]({ item: itemSnapshot('text'), content: textContent(text), trigger: 'copy' }, host.ctx);
-    assert.equal(host.paramsOf('item.setAttachments').length, 1, text);
-    assert.deepEqual(host.paramsOf('item.setSearchExtension'), []);
+    assert.equal(host.paramsOf('item.replaceAttachments').length, 1, text);
+    assert.deepEqual(host.paramsOf('item.replaceSearchExtension'), []);
   }
 });
 
@@ -54,7 +59,7 @@ test('CSV preserves multiline quoted cells, escaped quotes and trailing empty va
   const host = fakeHost(launch);
   const text = 'name,note,empty\r\nAlice,"line one\nline ""two""",\r\nBob,plain,';
   await registry.detectors['csv-detector']({ item: itemSnapshot('text'), content: textContent(text), trigger: 'copy' }, host.ctx);
-  const payload = host.paramsOf('item.setAttachments')[0].entries[0].payload;
+  const payload = host.paramsOf('item.replaceAttachments')[0].entries[0].payload;
   assert.deepEqual(payload.rows, [['Alice', 'line one\nline "two"', ''], ['Bob', 'plain', '']]);
 });
 
@@ -63,13 +68,13 @@ test('long Base64 and XML attachments retain the complete copy result', async t 
   const decoded = '你好👋 '.repeat(3000);
   const base64Host = fakeHost(launch);
   await registry.detectors['base64-detector']({ item: itemSnapshot('text'), content: textContent(Buffer.from(decoded).toString('base64')), trigger: 'copy' }, base64Host.ctx);
-  const [base64Write] = base64Host.paramsOf('item.setAttachments');
+  const [base64Write] = base64Host.paramsOf('item.replaceAttachments');
   assert.equal(base64Write.entries[0].payload.decoded, decoded);
   assert.equal(base64Write.entries[0].card, undefined);
   const text = 'long text '.repeat(4000);
   const xmlHost = fakeHost(launch);
   await registry.detectors['xml-detector']({ item: itemSnapshot('text'), content: textContent(`<root><value>${text}</value></root>`), trigger: 'copy' }, xmlHost.ctx);
-  const output = xmlHost.paramsOf('item.setAttachments')[0].entries[0].payload.formatted;
+  const output = xmlHost.paramsOf('item.replaceAttachments')[0].entries[0].payload.formatted;
   assert.ok(output.includes(text.trim()));
   assert.ok(output.endsWith('</root>'));
   assert.ok(!output.includes('(input too large, truncated)'));
@@ -86,14 +91,16 @@ test('decoded search is explicit, byte-bounded and revocable on recopy', async t
     for (const enabled of [false, true, 'true', undefined]) {
       const host = fakeHost(launch, { 'settings.get': { values: { [setting]: enabled } } });
       await registry.detectors[id]({ item: itemSnapshot('text'), content: textContent(text), trigger: 'recopy' }, host.ctx);
-      const searches = host.paramsOf('item.setSearchExtension');
-      assert.equal(searches.length, enabled === true ? 1 : 0);
+      const searches = host.paramsOf('item.replaceSearchExtension');
+      assert.equal(searches.length, 1);
+      assert.equal(searches[0].scope, scope);
       if (enabled === true) {
-        assert.equal(searches[0].scope, scope);
         assert.ok(Buffer.byteLength(searches[0].entries[0].text) <= 4096);
         assert.ok(!searches[0].entries[0].text.includes('\uFFFD'));
+      } else {
+        assert.deepEqual(searches[0].entries, []);
       }
-      assert.equal(host.paramsOf('item.setAttachments').length, 1);
+      assert.equal(host.paramsOf('item.replaceAttachments').length, 1);
     }
   }
 });

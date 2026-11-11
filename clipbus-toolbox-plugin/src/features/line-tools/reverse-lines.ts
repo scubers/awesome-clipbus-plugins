@@ -7,6 +7,6 @@ export function createReverseLinesAction(): ActionHandler {
     if (content.kind !== "text" || !content.text.trim()) {
       return result.none("Nothing to process");
     }
-    return result.text(reverseLines(content.text), "Done");
+    return result.text(reverseLines(content.text));
   };
 }

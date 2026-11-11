@@ -9,7 +9,6 @@ import {
 
 function createTransformAction(
   transform: (text: string) => string | null,
-  userMessage: string,
 ): ActionHandler {
   return async (input) => {
     if (input.content.kind !== "text") {
@@ -20,7 +19,7 @@ function createTransformAction(
       if (output === null) {
         return result.none("Invalid encoded input");
       }
-      return result.text(output, userMessage);
+      return result.text(output);
     } catch {
       return result.none("Invalid encoded input");
     }
@@ -28,8 +27,8 @@ function createTransformAction(
 }
 
 export const escapeActions: Record<string, ActionHandler> = {
-  "html-encode": createTransformAction(htmlEncode, "HTML encoded"),
-  "html-decode": createTransformAction(htmlDecode, "HTML decoded"),
-  "unicode-escape": createTransformAction(unicodeEncode, "Unicode escaped"),
-  "unicode-unescape": createTransformAction(unicodeDecode, "Unicode unescaped"),
+  "html-encode": createTransformAction(htmlEncode),
+  "html-decode": createTransformAction(htmlDecode),
+  "unicode-escape": createTransformAction(unicodeEncode),
+  "unicode-unescape": createTransformAction(unicodeDecode),
 };

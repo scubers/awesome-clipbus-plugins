@@ -77,7 +77,7 @@ for (const [id, input, expected] of samples) {
     const output = await registry.actions[id]({
       item: itemSnapshot('text'), content: textContent(input),
     }, host.ctx);
-    assert.deepEqual(output, { result: { kind: 'text', text: expected }, message: 'Done' });
+    assert.deepEqual(output, { result: { kind: 'text', text: expected } });
     assert.deepEqual(host.calls, []);
   });
 }

@@ -13,7 +13,7 @@ test('URL cards preserve query titles and tracker-dependent copy buttons before 
   ]) {
     const host = fakeHost(launch);
     await registry.detectors['url-detector']({ item: itemSnapshot('text'), content: textContent(text), trigger: 'copy' }, host.ctx);
-    const [attachment] = host.paramsOf('item.setAttachments');
+    const [attachment] = host.paramsOf('item.replaceAttachments');
     const { payload, card } = attachment.entries[0];
     assert.equal(card.title, title);
     assert.deepEqual(card.buttons.map(button => button.id), ids);
@@ -26,9 +26,9 @@ test('long multibyte query values remain complete without creating a search inde
   const value = '你'.repeat(4000);
   const host = fakeHost(launch);
   await registry.detectors['url-detector']({ item: itemSnapshot('text'), content: textContent(`q=${encodeURIComponent(value)}&b=2`), trigger: 'copy' }, host.ctx);
-  const [attachment] = host.paramsOf('item.setAttachments');
+  const [attachment] = host.paramsOf('item.replaceAttachments');
   assert.equal(attachment.entries[0].payload.query[0].value, value);
-  assert.deepEqual(host.paramsOf('item.setSearchExtension'), []);
+  assert.deepEqual(host.paramsOf('item.replaceSearchExtension'), []);
 });
 
 test('URL results exceeding the payload byte limit produce no partial writes', async t => {

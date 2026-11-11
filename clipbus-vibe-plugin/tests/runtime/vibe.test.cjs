@@ -98,8 +98,8 @@ describe('built V2 detector and fallback matching', () => {
       const item = itemSnapshot('text', { attachments: trigger === 'copy' ? [] : [ownReference] });
       const output = await registry.detectors['vibe-detector']({ item, content: textContent('hello world'), trigger }, host.ctx);
       assert.equal(output, undefined);
-      assert.deepEqual(host.methods(), ['item.setAttachments']);
-      const [write] = host.paramsOf('item.setAttachments');
+      assert.deepEqual(host.methods(), ['item.replaceAttachments']);
+      const [write] = host.paramsOf('item.replaceAttachments');
       assert.equal(write.type, ATTACHMENT_TYPE);
       assert.ok(manifest.writes.attachmentTypes.includes(write.type));
       assert.deepEqual(write.entries, [{ key: 'primary', payload: validPayload }]);
@@ -110,13 +110,17 @@ describe('built V2 detector and fallback matching', () => {
     assert.deepEqual(writes[0], writes[1]);
   });
 
-  it('yields to foreign V2 refs, including when its own previous result is present', async t => {
+  it('yields to foreign V2 refs and explicitly clears its own previous result on recopy', async t => {
     const { registry, launch } = await setupPlugin(t);
     for (const trigger of ['copy', 'recopy']) {
       for (const attachments of [[foreignReference], [foreignReference, ownReference]]) {
         const host = fakeHost(launch);
         await registry.detectors['vibe-detector']({ item: itemSnapshot('text', { attachments }), content: textContent('hello world'), trigger }, host.ctx);
-        assert.deepEqual(host.calls, []);
+        if (trigger === 'recopy') {
+          assert.deepEqual(host.paramsOf('item.replaceAttachments'), [{ type: ATTACHMENT_TYPE, entries: [] }]);
+        } else {
+          assert.deepEqual(host.calls, []);
+        }
       }
     }
   });
@@ -125,7 +129,7 @@ describe('built V2 detector and fallback matching', () => {
     const { registry, launch } = await setupPlugin(t);
     const host = fakeHost(launch);
     await registry.detectors['vibe-detector']({ item: itemSnapshot('text'), content: textContent('hello world'), trigger: 'manual' }, host.ctx);
-    assert.deepEqual(host.paramsOf('item.setAttachments')[0].entries, [{ key: 'primary', payload: validPayload }]);
+    assert.deepEqual(host.paramsOf('item.replaceAttachments')[0].entries, [{ key: 'primary', payload: validPayload }]);
   });
 
   it('does not write for blank text or image content', async t => {
@@ -141,7 +145,7 @@ describe('built V2 detector and fallback matching', () => {
     const { registry, launch } = await setupPlugin(t);
     const host = fakeHost(launch);
     await registry.detectors['vibe-detector']({ item: itemSnapshot('text'), content: textContent('字'.repeat(400)), trigger: 'copy' }, host.ctx);
-    const payload = host.paramsOf('item.setAttachments')[0].entries[0].payload;
+    const payload = host.paramsOf('item.replaceAttachments')[0].entries[0].payload;
     assert.equal(payload.text.length, 280);
     assert.equal(payload.charCount, 400);
     assert.ok(Buffer.byteLength(JSON.stringify(payload)) <= PLUGIN_WRITE_LIMITS.maximumPayloadBytes);

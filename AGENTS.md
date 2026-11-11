@@ -6,7 +6,7 @@
 当前仅分发 `clipbus-toolbox-plugin/`（工具箱）与 `clipbus-vibe-plugin/`（独立动画）。插件 ID 分别为 `plugin.awesome.toolbox` 与 `plugin.awesome.vibe`。工具能力统一加入 Toolbox；JSON/颜色卡片及 URL/Base64/JSON 字符串编解码优先使用宿主 builtin。
 仓库不再保存模板副本。创建和升级插件时，由 Agent 临时获取官方模板 `https://github.com/scubers/clipbus-template-plugin` 作为工程参考，再依据目标插件实际安装的 SDK 文档实现或迁移。两个 skill 均可独立分发，不依赖本仓库、内置脚手架或另一个 skill。根目录没有 package.json 或 workspace；安装、构建、测试都在插件目录中执行。
 
-当前使用 `@clipbus/plugin-sdk ^3.2.0`、插件协议 V2、manifest schema 6。
+当前使用 `@clipbus/plugin-sdk ^3.3.0`、插件协议 V2、manifest schema 6。
 动手前先在目标目录 `npm install`，再读：
 
 - `node_modules/@clipbus/plugin-sdk/docs/README.md`：文档地图。
@@ -46,7 +46,7 @@ npm run lint
 
 - Runtime：`src/plugin.ts` 从 `@clipbus/plugin-sdk/runtime` 导入 `definePlugin`，构建成 CommonJS。导出 default 或裸对象都受宿主支持。
 - Registry：`detectors`、`actions` 是 id → 函数；`messages` 是 `contract.handle(fn)` 数组。需要初始化才使用 `setup(context)`。
-- detector：`async (input, ctx) => void`，通过 `ctx.item.setAttachments` / `setSearchExtension` 写入；不能返回旧 artifact。
+- detector：`async (input, ctx) => void`，通过 `ctx.item.replaceAttachments` / `replaceSearchExtension` 或 `AttachmentContract.replace` 写入；不能返回旧 artifact。
 - Action：`async ({ item, content }, ctx) => result.text/image/none(...)`。实际处理依据当前级联 `content`；`item` 与 `ctx.item` 始终指向 Flow 起点。
 - 卡片：manifest `renderers[].page` 指向相对插件根目录的 HTML。卡片不注册 Runtime handler；外观来自 manifest 默认值与附件 `card`。
 - 页面从 `@clipbus/plugin-sdk/view` 导入 `ctx`；用 `ctx.renderer.context(contract)` 读启动快照，随后订阅 item/env/button 事件。
@@ -65,7 +65,7 @@ npm run lint
 
 ## 运行环境与文件夹
 
-Runtime 与卡片页不能联网；Runtime 不能启动子程序，包目录只读，写入使用 `data/`、`cache/`。
+默认 Runtime 与卡片页不能直接联网；HTTP 需要声明网络槽位并取得授权，Runtime 默认不能启动子程序，包目录只读，写入使用 `data/`、`cache/`。
 需要用户文件夹时才声明 `permissions.folders`，用 `ctx.plugin.folder(id)` 取授权路径；未授权返回 `null`。
 `system.openPath` 已删除；`ctx.system.openUrl` 仅供卡片页打开 `http`、`https`、`mailto`。
 `ctx.system.reveal` 只接受插件目录或已授权文件夹里的现存路径。实际授权与隔离需要配套 Host，preview 不验证这些限制。
@@ -76,10 +76,11 @@ Toolbox detector 默认只写卡片附件，不为原文重复建立搜索扩展
 
 输入只有 `text` / `image`。payload 是结构化 JSON 对象；共享 payload.ts 不能导入 Node/DOM API，Node 运算放独立 Runtime 文件。
 每条附件是 `{ type, key, updatedAt, own, payload, card? }`；item.attachments 仅包含引用 `{ type, key, updatedAt, own }`。
-不要继续使用 payloadJson、owner、historyID、旧 topic 全局或旧版方法权限字段；schema 6 的 `permissions` 仅用于文件夹槽位。
+不要继续使用 payloadJson、owner、historyID、旧 topic 全局或旧版方法权限字段；schema 6 的 `permissions` 可按实际需求声明文件夹、网络槽位与高信任运行模式，当前两个插件未申请这些权限。
 
 Runtime 写入必须 await，处理函数成功后提交；ctx 在调用结束后失效。
-detector 每次成功执行整体替换自己的附件和搜索结果，包含 recopy。本次不写意味着清空，不应通过直接 return 跳过重复复制。
+detector 写入按当前 capability 的 type/scope 整组替换。copy/edit/manual 完整重检会由宿主先清旧 detector 产出；recopy 保留未明确写入的组，需要清除时显式传 `entries: []`。设置或外部附件等条件在 recopy 变化时，不能靠直接 return 清理旧产出。
+插件附件与搜索扩展只保存在本机，不随历史云同步。
 页面/消息的交互状态使用独立类型，避免与 detector 输出产生重复卡片；编辑内容会清空所有附件。
 
 按 SDK 3.2 限额预算：单 payload 2 MiB、每插件每条目合计 64 个附件/10 条搜索扩展、单条搜索文本 4 KiB。按 UTF-8 字节检查，不按 JS 字符数。最终数字以 API.md 为准。

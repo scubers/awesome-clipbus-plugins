@@ -7,6 +7,6 @@ export function createUrlDetector(): DetectorHandler {
     if (payload === null) return;
     if (payload.query.length === 0) return;
     if (Buffer.byteLength(JSON.stringify(payload)) > PLUGIN_WRITE_LIMITS.maximumPayloadBytes) return;
-    await attachment.set(ctx, [{ key: "primary", payload, card: createUrlCard(payload) }]);
+    await attachment.replace(ctx, [{ key: "primary", payload, card: createUrlCard(payload) }]);
   };
 }

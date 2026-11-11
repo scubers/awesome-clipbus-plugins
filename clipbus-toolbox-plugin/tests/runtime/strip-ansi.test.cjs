@@ -49,7 +49,7 @@ for (const [label, content, expected] of [
       item: itemSnapshot(content.kind), content,
     }, host.ctx);
     assert.deepEqual(output.result, expected);
-    assert.equal(output.message, expected.kind === 'none' ? 'Nothing to process' : 'Done');
+    assert.equal(output.message, expected.kind === 'none' ? 'Nothing to process' : undefined);
     assert.deepEqual(host.calls, []);
   });
 }

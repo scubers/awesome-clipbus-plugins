@@ -63,7 +63,7 @@ test('detector fires on plain IPv4', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['ip-detector'];
   await det(makeInput('192.168.1.10'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   assert.equal(attachments[0].type, 'plugin.awesome.toolbox.ip');
 });
@@ -73,7 +73,7 @@ test('detector fires on IPv4 CIDR', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['ip-detector'];
   await det(makeInput('10.0.0.0/8'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   assert.equal(attachments[0].type, 'plugin.awesome.toolbox.ip');
 });
@@ -83,7 +83,7 @@ test('detector fires on plain IPv6', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['ip-detector'];
   await det(makeInput('2001:db8::1'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
   assert.equal(attachments[0].type, 'plugin.awesome.toolbox.ip');
 });
@@ -93,7 +93,7 @@ test('detector fires on IPv6 loopback ::1', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['ip-detector'];
   await det(makeInput('::1'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 1);
 });
 
@@ -106,7 +106,7 @@ test('detector rejects prose containing an IP', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['ip-detector'];
   await det(makeInput('visit 1.2.3.4 now'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -115,7 +115,7 @@ test('detector rejects invalid octet 999.1.1.1', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['ip-detector'];
   await det(makeInput('999.1.1.1'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -124,7 +124,7 @@ test('detector rejects plain text "hello"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['ip-detector'];
   await det(makeInput('hello'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -133,7 +133,7 @@ test('detector rejects malformed IPv6 with stray colons "2001:::1"', async t => 
   const host = fakeHost(launch);
   const det = registry.detectors['ip-detector'];
   await det(makeInput('2001:::1'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -142,7 +142,7 @@ test('detector rejects IPv6 with a trailing colon "2001::db8:"', async t => {
   const host = fakeHost(launch);
   const det = registry.detectors['ip-detector'];
   await det(makeInput('2001::db8:'), host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 
@@ -155,7 +155,7 @@ test('detector rejects image content kind', async t => {
     content: imageContent,
     trigger: 'copy',
   }, host.ctx);
-  const attachments = host.paramsOf('item.setAttachments');
+  const attachments = host.paramsOf('item.replaceAttachments');
   assert.equal(attachments.length, 0);
 });
 

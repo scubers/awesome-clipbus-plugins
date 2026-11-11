@@ -7,6 +7,6 @@ export function createTrimAction(): ActionHandler {
     if (content.kind !== "text" || !content.text.trim()) {
       return result.none("Nothing to process");
     }
-    return result.text(tidyWhitespace(content.text), "Done");
+    return result.text(tidyWhitespace(content.text));
   };
 }

@@ -55,7 +55,7 @@
 
 **全部 16 个 detector 默认不写搜索扩展。** 卡片展示不依赖搜索索引。XML、CSV、时间戳、进制、时长、实体、URL/Query、IP、坐标、MAC、UUID、Markdown、渐变、Cron 均不追加索引。
 
-仅 Base64/JWT 可显式开启解码内容索引，分别使用 `base64` / `jwt` scope。每条最多 4 KiB UTF-8，不切断 Unicode 码点。搜索扩展在启用宿主云同步时参与同步，附件本身仍为本机数据。manifest 声明这两个 scope 只是允许写入，并不自动建立索引。关闭选项后，以当前 ID 重新检测/重复复制，会清掉对应 detector 的旧索引。
+仅 Base64/JWT 可显式开启解码内容索引，分别使用 `base64` / `jwt` scope。每条最多 4 KiB UTF-8，不切断 Unicode 码点。搜索扩展与附件都只保存在本机，不随历史云同步。manifest 声明这两个 scope 只是允许写入，并不自动建立索引。关闭选项后重复复制会显式以空组替换对应 detector 的旧索引；完整重检也会清理旧的检测产出。
 
 只将需要开启的选项合并到宿主 external settings JSON，再 Reload Toolbox。四项默认均为 false：
 

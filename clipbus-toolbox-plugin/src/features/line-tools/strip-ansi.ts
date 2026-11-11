@@ -7,6 +7,6 @@ export function createStripAnsiAction(): ActionHandler {
     if (content.kind !== "text" || !content.text.trim()) {
       return result.none("Nothing to process");
     }
-    return result.text(stripAnsi(content.text), "Done");
+    return result.text(stripAnsi(content.text));
   };
 }

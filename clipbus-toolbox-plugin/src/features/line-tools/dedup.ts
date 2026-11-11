@@ -7,6 +7,6 @@ export function createDedupAction(): ActionHandler {
     if (content.kind !== "text" || !content.text.trim()) {
       return result.none("Nothing to process");
     }
-    return result.text(dedupLines(content.text), "Done");
+    return result.text(dedupLines(content.text));
   };
 }

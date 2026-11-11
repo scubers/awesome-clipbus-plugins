@@ -8,7 +8,7 @@
 
 ### 兜底机制
 
-Vibe 的 detector 检查 `input.item.attachments` 中的 V2 附件引用。若已有宿主 builtin 或其他插件的附件（`own: false`），本次不写入，让位给对应插件；否则为非空文本写入动画附件。本插件自己的引用（`own: true`）不会阻止重复复制时完整重写，因此 recopy 会保留动画。
+Vibe 的 detector 检查 `input.item.attachments` 中的 V2 附件引用。若已有宿主 builtin 或其他插件的附件（`own: false`），Vibe 会让位给对应插件。recopy 会保留未写入的组，因此当外部结果与 Vibe 自己的旧 fallback 同时存在时，会显式清空旧 fallback；否则为非空文本写入动画附件，本插件自己的引用（`own: true`）不会阻止重复复制时完整替换。
 
 检查依据是 detector 的条目快照。其他 detector 在此后新增的附件会在下次检测时参与判断；协议 V2 已移除 Runtime renderer 的可见性回调。
 
@@ -88,6 +88,6 @@ Vibe 读取一个只读设置项 **`plugin.awesome.vibe.animations`**——按�
 
 ## 注意事项
 
-- 四个预览场景保留普通文本和短单词示例，并演示动画排序与单动画设置。Runtime 测试覆盖外部附件引用和仅含自身附件时的 recopy；真实宿主中的检测顺序仍需实测。
+- 四个预览场景保留普通文本和短单词示例，并演示动画排序与单动画设置。Runtime 测试覆盖外部附件引用、仅含自身附件时的 recopy 与显式清理 fallback；真实宿主中的检测顺序仍需实测。
 - 卡片背景为深色太空渐变，是动画的视觉本质，并非 theme 错误。
 - schema 5 下，附件类型声明在 `writes.attachmentTypes`，由宿主保存为本机派生数据。

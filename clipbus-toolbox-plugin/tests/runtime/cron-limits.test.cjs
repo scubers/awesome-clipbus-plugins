@@ -10,8 +10,8 @@ test('long valid input preserves the complete payload without a search index', a
   const text = `${'0'.repeat(2000)} * * * *`;
   const host = fakeHost(launch);
   await registry.detectors['cron-detector']({ item: itemSnapshot('text'), content: textContent(text), trigger: 'copy' }, host.ctx);
-  assert.equal(host.paramsOf('item.setAttachments')[0].entries[0].payload.expression, text);
-  assert.deepEqual(host.paramsOf('item.setSearchExtension'), []);
+  assert.equal(host.paramsOf('item.replaceAttachments')[0].entries[0].payload.expression, text);
+  assert.deepEqual(host.paramsOf('item.replaceSearchExtension'), []);
 });
 
 test('oversized payload is rejected before any writes', async t => {

@@ -7,6 +7,6 @@ export function createSortAction(): ActionHandler {
     if (content.kind !== "text" || !content.text.trim()) {
       return result.none("Nothing to process");
     }
-    return result.text(sortLines(content.text), "Done");
+    return result.text(sortLines(content.text));
   };
 }

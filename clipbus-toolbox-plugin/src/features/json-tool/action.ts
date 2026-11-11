@@ -12,7 +12,7 @@ function createJsonAction(format?: number | "yaml"): ActionHandler {
       const output = format === "yaml" ? jsonToYaml(parsed) : JSON.stringify(parsed, null, format);
       return output === undefined
         ? result.none("Invalid JSON")
-        : result.text(output, "Done");
+        : result.text(output);
     } catch {
       return result.none("Invalid JSON");
     }

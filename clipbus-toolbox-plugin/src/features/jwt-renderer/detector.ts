@@ -7,13 +7,15 @@ export function createJwtDetector(): DetectorHandler {
     const payload = createJwtPayload(input);
     if (payload === null) return;
     if (Buffer.byteLength(JSON.stringify(payload)) > PLUGIN_WRITE_LIMITS.maximumPayloadBytes) return;
-    await attachment.set(ctx, [{ key: "primary", payload }]);
+    await attachment.replace(ctx, [{ key: "primary", payload }]);
     const { values } = await ctx.settings.get<{ indexJwt?: boolean }>();
     if (values?.indexJwt === true) {
-      await ctx.item.setSearchExtension({
+      await ctx.item.replaceSearchExtension({
         scope: "jwt",
         entries: [{ key: "primary", text: searchSnippet(payload.payloadPretty), label: "JWT" }],
       });
+    } else if (input.trigger === "recopy") {
+      await ctx.item.replaceSearchExtension({ scope: "jwt", entries: [] });
     }
   };
 }

@@ -7,13 +7,15 @@ export function createBase64Detector(): DetectorHandler {
     const payload = createBase64Payload(input);
     if (payload === null) return;
     if (Buffer.byteLength(JSON.stringify(payload)) > PLUGIN_WRITE_LIMITS.maximumPayloadBytes) return;
-    await attachment.set(ctx, [{ key: "primary", payload }]);
+    await attachment.replace(ctx, [{ key: "primary", payload }]);
     const { values } = await ctx.settings.get<{ indexBase64?: boolean }>();
     if (values?.indexBase64 === true) {
-      await ctx.item.setSearchExtension({
+      await ctx.item.replaceSearchExtension({
         scope: "base64",
         entries: [{ key: "primary", text: searchSnippet(payload.decoded), label: "Base64 Decoded" }],
       });
+    } else if (input.trigger === "recopy") {
+      await ctx.item.replaceSearchExtension({ scope: "base64", entries: [] });
     }
   };
 }

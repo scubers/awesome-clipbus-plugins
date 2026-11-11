@@ -9,8 +9,8 @@ test('large Unicode CSV headers stay in the attachment without an extra search i
   const host = fakeHost(launch);
   const header = '😀'.repeat(1500);
   await registry.detectors['csv-detector']({ item: itemSnapshot('text'), content: textContent(`${header},note\nAlice,hello`), trigger: 'copy' }, host.ctx);
-  assert.deepEqual(host.paramsOf('item.setSearchExtension'), []);
-  const [attachment] = host.paramsOf('item.setAttachments');
+  assert.deepEqual(host.paramsOf('item.replaceSearchExtension'), []);
+  const [attachment] = host.paramsOf('item.replaceAttachments');
   assert.equal(attachment.entries[0].payload.headers[0], header);
 });
 
