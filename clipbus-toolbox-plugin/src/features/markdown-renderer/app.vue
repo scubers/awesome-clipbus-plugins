@@ -2,7 +2,7 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { autoFit } from "@clipbus/plugin-sdk/dom";
 import { ctx } from "@clipbus/plugin-sdk/view";
-import { useCard } from "../../shared/composables/useCard";
+import { useCard, useCardButton } from "../../shared/composables/useCard";
 import { attachment, decodeFormattedTextPayload } from "./payload";
 import { htmlFragment, sanitizedFragment } from "../rich-text/html";
 
@@ -15,6 +15,13 @@ const bodyEl = ref<HTMLElement | null>(null);
 const rootEl = ref<HTMLElement | null>(null);
 let stopAutoFit: (() => void) | null = null;
 
+useCardButton("copy-rich-text", async () => {
+  if (payload.value?.kind !== "rich_text_preview") return;
+  const [{ richText }, content] = await Promise.all([ctx.item.getRichText(), ctx.item.getContent()]);
+  if (!richText || content.kind !== "text") throw new Error("The original rich text is no longer available.");
+  await ctx.system.copyRichText({ text: content.text, richText });
+});
+
 function openLinks(event: MouseEvent): void {
   const link = (event.target as HTMLElement).closest<HTMLAnchorElement>("a[href]");
   if (!link) return;
@@ -23,8 +30,10 @@ function openLinks(event: MouseEvent): void {
 }
 
 onMounted(async () => {
-  stopAutoFit = autoFit({ min: 120, max: 520, target: rootEl.value ?? undefined });
+  stopAutoFit = autoFit({ min: 120, max: 400, target: rootEl.value ?? undefined });
   if (payload.value?.kind !== "rich_text_preview") return;
+  ctx.renderer.update({ buttons: [{ id: "copy-rich-text", title: "Copy Rich Text" }] })
+    .catch((error: unknown) => ctx.log.warn("rich text button setup failed", error));
   bodyEl.value?.addEventListener("click", openLinks);
   if (payload.value.format !== "html") {
     state.value = "rtf";
@@ -203,21 +212,10 @@ onUnmounted(() => {
   text-underline-offset: 2px;
 }
 
-.rich-body { overflow-wrap: break-word; line-height: 1.6; }
-.rich-body :deep(p), .rich-body :deep(blockquote), .rich-body :deep(pre),
-.rich-body :deep(ul), .rich-body :deep(ol), .rich-body :deep(table) { margin: 0 0 10px; }
-.rich-body :deep(h1), .rich-body :deep(h2), .rich-body :deep(h3),
-.rich-body :deep(h4), .rich-body :deep(h5), .rich-body :deep(h6) { margin: 0 0 8px; line-height: 1.35; }
-.rich-body :deep(h1) { font-size: 20px; }
-.rich-body :deep(h2) { font-size: 17px; }
-.rich-body :deep(h3) { font-size: 15px; }
-.rich-body :deep(ul), .rich-body :deep(ol) { padding-left: 24px; }
-.rich-body :deep(blockquote) { padding-left: 10px; border-left: 3px solid var(--clipbus-border, #cbd5e1); }
-.rich-body :deep(pre) { padding: 8px; overflow-x: auto; white-space: pre-wrap; background: var(--clipbus-surface-elevated, #f1f5f9); }
-.rich-body :deep(code) { font-family: "SF Mono", "Menlo", monospace; font-size: 12px; }
-.rich-body :deep(a) { color: var(--clipbus-accent, #2563eb); text-underline-offset: 2px; }
-.rich-body :deep(table) { border-collapse: collapse; max-width: 100%; }
-.rich-body :deep(th), .rich-body :deep(td) { border: 1px solid var(--clipbus-border, #cbd5e1); padding: 4px 7px; }
+.rich-body { overflow-wrap: break-word; line-height: normal; }
+.rich-body :deep(pre) { max-width: 100%; overflow-x: auto; }
+.rich-body :deep(table) { max-width: 100%; }
+.rich-body :deep(a) { color: var(--clipbus-accent, #2563eb); }
 
 .empty {
   padding: 20px;

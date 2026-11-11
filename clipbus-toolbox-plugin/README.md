@@ -30,9 +30,9 @@ Each row lists paired detector/renderer IDs. All detectors accept text.
 | `gradient-detector` | `gradient-swatch` | CSS-validated gradient functions with recognizable color stops |
 | `cron-detector` | `cron-renderer` | Five-field cron explanation and next five local run times; does not schedule jobs |
 
-The Host supplies the outer card chrome. Pages use the Host theme and scoped content sizing. Previews include 22 scenarios mounting the actual components.
+The Host supplies the outer card chrome. Pages use the Host theme and scoped content sizing. Previews include 23 scenarios mounting the actual components.
 
-The shared **Formatted Text** card handles Markdown and rich text. Rich-text attachments contain only a small format marker, never another copy of the HTML or Base64 RTF. The card fetches the original HTML with `item.getRichText` when displayed, honors the Host's UTF-8 fragment offsets, removes scripts/event handlers/remote images, and opens safe HTTP(S)/mailto links through the Host. RTF-only items show an explanatory fallback because this card does not include an RTF renderer. No search index, network permission or additional attachment type is used.
+The shared **Formatted Text** card handles Markdown and rich text. Rich-text attachments contain only a small format marker, never another copy of the HTML or Base64 RTF. The card fetches the original HTML with `item.getRichText` when displayed, honors the Host's UTF-8 fragment offsets, removes scripts/event handlers/remote images, and opens safe HTTP(S)/mailto links through the Host. It preserves common inline spacing, indentation, line height, list and table styling plus semantic attributes such as merged cells and ordered-list numbering, without imposing the Markdown card's typography on rich content. Content height adapts up to 400 points, then scrolls inside the card. **Copy Rich Text** writes the original HTML/RTF plus plain-text fallback to the native clipboard, including for RTF-only items. RTF-only items show an explanatory fallback because this card does not include an RTF renderer. No search index, network permission or additional attachment type is used.
 
 ## Actions
 

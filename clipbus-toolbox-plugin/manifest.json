@@ -360,7 +360,7 @@
       "attachmentType": "plugin.awesome.toolbox.markdown",
       "height": {
         "min": 120,
-        "max": 520
+        "max": 400
       },
       "page": "dist/ui/renderers/markdown-renderer/index.html",
       "tint": "#0EA5E9"

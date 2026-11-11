@@ -30,9 +30,9 @@
 | `gradient-detector` | `gradient-swatch` | 通过 CSS 语法校验且包含可识别色标的渐变函数 |
 | `cron-detector` | `cron-renderer` | 五字段 Cron 解释、未来五次本地触发时间；不执行调度 |
 
-卡片外框由宿主绘制，页面使用宿主主题和内容尺寸适配。预览工作台保留 22 个真实组件样例。
+卡片外框由宿主绘制，页面使用宿主主题和内容尺寸适配。预览工作台保留 23 个真实组件样例。
 
-**Formatted Text** 卡片同时支持 Markdown 与富文本。富文本附件只保存很小的格式标记，不重复存储 HTML 或 Base64 RTF；打开卡片时才通过 `item.getRichText` 读取原始 HTML，按宿主的 UTF-8 字节选区截取，移除脚本、事件属性与远程图片，并通过宿主打开安全的 HTTP(S)/mailto 链接。RTF-only 条目显示说明，不引入 RTF 渲染器。此能力不写搜索索引、不需要网络权限，也不增加附件类型。
+**Formatted Text** 卡片同时支持 Markdown 与富文本。富文本附件只保存很小的格式标记，不重复存储 HTML 或 Base64 RTF；打开卡片时才通过 `item.getRichText` 读取原始 HTML，按宿主的 UTF-8 字节选区截取，移除脚本、事件属性与远程图片，并通过宿主打开安全的 HTTP(S)/mailto 链接。保留常见行内间距、缩进、行高、列表与表格样式，以及合并单元格、有序列表编号等结构属性，不再把 Markdown 卡片的排版套到富文本上。高度随内容增长，最高 400，超出后在卡片内滚动。**Copy Rich Text** 将原始 HTML/RTF 与纯文本 fallback 写入系统剪贴板，RTF-only 条目也可复制。RTF-only 条目显示说明，不引入 RTF 渲染器。此能力不写搜索索引、不需要网络权限，也不增加附件类型。
 
 ## Action
 

@@ -601,7 +601,7 @@
     },
     "richText": {
       "html": {
-        "document": "<!doctype html><html><body><h2>Rich text preview</h2><p><strong>Bold</strong>, <em>italic</em>, and <span style=\"color: #db2777\">colored text</span>.</p><ul><li>Preserved structure</li><li>No duplicated HTML in the attachment</li></ul><p><a href=\"https://example.com\">A safe link</a></p><script>alert('not rendered')</script><img src=\"https://example.com/tracker.png\"></body></html>"
+        "document": "<!doctype html><html><body><h2 style=\"margin: 0 0 6px; letter-spacing: 0.02em\">Rich text preview</h2><p style=\"margin: 4px 0 12px; line-height: 1.8\"><strong>Bold</strong>, <em>italic</em>, and <span style=\"color: #db2777\">colored text</span>.</p><ul style=\"list-style-type: square; margin: 6px 0 12px; padding-left: 32px\"><li>Preserved spacing and list markers</li><li>No duplicated HTML in the attachment</li></ul><table border=\"1\" cellpadding=\"6\" style=\"border-collapse: collapse; margin-bottom: 12px\"><thead><tr><th colspan=\"2\" style=\"border: 1px solid #94a3b8; padding: 6px; text-align: left\">Merged header</th></tr></thead><tbody><tr><td style=\"border: 1px solid #94a3b8; padding: 6px\">Cell A</td><td style=\"border: 1px solid #94a3b8; padding: 6px\">Cell B</td></tr></tbody></table><p style=\"margin: 0\"><a href=\"https://example.com\">A safe link</a></p><script>alert('not rendered')</script><img src=\"https://example.com/tracker.png\"></body></html>"
       }
     }
   },
@@ -616,6 +616,29 @@
     },
     "richText": {
       "rtfBase64": "e30="
+    },
+    "content": {
+      "kind": "text",
+      "text": "RTF-only rich text"
+    }
+  },
+  {
+    "id": "rich-text-renderer-long",
+    "label": "Rich Text: Long content at 400px",
+    "view": "markdown-renderer",
+    "payload": {
+      "kind": "rich_text_preview",
+      "version": 1,
+      "format": "html"
+    },
+    "content": {
+      "kind": "text",
+      "text": "Long rich text"
+    },
+    "richText": {
+      "html": {
+        "document": "<h2>Long rich text</h2><p style=\"line-height: 1.8\">This sample verifies the maximum card height and internal scrolling.</p><p>Section 1</p><p>Section 2</p><p>Section 3</p><p>Section 4</p><p>Section 5</p><p>Section 6</p><p>Section 7</p><p>Section 8</p><p>Section 9</p><p>Section 10</p><p>Section 11</p><p>Section 12</p><p>Section 13</p><p>Section 14</p><p>Section 15</p><p>Section 16</p><p>Section 17</p><p>Section 18</p><p>Section 19</p><p>Section 20</p><p><strong>The end</strong></p>"
+      }
     }
   }
 ]
